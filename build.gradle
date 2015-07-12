@@ -2,12 +2,12 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
         }
         maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots/'
         }
     }
     dependencies {
@@ -20,7 +20,7 @@ apply plugin: 'forge'
 apply plugin: 'curseforge'
 
 if(!invtweaks_version) {
-    invtweaks_version = "UNKNOWN"
+    invtweaks_version = 'UNKNOWN'
 }
 
 def getGitCommitHash = { ->
@@ -87,9 +87,9 @@ def getGitChangelog = { ->
 ext.git_version = getGitCommitHash()
 ext.git_dirty = getGitDirtyIndex() || getGitDirtyFiles()
 
-ext.build_number = System.getenv("BUILD_NUMBER")
+ext.build_number = System.getenv('BUILD_NUMBER')
 if(!build_number) {
-    ext.build_number = System.getenv("TRAVIS_BUILD_NUMBER")
+    ext.build_number = System.getenv('TRAVIS_BUILD_NUMBER')
 }
 
 if(build_number) {
@@ -99,25 +99,25 @@ if(build_number) {
 }
 
 if(git_version) {
-    ext.internal_version = version + "-" + git_version
+    ext.internal_version = version + '-' + git_version
     if(git_dirty) {
-        ext.internal_version += "-dirty"
+        ext.internal_version += '-dirty'
     }
 } else {
     ext.internal_version = version
 }
 
-group = "inventorytweaks" // No stupid URL conventions
-archivesBaseName = "InventoryTweaks"
+group = 'inventorytweaks' // No stupid URL conventions
+archivesBaseName = 'InventoryTweaks'
 
-ext.mcversion = "1.8"
+ext.mcversion = '1.8'
 minecraft {
-    version = "1.8-11.14.3.1487"
+    version = '1.8-11.14.3.1487'
     mappings = 'stable_16'
     at 'src/main/resources/invtweaks_at.cfg'
 
-    replace "@VERSION@", project.internal_version
-    replaceIn "InvTweaksConst.java"
+    replace '@VERSION@', project.internal_version
+    replaceIn 'InvTweaksConst.java'
 }
 
 sourceCompatibility = 1.8
@@ -125,7 +125,7 @@ targetCompatibility = 1.8
 
 compileJava {
     options.debug = true
-    options.debugOptions.debugLevel = "source,lines,vars"
+    options.debugOptions.debugLevel = 'source,lines,vars'
 }
 
 jar {
@@ -191,8 +191,8 @@ if(curseKey) {
 }
 
 processResources {
-    inputs.property "version", internal_version
-    inputs.property "mcversion", mcversion
+    inputs.property 'version', internal_version
+    inputs.property 'mcversion', mcversion
 
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.png'
