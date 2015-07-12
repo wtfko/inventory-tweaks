@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 @Mod(modid = "inventorytweaks",
-        dependencies = "required-after:FML@[8.0.42,);required-after:Forge@[11.14.1,)",
+        dependencies = "required-after:Forge@[11.14.3,)",
         acceptableRemoteVersions = "*",
         guiFactory = "invtweaks.forge.ModGuiFactory")
 public class InvTweaksMod implements InvTweaksAPI {
