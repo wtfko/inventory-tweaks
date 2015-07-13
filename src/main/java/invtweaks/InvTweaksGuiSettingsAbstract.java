@@ -21,23 +21,21 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     protected final static int ID_DONE = 200;
     protected static String ON;
     protected static String OFF;
-    protected static String DISABLE_CI;
     protected static String LABEL_DONE;
-    protected Minecraft mc;
     protected InvTweaksObfuscation obf;
     protected InvTweaksConfig config;
     protected GuiScreen parentScreen;
 
-    public InvTweaksGuiSettingsAbstract(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
+    public InvTweaksGuiSettingsAbstract(Minecraft mc_, GuiScreen parentScreen_, InvTweaksConfig config_) {
 
         LABEL_DONE = StatCollector.translateToLocal("invtweaks.settings.exit");
         ON = ": " + StatCollector.translateToLocal("invtweaks.settings.on");
         OFF = ": " + StatCollector.translateToLocal("invtweaks.settings.off");
 
-        this.mc = mc;
-        this.obf = new InvTweaksObfuscation(mc);
-        this.parentScreen = parentScreen;
-        this.config = config;
+        mc = mc_;
+        obf = new InvTweaksObfuscation(mc_);
+        parentScreen = parentScreen_;
+        config = config_;
     }
 
     @Override

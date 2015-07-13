@@ -14,7 +14,6 @@ import org.objectweb.asm.tree.*;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -35,8 +34,8 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String ANNOTATION_IGNORE_CONTAINER = "Linvtweaks/api/container/IgnoreContainer;";
     public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
-    private static Map<String, ContainerInfo> standardClasses = new HashMap<String, ContainerInfo>();
-    private static Map<String, ContainerInfo> configClasses = new HashMap<String, ContainerInfo>();
+    private static Map<String, ContainerInfo> standardClasses = new HashMap<>();
+    private static Map<String, ContainerInfo> configClasses = new HashMap<>();
     private static String containerClassName;
 
     public ContainerTransformer() {
@@ -165,7 +164,7 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     // This needs to have access to the FML remapper so it needs to run when we know it's been set up correctly.
-    private void lateInit() {
+    private static void lateInit() {
         // Standard non-chest type
         standardClasses.put("net.minecraft.inventory.ContainerPlayer",
                 new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
@@ -194,9 +193,9 @@ public class ContainerTransformer implements IClassTransformer {
         try {
             configClasses = CompatibilityConfigLoader.load("config/InvTweaksCompatibility.xml");
         } catch(FileNotFoundException ex) {
-            configClasses = new HashMap<String, ContainerInfo>();
+            configClasses = new HashMap<>();
         } catch(Exception ex) {
-            configClasses = new HashMap<String, ContainerInfo>();
+            configClasses = new HashMap<>();
             ex.printStackTrace();
         }
     }
@@ -370,7 +369,7 @@ public class ContainerTransformer implements IClassTransformer {
         return bytes;
     }
 
-    private MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
+    private static MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
         for(MethodNode method : cn.methods) {
             if(method.visibleAnnotations != null) {
                 for(AnnotationNode methodAnnotation : method.visibleAnnotations) {

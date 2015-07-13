@@ -11,10 +11,10 @@ public class InvTweaksConfigProperties extends Properties {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<String> keys = new LinkedList<String>();
+    private final List<String> keys = new ArrayList<>();
 
     public Enumeration<Object> keys() {
-        return Collections.enumeration(new LinkedHashSet<Object>(keys));
+        return Collections.enumeration(new LinkedHashSet<>(keys));
     }
 
     public Object put(String key, Object value) {

@@ -18,15 +18,15 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
     private GuiScreen parentScreen;
     private InvTweaksConfig config;
 
-    public InvTweaksGuiShortcutsHelp(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
-        this.obf = new InvTweaksObfuscation(mc);
-        this.parentScreen = parentScreen;
-        this.config = config;
+    public InvTweaksGuiShortcutsHelp(Minecraft mc_, GuiScreen parentScreen_, InvTweaksConfig config_) {
+        obf = new InvTweaksObfuscation(mc_);
+        parentScreen = parentScreen_;
+        config = config_;
     }
 
     public void initGui() {
         // Create Done button
-        List<Object> controlList = new LinkedList<Object>();
+        List<Object> controlList = new LinkedList<>();
         controlList.add(new GuiButton(ID_DONE, width / 2 - 100, height / 6 + 168, "Done"));
         buttonList = controlList;
     }

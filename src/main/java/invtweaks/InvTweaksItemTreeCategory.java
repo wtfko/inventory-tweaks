@@ -3,7 +3,6 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
-import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -13,17 +12,14 @@ import java.util.*;
  * @author Jimeo Wan
  */
 public class InvTweaksItemTreeCategory implements IItemTreeCategory {
-
-    private static final Logger log = InvTweaks.log;
-
-    private final Map<String, List<IItemTreeItem>> items = new HashMap<String, List<IItemTreeItem>>();
-    private final Vector<String> matchingItems = new Vector<String>();
-    private final Vector<IItemTreeCategory> subCategories = new Vector<IItemTreeCategory>();
+    private final Map<String, List<IItemTreeItem>> items = new HashMap<>();
+    private final List<String> matchingItems = new ArrayList<>();
+    private final List<IItemTreeCategory> subCategories = new ArrayList<>();
     private String name;
     private int order = -1;
 
-    public InvTweaksItemTreeCategory(String name) {
-        this.name = (name != null) ? name.toLowerCase() : null;
+    public InvTweaksItemTreeCategory(String name_) {
+        name = (name_ != null) ? name_.toLowerCase() : null;
     }
 
     @Override
@@ -54,7 +50,7 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
 
         // Add item to category
         if(items.get(item.getId()) == null) {
-            List<IItemTreeItem> itemList = new ArrayList<IItemTreeItem>();
+            List<IItemTreeItem> itemList = new ArrayList<>();
             itemList.add(item);
             items.put(item.getId(), itemList);
         } else {
@@ -73,11 +69,11 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
         if(this.order != -1) {
             return this.order;
         } else {
-            int order;
+            int catOrder;
             for(IItemTreeCategory category : subCategories) {
-                order = category.getCategoryOrder();
-                if(order != -1) {
-                    return order;
+                catOrder = category.getCategoryOrder();
+                if(catOrder != -1) {
+                    return catOrder;
                 }
             }
             return -1;

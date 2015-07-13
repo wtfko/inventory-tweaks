@@ -31,21 +31,25 @@ public class InvTweaksMod implements InvTweaksAPI {
     public static CommonProxy proxy;
 
     // Helper for ASM transform of GuiTextField to disable sorting on focus.
+    @SuppressWarnings("unused")
     public static void setTextboxModeStatic(boolean enabled) {
         instance.setTextboxMode(enabled);
     }
 
     @Mod.EventHandler
+    @SuppressWarnings("unused")
     public void preInit(FMLPreInitializationEvent e) {
         proxy.preInit(e);
     }
 
     @Mod.EventHandler
+    @SuppressWarnings("unused")
     public void init(FMLInitializationEvent e) {
         proxy.init(e);
     }
 
     @Mod.EventHandler
+    @SuppressWarnings("unused")
     public void postInit(FMLPostInitializationEvent e) {
         proxy.postInit(e);
     }

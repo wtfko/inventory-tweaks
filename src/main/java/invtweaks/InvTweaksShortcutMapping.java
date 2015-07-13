@@ -1,9 +1,8 @@
 package invtweaks;
 
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,22 +11,10 @@ import java.util.Map;
  */
 public class InvTweaksShortcutMapping {
 
-    private static final Logger log = InvTweaks.log;
-
-    private List<Integer> keysToHold = new LinkedList<Integer>();
+    private List<Integer> keysToHold = new ArrayList<>();
 
     public InvTweaksShortcutMapping(int keyCode) {
         keysToHold.add(keyCode);
-    }
-
-    public InvTweaksShortcutMapping(int... keyCodes) {
-        for(int keyCode : keyCodes) {
-            keysToHold.add(keyCode);
-        }
-    }
-
-    public InvTweaksShortcutMapping(String keyName) {
-        this(new String[]{keyName});
     }
 
     public InvTweaksShortcutMapping(String... keyNames) {

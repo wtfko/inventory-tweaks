@@ -11,6 +11,7 @@ public class ITPacketClick implements ITPacket {
     public int action;
     public int window;
 
+    @SuppressWarnings("unused")
     public ITPacketClick() {
     }
 

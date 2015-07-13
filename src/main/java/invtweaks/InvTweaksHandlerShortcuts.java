@@ -2,13 +2,11 @@ package invtweaks;
 
 import invtweaks.api.container.ContainerSection;
 import invtweaks.container.IContainerManager;
-import invtweaks.container.DirectContainerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -19,9 +17,6 @@ import java.util.concurrent.TimeoutException;
  * @author Jimeo Wan
  */
 public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
-
-    private static final Logger log = InvTweaks.log;
-
     private static final int DROP_SLOT = -999;
     private InvTweaksConfig config;
     private IContainerManager container;
@@ -34,11 +29,11 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
      */
     private Map<InvTweaksShortcutType, List<InvTweaksShortcutMapping>> shortcuts;
 
-    public InvTweaksHandlerShortcuts(Minecraft mc, InvTweaksConfig config) {
-        super(mc);
-        this.config = config;
-        this.pressedKeys = new HashMap<Integer, Boolean>();
-        this.shortcuts = new HashMap<InvTweaksShortcutType, List<InvTweaksShortcutMapping>>();
+    public InvTweaksHandlerShortcuts(Minecraft mc_, InvTweaksConfig config_) {
+        super(mc_);
+        config = config_;
+        pressedKeys = new HashMap<>();
+        shortcuts = new HashMap<>();
     }
 
     public void loadShortcuts() {
@@ -87,7 +82,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         if(shortcuts.containsKey(type)) {
             shortcuts.get(type).add(mapping);
         } else {
-            List<InvTweaksShortcutMapping> newMappingList = new LinkedList<InvTweaksShortcutMapping>();
+            List<InvTweaksShortcutMapping> newMappingList = new LinkedList<>();
             newMappingList.add(mapping);
             shortcuts.put(type, newMappingList);
         }
@@ -166,7 +161,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         }
     }
 
-    public ShortcutConfig computeShortcutToTrigger() {
+    private ShortcutConfig computeShortcutToTrigger() {
         ShortcutSpecification shortcut = computeCurrentShortcut();
 
         ShortcutConfig shortcutConfig = new ShortcutConfig();
@@ -201,7 +196,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                     } else {
                         // Compute targetable sections in order
-                        Vector<ContainerSection> orderedSections = new Vector<ContainerSection>();
+                        List<ContainerSection> orderedSections = new ArrayList<>();
 
                         // (Top part)
                         if(container.hasSection(ContainerSection.CHEST)) {
@@ -347,7 +342,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         }
                     }
                     case MOVE: {
-                        int toIndex = -1;
+                        int toIndex;
                         boolean success;
                         int newIndex;
 
@@ -412,14 +407,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     }
 
     private void dropAll(ShortcutConfig shortcut, ItemStack stackToMatch) {
-        for(Slot slot : container.getSlots(shortcut.fromSection)) {
-            if(slot.getHasStack() && (stackToMatch == null || areSameItemType(stackToMatch, slot.getStack()))) {
-                int fromIndex = container.getSlotIndex(getSlotNumber(slot));
-                while(slot.getHasStack()) {
-                    container.drop(shortcut.fromSection, fromIndex);
-                }
+        container.getSlots(shortcut.fromSection).stream().filter(slot -> slot.getHasStack() && (stackToMatch == null || areSameItemType(stackToMatch, slot.getStack()))).forEach(slot -> {
+            int fromIndex = container.getSlotIndex(getSlotNumber(slot));
+            while(slot.getHasStack()) {
+                container.drop(shortcut.fromSection, fromIndex);
             }
-        }
+        });
     }
 
     private void moveAll(ShortcutConfig shortcut, ItemStack stackToMatch) throws TimeoutException {
@@ -511,7 +504,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         return null;
     }
 
-    private class ShortcutConfig {
+    private static class ShortcutConfig {
         public ShortcutSpecification.Action action = null;
         public ShortcutSpecification.Scope scope = null;
         public ContainerSection fromSection = null;

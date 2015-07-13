@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
-import org.apache.logging.log4j.Logger;
 
 /**
  * A help menu for the NoCheatPlus conflict.
@@ -12,11 +11,8 @@ import org.apache.logging.log4j.Logger;
  * @author Jimeo Wan
  */
 public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
-
-    private static final Logger log = InvTweaks.log;
-
-    public InvTweaksGuiModNotWorking(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
-        super(mc, parentScreen, config);
+    public InvTweaksGuiModNotWorking(Minecraft mc_, GuiScreen parentScreen_, InvTweaksConfig config_) {
+        super(mc_, parentScreen_, config_);
     }
 
     @Override

@@ -34,6 +34,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
 /**
@@ -88,18 +89,15 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int itemPickupTimeout = 0;
     private boolean isNEILoaded;
 
-    private List<String> queuedMessages = new ArrayList<String>();
+    private List<String> queuedMessages = new ArrayList<>();
     private boolean wasNEIEnabled = false;
-    private Class neiClientConfig;
     private Method neiHidden;
 
     /**
      * Creates an instance of the mod, and loads the configuration from the files, creating them if necessary.
-     *
-     * @param mc
      */
-    public InvTweaks(Minecraft mc) {
-        super(mc);
+    public InvTweaks(Minecraft mc_) {
+        super(mc_);
 
         //log.setLevel(InvTweaksConst.DEFAULT_LOG_LEVEL);
 
@@ -139,14 +137,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         return instance.cfgManager;
     }
 
-    public static boolean classExists(String className) {
-        try {
-            return Class.forName(className) != null;
-        } catch(ClassNotFoundException e) {
-            return false;
-        }
-    }
-
     public void addScheduledTask(Runnable task) {
         InvTweaksMod.proxy.addClientScheduledTask(task);
     }
@@ -169,8 +159,6 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     /**
      * To be called on each tick when a menu is open. Handles the GUI additions and the middle clicking.
-     *
-     * @param guiScreen
      */
     public void onTickInGUI(GuiScreen guiScreen) {
         synchronized(this) {
@@ -262,24 +250,21 @@ public class InvTweaks extends InvTweaksObfuscation {
             if(currentSlot != -1) {
                 itemPickupPending = false;
 
-                // Find preffered slots
-                List<Integer> prefferedPositions = new LinkedList<Integer>();
+                // Find preferred slots
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
 
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()).toString(), stack.getItemDamage());
-                for(InvTweaksConfigSortingRule rule : config.getRules()) {
-                    if(tree.matches(items, rule.getKeyword())) {
-                        for(int slot : rule.getPreferredSlots()) {
-                            prefferedPositions.add(slot);
-                        }
-                    }
-                }
+
+                List<Integer> preferredPositions = config.getRules().stream().filter(rule -> tree.matches(items, rule.getKeyword()))
+                        .flatMapToInt(e -> Arrays.stream(e.getPreferredSlots()))
+                        .boxed()
+                        .collect(Collectors.toList());
 
                 // Find best slot for stack
                 boolean hasToBeMoved = true;
-                for(int newSlot : prefferedPositions) {
+                for(int newSlot : preferredPositions) {
                     // Already in the best slot!
                     if(newSlot == currentSlot) {
                         hasToBeMoved = false;
@@ -437,15 +422,13 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void printQueuedMessages() {
         if(mc.ingameGUI != null && !queuedMessages.isEmpty()) {
-            for(String s : queuedMessages) {
-                addChatMessage(s);
-            }
+            queuedMessages.forEach(this::addChatMessage);
             queuedMessages.clear();
         }
     }
 
     public void logInGame(String message, boolean alreadyTranslated) {
-        String formattedMsg = buildlogString(Level.INFO,
+        String formattedMsg = buildLogString(Level.INFO,
                 (alreadyTranslated) ? message : StatCollector.translateToLocal(message));
 
         if(mc.ingameGUI == null) {
@@ -459,7 +442,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void logInGameError(String message, Exception e) {
         e.printStackTrace();
-        String formattedMsg = buildlogString(Level.SEVERE, StatCollector.translateToLocal(message), e);
+        String formattedMsg = buildLogString(Level.SEVERE, StatCollector.translateToLocal(message), e);
 
         if(mc.ingameGUI == null) {
             queuedMessages.add(formattedMsg);
@@ -581,6 +564,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     }
 
+    @SuppressWarnings("unused")
     private void handleSorting(GuiScreen guiScreen) {
 
         ItemStack selectedItem = null;
@@ -780,7 +764,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             @SuppressWarnings("unchecked")
             List<Object> controlList = guiContainer.buttonList;
             @SuppressWarnings("unchecked")
-            List<Object> toRemove = new ArrayList<Object>();
+            List<Object> toRemove = new ArrayList<>();
             for(Object o : controlList) {
                 if(isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
@@ -858,6 +842,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 customTextureAvailable);
                         controlList.add(button);
 
+                        //noinspection UnusedAssignment (Using ++ for extensibility)
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
                                 (isChestWayTooBig) ? y + 38 : y, w, h, "s", StatCollector
                                 .translateToLocal("invtweaks.button.chest1.tooltip"),
@@ -897,7 +882,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(isNEILoaded) {
             if(neiHidden == null) {
                 try {
-                    neiClientConfig = Class.forName("codechicken.nei.NEIClientConfig");
+                    Class neiClientConfig = Class.forName("codechicken.nei.NEIClientConfig");
                     neiHidden = neiClientConfig.getMethod("isHidden");
                 } catch(ClassNotFoundException e) {
                     return false;
@@ -1021,21 +1006,21 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    private String buildlogString(Level level, String message, Exception e) {
+    private static String buildLogString(Level level, String message, Exception e) {
         if(e != null) {
             StackTraceElement exceptionLine = e.getStackTrace()[0];
             if(exceptionLine != null && exceptionLine.getFileName() != null) {
-                return buildlogString(level, message) + ": " + e.getMessage() + " (l" + exceptionLine.getLineNumber() +
+                return buildLogString(level, message) + ": " + e.getMessage() + " (l" + exceptionLine.getLineNumber() +
                         " in " + exceptionLine.getFileName().replace("InvTweaks", "") + ")";
             } else {
-                return buildlogString(level, message) + ": " + e.getMessage();
+                return buildLogString(level, message) + ": " + e.getMessage();
             }
         } else {
-            return buildlogString(level, message);
+            return buildLogString(level, message);
         }
     }
 
-    private String buildlogString(Level level, String message) {
+    private static String buildLogString(Level level, String message) {
         return InvTweaksConst.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
     }
 

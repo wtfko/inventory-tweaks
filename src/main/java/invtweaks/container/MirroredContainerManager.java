@@ -13,15 +13,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MirroredContainerManager implements IContainerManager {
     private ItemStack[] slotItems;
     private ItemStack heldItem;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") // Partially implemented
     private List<ItemStack> droppedItems = new ArrayList<>();
     private Container container;
     private Map<ContainerSection, List<Integer>> itemRefs;
     private Map<ContainerSection, List<Slot>> slotRefs;
-    private int clickDelay = 0;
 
     public MirroredContainerManager(Container cont) {
         container = cont;
@@ -44,10 +45,7 @@ public class MirroredContainerManager implements IContainerManager {
 
         itemRefs = new HashMap<>();
         for(Map.Entry<ContainerSection, List<Slot>> section : slotRefs.entrySet()) {
-            List<Integer> slotIndices = new ArrayList<>(section.getValue().size());
-            for(Slot slot : section.getValue()) {
-                slotIndices.add(slots.indexOf(slot));
-            }
+            List<Integer> slotIndices = section.getValue().stream().map(slots::indexOf).collect(Collectors.toList());
 
             itemRefs.put(section.getKey(), slotIndices);
         }
@@ -157,7 +155,7 @@ public class MirroredContainerManager implements IContainerManager {
 
     @Override
     public Slot getSlot(ContainerSection section, int index) {
-        return getContainer().getSlot(slotPositionToIndex(section, index));
+        return container.getSlot(slotPositionToIndex(section, index));
     }
 
     @Override
@@ -203,11 +201,6 @@ public class MirroredContainerManager implements IContainerManager {
     }
 
     @Override
-    public void setClickDelay(int delay) {
-        clickDelay = delay;
-    }
-
-    @Override
     public void applyChanges() {
         // TODO: Figure out what is needed to match container with virtual inventory.
         InvTweaksMod.proxy.sortComplete();
@@ -215,8 +208,6 @@ public class MirroredContainerManager implements IContainerManager {
     /**
      * Converts section/index values to slot ID.
      *
-     * @param section
-     * @param index
      * @return -1 if not found
      */
     private int slotPositionToIndex(ContainerSection section, int index) {

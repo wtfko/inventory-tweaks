@@ -18,7 +18,7 @@ public class CompatibilityConfigLoader extends DefaultHandler {
     }
 
     public static Map<String, ContainerInfo> load(String filePath) throws Exception {
-        Map<String, ContainerInfo> config = new HashMap<String, ContainerInfo>();
+        Map<String, ContainerInfo> config = new HashMap<>();
 
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();

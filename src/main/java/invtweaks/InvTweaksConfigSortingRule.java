@@ -1,6 +1,6 @@
 package invtweaks;
 
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -11,9 +11,6 @@ import java.awt.*;
  * @author Jimeo Wan
  */
 public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSortingRule> {
-
-    private static final Logger log = InvTweaks.log;
-
     private String constraint;
     private int[] preferredPositions;
     private String keyword;
@@ -22,15 +19,15 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private int containerSize;
     private int containerRowSize;
 
-    public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint, String keyword, int containerSize,
-                                      int containerRowSize) {
+    public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint_, String keyword_, int containerSize_,
+                                      int containerRowSize_) {
 
-        this.keyword = keyword;
-        this.constraint = constraint;
-        this.containerSize = containerSize;
-        this.containerRowSize = containerRowSize;
-        this.type = getRuleType(constraint, containerRowSize);
-        this.preferredPositions = getRulePreferredPositions(constraint);
+        keyword = keyword_;
+        constraint = constraint_;
+        containerSize = containerSize_;
+        containerRowSize = containerRowSize_;
+        type = getRuleType(constraint, containerRowSize);
+        preferredPositions = getRulePreferredPositions(constraint);
 
         // Compute priority
         // 1st criteria : the rule type
@@ -74,6 +71,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                     if(vertical) {
                         for(Point p : new Point[]{point1, point2}) {
                             int buffer = p.x;
+                            //noinspection SuspiciousNameCombination
                             p.x = p.y;
                             p.y = buffer;
                         }
@@ -206,13 +204,6 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     }
 
     /**
-     * Raw constraint name, for debug purposes
-     */
-    public String getRawConstraint() {
-        return constraint;
-    }
-
-    /**
      * @return rule priority (for rule sorting)
      */
     public int getPriority() {
@@ -229,8 +220,8 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     /**
      * Compares rules priority : positive value means 'this' is of greater priority than o
      */
-    public int compareTo(InvTweaksConfigSortingRule o) {
-        return getPriority() - o.getPriority();
+    public int compareTo(@NotNull InvTweaksConfigSortingRule o) {
+        return priority - o.priority;
     }
 
     public int[] getRulePreferredPositions(String constraint) {

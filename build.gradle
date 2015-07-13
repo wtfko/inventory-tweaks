@@ -19,6 +19,10 @@ apply plugin: 'idea'
 apply plugin: 'forge'
 apply plugin: 'curseforge'
 
+dependencies {
+    compile 'org.jetbrains:annotations:13.0'
+}
+
 if(!invtweaks_version) {
     invtweaks_version = 'UNKNOWN'
 }

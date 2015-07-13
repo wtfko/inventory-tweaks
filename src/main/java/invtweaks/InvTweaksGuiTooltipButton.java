@@ -10,8 +10,6 @@ import net.minecraft.client.gui.GuiButton;
  * @author Jimeo Wan
  */
 public class InvTweaksGuiTooltipButton extends GuiButton {
-
-    public final static int DEFAULT_BUTTON_WIDTH = 200;
     public final static int LINE_HEIGHT = 11;
 
     private int hoverTime = 0;
@@ -22,35 +20,27 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     private int tooltipWidth = -1;
     private boolean drawBackground = true;
 
-    public InvTweaksGuiTooltipButton(int id, int x, int y, String displayString) {
-        this(id, x, y, 150, 20, displayString, null);
-    }
-
     /**
      * Default size is 150, the common "GuiSmallButton" button size.
      */
-    public InvTweaksGuiTooltipButton(int id, int x, int y, String displayString, String tooltip) {
-        this(id, x, y, 150, 20, displayString, tooltip);
+    public InvTweaksGuiTooltipButton(int id_, int x, int y, String displayString_, String tooltip_) {
+        this(id_, x, y, 150, 20, displayString_, tooltip_);
     }
 
-    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h, String displayString) {
-        this(id, x, y, w, h, displayString, null);
-    }
-
-    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h, String displayString, String tooltip) {
-        super(id, x, y, w, h, displayString);
-        if(tooltip != null) {
-            setTooltip(tooltip);
+    public InvTweaksGuiTooltipButton(int id_, int x, int y, int w, int h, String displayString_, String tooltip_) {
+        super(id_, x, y, w, h, displayString_);
+        if(tooltip_ != null) {
+            setTooltip(tooltip_);
         }
     }
 
-    public InvTweaksGuiTooltipButton(int id, int x, int y, int w, int h, String displayString, String tooltip,
-                                     boolean drawBackground) {
-        super(id, x, y, w, h, displayString);
-        if(tooltip != null) {
-            setTooltip(tooltip);
+    public InvTweaksGuiTooltipButton(int id_, int x, int y, int w, int h, String displayString_, String tooltip_,
+                                     boolean drawBackground_) {
+        super(id_, x, y, w, h, displayString_);
+        if(tooltip_ != null) {
+            setTooltip(tooltip_);
         }
-        this.drawBackground = drawBackground;
+        drawBackground = drawBackground_;
     }
 
     @Override
@@ -129,10 +119,10 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
         return tooltip;
     }
 
-    public void setTooltip(String tooltip) {
-        tooltip = tooltip.replace("\\n", "\n");
-        this.tooltip = tooltip;
-        this.tooltipLines = tooltip.split("\n");
+    public void setTooltip(String tooltip_) {
+        tooltip_ = tooltip_.replace("\\n", "\n");
+        tooltip = tooltip_;
+        tooltipLines = tooltip.split("\n");
     }
 
 }

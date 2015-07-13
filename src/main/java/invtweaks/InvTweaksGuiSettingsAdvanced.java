@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
@@ -17,9 +16,6 @@ import java.util.List;
  * @author Jimeo Wan
  */
 public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
-
-    private static final Logger log = InvTweaks.log;
-
     private final static int ID_SORT_ON_PICKUP = 1;
     private final static int ID_AUTO_EQUIP_ARMOR = 2;
     private final static int ID_ENABLE_SOUNDS = 3;
@@ -33,8 +29,8 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     private static String labelEnableSounds;
     private static String labelServerAssist;
 
-    public InvTweaksGuiSettingsAdvanced(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
-        super(mc, parentScreen, config);
+    public InvTweaksGuiSettingsAdvanced(Minecraft mc_, GuiScreen parentScreen_, InvTweaksConfig config_) {
+        super(mc_, parentScreen_, config_);
 
         labelSortOnPickup = StatCollector.translateToLocal("invtweaks.settings.advanced.sortonpickup");
         labelEquipArmor = StatCollector.translateToLocal("invtweaks.settings.advanced.autoequip");
@@ -93,6 +89,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 "invtweaks.settings.advanced.autoequip.tooltip"));
         controlList.add(autoEquipArmorBtn);
 
+        //noinspection UnusedAssignment
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
@@ -104,16 +101,12 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {
-            for(Object o : controlList) {
-                if(InvTweaksObfuscation.isGuiButton(o)) {
-                    GuiButton button = (GuiButton) o;
-                    // GuiButton
-                    if(button.id == ID_EDITSHORTCUTS) {
-                        // GuiButton
-                        button.enabled = false;
-                    }
+            controlList.stream().filter(InvTweaksObfuscation::isGuiButton).forEach(o -> {
+                GuiButton button = (GuiButton) o;
+                if(button.id == ID_EDITSHORTCUTS) {
+                    button.enabled = false;
                 }
-            }
+            });
         }
 
         // Save control list

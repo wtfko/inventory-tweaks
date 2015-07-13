@@ -19,27 +19,25 @@ import java.util.*;
  * @author Jimeo Wan
  */
 public class InvTweaksItemTree implements IItemTree {
-
-    public static final int MAX_CATEGORY_RANGE = 1000;
     public static final String UNKNOWN_ITEM = "unknown";
 
     private static final Logger log = InvTweaks.log;
-    private static Vector<IItemTreeItem> defaultItems = null;
+    private static List<IItemTreeItem> defaultItems = null;
     /**
      * All categories, stored by name
      */
-    private Map<String, IItemTreeCategory> categories = new HashMap<String, IItemTreeCategory>();
+    private Map<String, IItemTreeCategory> categories = new HashMap<>();
     /**
      * Items stored by ID. A same ID can hold several names.
      */
-    private Map<String, Vector<IItemTreeItem>> itemsById = new HashMap<String, Vector<IItemTreeItem>>(500);
+    private Map<String, List<IItemTreeItem>> itemsById = new HashMap<>(500);
     /**
      * Items stored by name. A same name can match several IDs.
      */
-    private Map<String, Vector<IItemTreeItem>> itemsByName = new HashMap<String, Vector<IItemTreeItem>>(500);
+    private Map<String, List<IItemTreeItem>> itemsByName = new HashMap<>(500);
 
     private String rootCategory;
-    private List<OreDictInfo> oresRegistered = new ArrayList<OreDictInfo>();
+    private List<OreDictInfo> oresRegistered = new ArrayList<>();
 
     public InvTweaksItemTree() {
         reset();
@@ -48,7 +46,7 @@ public class InvTweaksItemTree implements IItemTree {
     public void reset() {
 
         if(defaultItems == null) {
-            defaultItems = new Vector<IItemTreeItem>();
+            defaultItems = new ArrayList<>();
             defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, null, InvTweaksConst.DAMAGE_WILDCARD,
                     Integer.MAX_VALUE));
         }
@@ -63,9 +61,6 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * Checks if given item ID matches a given keyword (either the item's name is the keyword, or it is in the keyword
      * category)
-     *
-     * @param items
-     * @param keyword
      */
     @Override
     public boolean matches(List<IItemTreeItem> items, String keyword) {
@@ -123,8 +118,6 @@ public class InvTweaksItemTree implements IItemTree {
 
     /**
      * Checks if the given keyword is valid (i.e. represents either a registered item or a registered category)
-     *
-     * @param keyword
      */
     @Override
     public boolean isKeywordValid(String keyword) {
@@ -173,22 +166,18 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public List<IItemTreeItem> getItems(String id, int damage) {
         if(id == null) {
-            return new ArrayList<IItemTreeItem>();
+            return new ArrayList<>();
         }
 
         List<IItemTreeItem> items = itemsById.get(id);
-        List<IItemTreeItem> filteredItems = new ArrayList<IItemTreeItem>();
+        List<IItemTreeItem> filteredItems = new ArrayList<>();
         if(items != null) {
             filteredItems.addAll(items);
         }
 
         // Filter items of same ID, but different damage value
         if(items != null && !items.isEmpty()) {
-            for(IItemTreeItem item : items) {
-                if(item.getDamage() != InvTweaksConst.DAMAGE_WILDCARD && item.getDamage() != damage) {
-                    filteredItems.remove(item);
-                }
-            }
+            items.stream().filter(item -> item.getDamage() != InvTweaksConst.DAMAGE_WILDCARD && item.getDamage() != damage).forEach(filteredItems::remove);
         }
 
         // If there's no matching item, create new ones
@@ -266,41 +255,17 @@ public class InvTweaksItemTree implements IItemTree {
         if(itemsByName.containsKey(newItem.getName())) {
             itemsByName.get(newItem.getName()).add(newItem);
         } else {
-            Vector<IItemTreeItem> list = new Vector<IItemTreeItem>();
+            List<IItemTreeItem> list = new ArrayList<>();
             list.add(newItem);
             itemsByName.put(newItem.getName(), list);
         }
         if(itemsById.containsKey(newItem.getId())) {
             itemsById.get(newItem.getId()).add(newItem);
         } else {
-            Vector<IItemTreeItem> list = new Vector<IItemTreeItem>();
+            List<IItemTreeItem> list = new ArrayList<>();
             list.add(newItem);
             itemsById.put(newItem.getId(), list);
         }
-    }
-
-    /**
-     * For debug purposes. Call log(getRootCategory(), 0) to log the whole tree.
-     */
-    private void log(IItemTreeCategory category, int indentLevel) {
-
-        String logIdent = "";
-        for(int i = 0; i < indentLevel; i++) {
-            logIdent += "  ";
-        }
-        log.info(logIdent + category.getName());
-
-        for(IItemTreeCategory subCategory : category.getSubCategories()) {
-            log(subCategory, indentLevel + 1);
-        }
-
-        for(List<IItemTreeItem> itemList : category.getItems()) {
-            for(IItemTreeItem item : itemList) {
-                log.info(logIdent + "  " + item + " " +
-                        item.getId() + " " + item.getDamage());
-            }
-        }
-
     }
 
     @Override
@@ -319,30 +284,29 @@ public class InvTweaksItemTree implements IItemTree {
 
     @SubscribeEvent
     public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
-        for(OreDictInfo ore : oresRegistered) {
-            if(ore.oreName.equals(ev.Name)) {
-                if(ev.Ore.getItem() != null) {
-                    // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                    addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()).toString(),
-                            ev.Ore.getItemDamage(), ore.order));
-                } else {
-                    log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
-                }
+        // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+        oresRegistered.stream().filter(ore -> ore.oreName.equals(ev.Name)).forEach(ore -> {
+            if(ev.Ore.getItem() != null) {
+                // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()).toString(),
+                        ev.Ore.getItemDamage(), ore.order));
+            } else {
+                log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
             }
-        }
+        });
     }
 
-    private class OreDictInfo {
+    private static class OreDictInfo {
         String category;
         String name;
         String oreName;
         int order;
 
-        OreDictInfo(String category, String name, String oreName, int order) {
-            this.category = category;
-            this.name = name;
-            this.oreName = oreName;
-            this.order = order;
+        OreDictInfo(String category_, String name_, String oreName_, int order_) {
+            category = category_;
+            name = name_;
+            oreName = oreName_;
+            order = order_;
         }
     }
 }

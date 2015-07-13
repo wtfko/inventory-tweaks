@@ -26,7 +26,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_RANGE_DMAX = "dmax";
     private final static String ATTR_OREDICT_NAME = "oreDictName"; // OreDictionary names
     private final static String ATTR_TREE_VERSION = "treeVersion";
-    private static final List<IItemTreeListener> onLoadListeners = new ArrayList<IItemTreeListener>();
+    private static final List<IItemTreeListener> onLoadListeners = new ArrayList<>();
     private static InvTweaksItemTree tree;
     private static String treeVersion;
     private static int itemOrder;
@@ -37,7 +37,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         treeVersion = null;
         tree = new InvTweaksItemTree();
         itemOrder = 0;
-        categoryStack = new LinkedList<String>();
+        categoryStack = new LinkedList<>();
     }
 
     public synchronized static InvTweaksItemTree load(File file) throws Exception {

@@ -14,7 +14,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -27,14 +26,11 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
-import java.util.concurrent.PriorityBlockingQueue;
-
 public class ClientProxy extends CommonProxy {
     public static final KeyBinding KEYBINDING_SORT = new KeyBinding("invtweaks.key.sort", Keyboard.KEY_R, "invtweaks.key.category");
     public boolean serverSupportEnabled = false;
     public boolean serverSupportDetected = false;
     private InvTweaks instance;
-    private ForgeClientTick clientTick;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -52,7 +48,7 @@ public class ClientProxy extends CommonProxy {
         Minecraft mc = FMLClientHandler.instance().getClient();
         // Instantiate mod core
         instance = new InvTweaks(mc);
-        clientTick = new ForgeClientTick(instance);
+        ForgeClientTick clientTick = new ForgeClientTick(instance);
 
         FMLCommonHandler.instance().bus().register(clientTick);
         MinecraftForge.EVENT_BUS.register(this);

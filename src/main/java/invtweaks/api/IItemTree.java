@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public interface IItemTree {
     void registerOre(String category, String name, String oreName, int order);
 

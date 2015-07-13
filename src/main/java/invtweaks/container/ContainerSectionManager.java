@@ -2,7 +2,6 @@ package invtweaks.container;
 
 import invtweaks.InvTweaks;
 import invtweaks.api.container.ContainerSection;
-import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,21 +20,17 @@ public class ContainerSectionManager {
     private IContainerManager containerMgr;
     private ContainerSection section;
 
-    public ContainerSectionManager(ContainerSection section) throws Exception {
-        this(InvTweaks.getCurrentContainerManager(), section);
+    public ContainerSectionManager(ContainerSection section_) throws Exception {
+        this(InvTweaks.getCurrentContainerManager(), section_);
     }
 
-    public ContainerSectionManager(IContainerManager manager, ContainerSection section)
+    public ContainerSectionManager(IContainerManager manager, ContainerSection section_)
             throws Exception {
-        this.containerMgr = manager;
-        this.section = section;
+        containerMgr = manager;
+        section = section_;
         if(!containerMgr.hasSection(section)) {
             throw new Exception("Section not available");
         }
-    }
-
-    public void setClickDelay(int delay) {
-        this.containerMgr.setClickDelay(delay);
     }
 
     public boolean move(int srcIndex, int destIndex) {
@@ -50,20 +45,8 @@ public class ContainerSectionManager {
         return containerMgr.drop(section, srcIndex);
     }
 
-    public boolean dropSome(int srcIndex, int amount) throws TimeoutException {
-        return containerMgr.dropSome(section, srcIndex, amount);
-    }
-
-    public boolean putHoldItemDown(int destIndex) throws TimeoutException {
-        return containerMgr.putHoldItemDown(section, destIndex);
-    }
-
     public void leftClick(int index) throws TimeoutException {
         containerMgr.leftClick(section, index);
-    }
-
-    public void rightClick(int index) throws TimeoutException {
-        containerMgr.rightClick(section, index);
     }
 
     public void click(int index, boolean rightClick) throws TimeoutException {
@@ -82,24 +65,8 @@ public class ContainerSectionManager {
         return containerMgr.getFirstEmptyIndex(section);
     }
 
-    public boolean isSlotEmpty(int slot) {
-        return containerMgr.isSlotEmpty(section, slot);
-    }
-
     public Slot getSlot(int index) {
         return containerMgr.getSlot(section, index);
-    }
-
-    public int getSlotIndex(int slotNumber) {
-        if(isSlotInSection(slotNumber)) {
-            return containerMgr.getSlotIndex(slotNumber);
-        } else {
-            return -1;
-        }
-    }
-
-    public boolean isSlotInSection(int slotNumber) {
-        return containerMgr.getSlotSection(slotNumber) == section;
     }
 
     public ItemStack getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {

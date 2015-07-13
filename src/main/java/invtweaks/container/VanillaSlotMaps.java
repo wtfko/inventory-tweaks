@@ -15,10 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "unused"})
 public class VanillaSlotMaps {
     public static Map<ContainerSection, List<Slot>> containerPlayerSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.CRAFTING_OUT, container.inventorySlots.subList(0, 1));
         slotRefs.put(ContainerSection.CRAFTING_IN, container.inventorySlots.subList(1, 5));
@@ -30,16 +30,11 @@ public class VanillaSlotMaps {
     @SideOnly(Side.CLIENT)
     public static boolean containerCreativeIsInventory(GuiContainerCreative.ContainerCreative container) {
         GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
-        if(currentScreen instanceof GuiContainerCreative) {
-            return ((GuiContainerCreative) currentScreen).getSelectedTabIndex() == CreativeTabs.tabInventory
-                                                                                              .getTabIndex();
-        } else {
-            return false;
-        }
+        return currentScreen instanceof GuiContainerCreative && ((GuiContainerCreative) currentScreen).getSelectedTabIndex() == CreativeTabs.tabInventory.getTabIndex();
     }
     @SideOnly(Side.CLIENT)
     public static Map<ContainerSection, List<Slot>> containerCreativeSlots(GuiContainerCreative.ContainerCreative container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.ARMOR, container.inventorySlots.subList(5, 9));
         slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(9, 45));
@@ -50,7 +45,7 @@ public class VanillaSlotMaps {
     }
 
     public static Map<ContainerSection, List<Slot>> containerChestDispenserSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, container.inventorySlots
                 .size() - InvTweaksConst.INVENTORY_SIZE));
@@ -59,7 +54,7 @@ public class VanillaSlotMaps {
     }
 
     public static Map<ContainerSection, List<Slot>> containerFurnaceSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.FURNACE_IN, container.inventorySlots.subList(0, 1));
         slotRefs.put(ContainerSection.FURNACE_FUEL, container.inventorySlots.subList(1, 2));
@@ -68,7 +63,7 @@ public class VanillaSlotMaps {
     }
 
     public static Map<ContainerSection, List<Slot>> containerWorkbenchSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.CRAFTING_OUT, container.inventorySlots.subList(0, 1));
         slotRefs.put(ContainerSection.CRAFTING_IN, container.inventorySlots.subList(1, 10));
@@ -77,7 +72,7 @@ public class VanillaSlotMaps {
     }
 
     public static Map<ContainerSection, List<Slot>> containerEnchantmentSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.ENCHANTMENT, container.inventorySlots.subList(0, 1));
 
@@ -85,7 +80,7 @@ public class VanillaSlotMaps {
     }
 
     public static Map<ContainerSection, List<Slot>> containerBrewingSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         slotRefs.put(ContainerSection.BREWING_BOTTLES, container.inventorySlots.subList(0, 3));
         slotRefs.put(ContainerSection.BREWING_INGREDIENT, container.inventorySlots.subList(3, 4));
@@ -94,7 +89,7 @@ public class VanillaSlotMaps {
     }
 
     public static Map<ContainerSection, List<Slot>> unknownContainerSlots(Container container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
         int size = container.inventorySlots.size();
 

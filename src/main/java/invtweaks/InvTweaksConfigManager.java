@@ -6,18 +6,19 @@ import net.minecraft.util.StatCollector;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Handles the (re)loading of the configuration, and all that is related to file extraction/moves.
  *
  * @author Jimeo Wan
  */
+@SuppressWarnings("ResultOfMethodCallIgnored") // Lots of these from file creation
 public class InvTweaksConfigManager {
 
     private static final Logger log = InvTweaks.log;
 
-    private Minecraft mc;
+    private final Minecraft mc;
 
     /**
      * The mod's configuration.
@@ -28,8 +29,8 @@ public class InvTweaksConfigManager {
     private InvTweaksHandlerAutoRefill autoRefillHandler = null;
     private InvTweaksHandlerShortcuts shortcutsHandler = null;
 
-    public InvTweaksConfigManager(Minecraft mc) {
-        this.mc = mc;
+    public InvTweaksConfigManager(Minecraft mc_) {
+        mc = mc_;
     }
 
     // TODO Only reload modified file(s)
@@ -52,11 +53,7 @@ public class InvTweaksConfigManager {
         long configLastModified = computeConfigLastModified();
         if(config != null) {
             // Check time of last edit for both configuration files.
-            if(storedConfigLastModified != configLastModified) {
-                return loadConfig(); // Reload
-            } else {
-                return true;
-            }
+            return storedConfigLastModified == configLastModified || loadConfig();
         } else {
             storedConfigLastModified = configLastModified;
             return loadConfig();
@@ -75,7 +72,7 @@ public class InvTweaksConfigManager {
         return shortcutsHandler;
     }
 
-    private long computeConfigLastModified() {
+    private static long computeConfigLastModified() {
         return InvTweaksConst.CONFIG_RULES_FILE.lastModified() + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
     }
 
@@ -198,16 +195,8 @@ public class InvTweaksConfigManager {
         }
     }
 
-    private void backupFile(File file) {
+    private static void backupFile(File file) {
         File newFile = new File(file.getName() + ".bak");
-        if(newFile.exists()) {
-            newFile.delete();
-        }
-        file.renameTo(newFile);
-    }
-
-    private void backupFile(File file, String name) {
-        File newFile = new File(name + ".bak");
         if(newFile.exists()) {
             newFile.delete();
         }
@@ -242,8 +231,8 @@ public class InvTweaksConfigManager {
         }
     }
 
-    private void showConfigErrors(InvTweaksConfig config) {
-        Vector<String> invalid = config.getInvalidKeywords();
+    private static void showConfigErrors(@SuppressWarnings("ParameterHidesMemberVariable") InvTweaksConfig config) {
+        List<String> invalid = config.getInvalidKeywords();
         if(invalid.size() > 0) {
             String error = StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
             for(String keyword : config.getInvalidKeywords()) {

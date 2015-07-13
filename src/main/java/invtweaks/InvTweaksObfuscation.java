@@ -4,7 +4,6 @@ import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
@@ -15,7 +14,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -25,11 +23,10 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Contract;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,11 +38,10 @@ import java.util.Map;
 public class InvTweaksObfuscation {
 
     private static final Logger log = InvTweaks.log;
-    private static Map<String, Field> fieldsMap = new HashMap<String, Field>();
     public Minecraft mc;
 
-    public InvTweaksObfuscation(Minecraft mc) {
-        this.mc = mc;
+    public InvTweaksObfuscation(Minecraft mc_) {
+        mc = mc_;
     }
 
     // Minecraft members
@@ -116,11 +112,6 @@ public class InvTweaksObfuscation {
     }
 
     @SideOnly(Side.CLIENT)
-    public static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot) {
-        return getIsMouseOverSlot(guiContainer, slot, getMouseX(guiContainer), getMouseY(guiContainer));
-    }
-
-    @SideOnly(Side.CLIENT)
     private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
         // Copied from GuiContainer
         if(guiContainer != null) {
@@ -143,6 +134,8 @@ public class InvTweaksObfuscation {
                 (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
     }
 
+    @Contract("!null->_")
+    @SuppressWarnings("unused")
     public static int getSpecialChestRowSize(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$rowSize()"
         return 0;
@@ -151,15 +144,15 @@ public class InvTweaksObfuscation {
     // EntityPlayer members
 
     // Static access
-    public static String getCurrentLanguage() {
-        return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
-    }
-
+    @Contract("!null->_")
+    @SuppressWarnings("unused")
     public static boolean isValidChest(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validChest()"
         return false;
     }
 
+    @Contract("!null->_")
+    @SuppressWarnings("unused")
     public static boolean isLargeChest(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$largeChest()"
         return false;
@@ -167,16 +160,22 @@ public class InvTweaksObfuscation {
 
     // InventoryPlayer members
 
+    @Contract("!null->_")
+    @SuppressWarnings("unused")
     public static boolean isValidInventory(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validInventory()"
         return false;
     }
 
+    @Contract("!null->_")
+    @SuppressWarnings("unused")
     public static boolean showButtons(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$showButtons()"
         return false;
     }
 
+    @Contract("!null->_")
+    @SuppressWarnings("unused")
     public static Map<ContainerSection, List<Slot>> getContainerSlotMap(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$slotMap()"
         return null;
@@ -271,36 +270,12 @@ public class InvTweaksObfuscation {
 
     // Classes
 
-    public ItemStack getCurrentEquippedItem() { // ItemStack
-        return getThePlayer().getCurrentEquippedItem();
-    }
-
-    public ContainerPlayer getPlayerContainer() {
-        return (ContainerPlayer) getThePlayer().inventoryContainer;
-    }
-
     public ItemStack[] getMainInventory() {
         return getInventoryPlayer().mainInventory;
     }
 
-    public void setMainInventory(ItemStack[] value) {
-        getInventoryPlayer().mainInventory = value;
-    }
-
-    public void setHasInventoryChanged(boolean value) {
-        getInventoryPlayer().inventoryChanged = value;
-    }
-
-    public boolean hasInventoryChanged() {
-        return getInventoryPlayer().inventoryChanged;
-    }
-
     public ItemStack getHeldStack() {
         return getInventoryPlayer().getItemStack(); // getItemStack
-    }
-
-    public void setHeldStack(ItemStack stack) {
-        getInventoryPlayer().setItemStack(stack); // setItemStack
     }
 
     public ItemStack getFocusedStack() {

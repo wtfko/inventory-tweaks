@@ -15,24 +15,24 @@ public class ShortcutSpecification {
         return action;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setAction(Action action_) {
+        action = action_;
     }
 
     public Target getTarget() {
         return target;
     }
 
-    public void setTarget(Target target) {
-        this.target = target;
+    public void setTarget(Target target_) {
+        target = target_;
     }
 
     public Scope getScope() {
         return scope;
     }
 
-    public void setScope(Scope scope) {
-        this.scope = scope;
+    public void setScope(Scope scope_) {
+        scope = scope_;
     }
 
     public enum Action {

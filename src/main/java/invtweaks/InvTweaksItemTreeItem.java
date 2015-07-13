@@ -1,7 +1,7 @@
 package invtweaks;
 
 import invtweaks.api.IItemTreeItem;
-import org.apache.commons.lang3.ObjectUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -18,16 +18,16 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
     private int order;
 
     /**
-     * @param name   The item name
-     * @param id     The item ID
-     * @param damage The item variant or InvTweaksConst.DAMAGE_WILDCARD
-     * @param order  The item order while sorting
+     * @param name_   The item name
+     * @param id_     The item ID
+     * @param damage_ The item variant or InvTweaksConst.DAMAGE_WILDCARD
+     * @param order_  The item order while sorting
      */
-    public InvTweaksItemTreeItem(String name, String id, int damage, int order) {
-        this.name = name;
-        this.id = InvTweaksObfuscation.getNamespacedID(id);
-        this.damage = damage;
-        this.order = order;
+    public InvTweaksItemTreeItem(String name_, String id_, int damage_, int order_) {
+        name = name_;
+        id = InvTweaksObfuscation.getNamespacedID(id_);
+        damage = damage_;
+        order = order_;
     }
 
     @Override
@@ -67,8 +67,8 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
     }
 
     @Override
-    public int compareTo(IItemTreeItem item) {
-        return item.getOrder() - getOrder();
+    public int compareTo(@NotNull IItemTreeItem item) {
+        return item.getOrder() - order;
     }
 
 }

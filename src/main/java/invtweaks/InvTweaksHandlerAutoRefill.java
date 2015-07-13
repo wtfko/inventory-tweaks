@@ -27,21 +27,13 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
     private InvTweaksConfig config = null;
 
-    public InvTweaksHandlerAutoRefill(Minecraft mc, InvTweaksConfig config) {
-        super(mc);
-        setConfig(config);
+    public InvTweaksHandlerAutoRefill(Minecraft mc_, InvTweaksConfig config_) {
+        super(mc_);
+        setConfig(config_);
     }
 
-    private static void trySleep(int delay) {
-        try {
-            Thread.sleep(delay);
-        } catch(InterruptedException e) {
-            // Do nothing
-        }
-    }
-
-    public void setConfig(InvTweaksConfig config) {
-        this.config = config;
+    public void setConfig(InvTweaksConfig config_) {
+        config = config_;
     }
 
     /**
@@ -64,7 +56,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
             hasSubtypes = original.getHasSubtypes();
         }
 
-        List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<InvTweaksConfigSortingRule>();
+        List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<>();
         List<InvTweaksConfigSortingRule> rules = config.getRules();
         InvTweaksItemTree tree = config.getTree();
 
@@ -162,18 +154,18 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 private String expectedItemId;
                 private boolean refillBeforeBreak;
 
-                public Runnable init(Minecraft mc, int i, int currentItem, boolean refillBeforeBreak) throws Exception {
-                    this.containerMgr = new ContainerSectionManager(ContainerSection.INVENTORY);
-                    this.targetedSlot = currentItem;
-                    if(i != -1) {
-                        this.i = i;
+                public Runnable init(int i_, int currentItem, boolean refillBeforeBreak_) throws Exception {
+                    containerMgr = new ContainerSectionManager(ContainerSection.INVENTORY);
+                    targetedSlot = currentItem;
+                    if(i_ != -1) {
+                        i = i_;
                         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                        this.expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem()).toString();
+                        expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem()).toString();
                     } else {
-                        this.i = containerMgr.getFirstEmptyIndex();
-                        this.expectedItemId = null;
+                        i = containerMgr.getFirstEmptyIndex();
+                        expectedItemId = null;
                     }
-                    this.refillBeforeBreak = refillBeforeBreak;
+                    refillBeforeBreak = refillBeforeBreak_;
                     return this;
                 }
 
@@ -214,7 +206,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     }
                 }
 
-            }.init(mc, replacementStackSlot, slot, refillBeforeBreak));
+            }.init(replacementStackSlot, slot, refillBeforeBreak));
 
         }
     }

@@ -33,34 +33,28 @@ import net.minecraft.item.ItemStack;
  * <p/>
  * All of these functions currently have no effect if called on a dedicated server.
  */
+@SuppressWarnings("unused")
 public interface InvTweaksAPI {
     /**
      * Add a listener for ItemTree load events
-     *
-     * @param listener
      */
     void addOnLoadListener(IItemTreeListener listener);
 
     /**
      * Remove a listener for ItemTree load events
      *
-     * @param listener
      * @return true if the listener was previously added
      */
     boolean removeOnLoadListener(IItemTreeListener listener);
 
     /**
      * Toggle sorting shortcut state.
-     *
-     * @param enabled
      */
     void setSortKeyEnabled(boolean enabled);
 
     /**
      * Toggle sorting shortcut supression.
      * Unlike setSortKeyEnabled, this flag is automatically cleared when GUIs are closed.
-     *
-     * @param enabled
      */
     void setTextboxMode(boolean enabled);
 
@@ -76,9 +70,6 @@ public interface InvTweaksAPI {
 
     /**
      * Initiate a sort as if the player had clicked on a sorting button or pressed the sort key.
-     *
-     * @param section
-     * @param method
      */
     void sort(ContainerSection section, SortingMethod method);
 }

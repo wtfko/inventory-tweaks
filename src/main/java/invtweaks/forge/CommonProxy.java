@@ -5,13 +5,11 @@ import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.IContainerManager;
 import invtweaks.network.ITMessageToMessageCodec;
 import invtweaks.network.ITPacketHandlerServer;
 import invtweaks.network.packets.ITPacketLogin;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -42,7 +40,7 @@ public class CommonProxy implements InvTweaksAPI {
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    public void postInit(FMLPostInitializationEvent e) {
+    public void postInit(@SuppressWarnings("unused") FMLPostInitializationEvent e) {
     }
 
     public void setServerAssistEnabled(boolean enabled) {
@@ -107,6 +105,7 @@ public class CommonProxy implements InvTweaksAPI {
         channel.writeOutbound(new ITPacketLogin());
     }
 
+    @SuppressWarnings("unused")
     public void addServerScheduledTask(Runnable task) {
         MinecraftServer.getServer().addScheduledTask(task);
     }

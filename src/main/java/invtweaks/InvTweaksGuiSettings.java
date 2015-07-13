@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
@@ -17,9 +16,6 @@ import java.util.List;
  * @author Jimeo Wan
  */
 public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
-
-    private static final Logger log = InvTweaks.log;
-
     private final static int ID_MIDDLE_CLICK = 1;
     private final static int ID_BEFORE_BREAK = 2;
     private final static int ID_SHORTCUTS = 3;
@@ -38,16 +34,8 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelMoreOptions;
     private static String labelBugSorting;
 
-    private InvTweaksGuiTooltipButton sortMappingButton;
-    private boolean sortMappingEdition = false;
-
-
-    public InvTweaksGuiSettings(GuiScreen parentScreen) {
-        this(InvTweaks.getMinecraftInstance(), parentScreen, InvTweaks.getConfigManager().getConfig());
-    }
-
-    public InvTweaksGuiSettings(Minecraft mc, GuiScreen parentScreen, InvTweaksConfig config) {
-        super(mc, parentScreen, config);
+    public InvTweaksGuiSettings(Minecraft mc_, GuiScreen parentScreen_, InvTweaksConfig config_) {
+        super(mc_, parentScreen_, config_);
 
         labelMiddleClick = StatCollector.translateToLocal("invtweaks.settings.middleclick");
         labelShortcuts = StatCollector.translateToLocal("invtweaks.settings.shortcuts");
@@ -81,7 +69,6 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, p.getX() + 130, p.getY(), 20, 20, "?",
                 "Shortcuts help"));
-        String shortcuts = config.getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
         InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130,
                 20, computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts),
@@ -115,7 +102,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         controlList.add(new InvTweaksGuiTooltipButton(ID_BUG_SORTING, 5, this.height - 20, 100, 20,
                 labelBugSorting, null, false));
 
-        String middleClick = config.getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
+        //noinspection UnusedAssignment
         moveToButtonCoords(i++, p);
         InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
@@ -127,17 +114,12 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {
-            for(Object o : controlList) {
-                if(InvTweaksObfuscation.isGuiButton(o)) {
-                    GuiButton guiButton = (GuiButton) o;
-                    // GuiButton
-                    // GuiButton
-                    if(guiButton.id >= ID_EDITRULES && guiButton.id <= ID_HELP) {
-                        // GuiButton
-                        guiButton.enabled = false;
-                    }
+            controlList.stream().filter(InvTweaksObfuscation::isGuiButton).forEach(o -> {
+                GuiButton guiButton = (GuiButton) o;
+                if(guiButton.id >= ID_EDITRULES && guiButton.id <= ID_HELP) {
+                    guiButton.enabled = false;
                 }
-            }
+            });
         }
 
         // Save control list

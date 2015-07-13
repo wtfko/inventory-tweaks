@@ -16,12 +16,12 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     private SortingMethod algorithm;
     private int rowSize;
 
-    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager, int id, int x, int y, int w, int h,
-                                     String displayString, String tooltip, SortingMethod algorithm, int rowSize,
+    public InvTweaksGuiSortingButton(InvTweaksConfigManager cfgManager_, int id_, int x, int y, int w, int h,
+                                     String displayString_, String tooltip, SortingMethod algorithm_, int rowSize_,
                                      boolean useCustomTexture) {
-        super(cfgManager, id, x, y, w, h, displayString, tooltip, useCustomTexture);
-        this.algorithm = algorithm;
-        this.rowSize = rowSize;
+        super(cfgManager_, id_, x, y, w, h, displayString_, tooltip, useCustomTexture);
+        algorithm = algorithm_;
+        rowSize = rowSize_;
     }
 
     @Override
@@ -30,23 +30,27 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
 
         // Display symbol
         int textColor = getTextColor(i, j);
-        if(displayString.equals("h")) {
-            drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
-                    textColor);
-            drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
-                    textColor);
-        } else if(displayString.equals("v")) {
-            drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3,
-                    textColor);
-            drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3,
-                    textColor);
-        } else {
-            drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
-                    textColor);
-            drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
-            drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
-            drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
-                    textColor);
+        switch(displayString) {
+            case "h":
+                drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
+                        textColor);
+                drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
+                        textColor);
+                break;
+            case "v":
+                drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3,
+                        textColor);
+                drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3,
+                        textColor);
+                break;
+            default:
+                drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
+                        textColor);
+                drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
+                drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
+                drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
+                        textColor);
+                break;
         }
     }
 

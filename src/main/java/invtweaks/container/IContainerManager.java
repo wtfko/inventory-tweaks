@@ -22,7 +22,6 @@ public interface IContainerManager {
      * @param destSection The destination section
      * @param destIndex   The destination slot
      * @return false if the source slot is empty or the player is holding an item that couln't be put down.
-     * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this as a swap without the need for intermediate slots.
     boolean move(ContainerSection srcSection, int srcIndex, ContainerSection destSection, int destIndex);
@@ -39,7 +38,6 @@ public interface IContainerManager {
      *                    as much as possible.
      * @return false if the destination slot is already occupied by a different item (meaning items cannot be moved to
      * destination).
-     * @throws TimeoutException
      */
     boolean moveSome(ContainerSection srcSection, int srcIndex, ContainerSection destSection, int destIndex,
                      int amount);
@@ -58,7 +56,6 @@ public interface IContainerManager {
      * If an item is in hand (= attached to the cursor), puts it down.
      *
      * @return true unless the item could not be put down
-     * @throws Exception
      */
     boolean putHoldItemDown(ContainerSection destSection, int destIndex);
 
@@ -84,19 +81,16 @@ public interface IContainerManager {
     /**
      * Returns the size of a section of the container.
      *
-     * @param section
      * @return The size, or 0 if there is no such section.
      */
     int getSize(ContainerSection section);
 
     /**
-     * @param section
      * @return -1 if no slot is free
      */
     int getFirstEmptyIndex(ContainerSection section);
 
     /**
-     * @param slot
      * @return true if the specified slot exists and is empty, false otherwise.
      */
     boolean isSlotEmpty(ContainerSection section, int slot);
@@ -104,7 +98,6 @@ public interface IContainerManager {
     Slot getSlot(ContainerSection section, int index);
 
     /**
-     * @param slotNumber
      * @return -1 if not found
      */
     default int getSlotIndex(int slotNumber) {
@@ -112,7 +105,6 @@ public interface IContainerManager {
     }
 
     /**
-     * @param slotNumber
      * @param preferInventory Set to true if you prefer to have the index according to the whole inventory, instead of a
      *                        more specific section (hotbar/not hotbar)
      * @return Full index of slot in the container
@@ -122,7 +114,6 @@ public interface IContainerManager {
     /**
      * Note: Prefers INVENTORY_HOTBAR/NOT_HOTBAR instead of INVENTORY.
      *
-     * @param slotNumber
      * @return null if the slot number is invalid.
      */
     ContainerSection getSlotSection(int slotNumber);
@@ -130,15 +121,11 @@ public interface IContainerManager {
     /**
      * Returns an ItemStack from the wanted section and slot.
      *
-     * @param section
-     * @param index
      * @return An ItemStack or null.
      */
     ItemStack getItemStack(ContainerSection section, int index);
 
     Container getContainer();
-
-    void setClickDelay(int delay);
 
     void applyChanges();
 }

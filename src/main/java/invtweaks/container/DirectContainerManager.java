@@ -5,19 +5,13 @@ import invtweaks.InvTweaksConst;
 import invtweaks.InvTweaksObfuscation;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Allows to perform various operations on the inventory and/or containers. Works in both single and multiplayer.
@@ -29,32 +23,8 @@ public class DirectContainerManager implements IContainerManager {
     // TODO: Throw errors when the container isn't available anymore
 
     private Container container;
-    private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
-    private int clickDelay = 0;
+    private Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
-
-    /**
-     * Creates an container manager linked to the currently available container: - If a container GUI is open, the
-     * manager gives access to this container contents. - If no GUI is open, the manager works as if the player's
-     * inventory was open.
-     *
-     * @param mc Minecraft
-     */
-    @SuppressWarnings({"unchecked"})
-    @SideOnly(Side.CLIENT)
-    public DirectContainerManager(Minecraft mc) {
-        GuiScreen currentScreen = mc.currentScreen;
-        if(InvTweaksObfuscation.isGuiContainer(currentScreen)) {
-            container = ((GuiContainer) currentScreen).inventorySlots;
-        } else {
-            container = mc.thePlayer.inventoryContainer;
-        }
-
-        initSlots();
-    }
-
-
-    // TODO: Remove dependency on Minecraft class
     // TODO: Refactor the mouse-coverage stuff that needs the GuiContainer into a different class.
     public DirectContainerManager(Container cont) {
         container = cont;
@@ -64,7 +34,7 @@ public class DirectContainerManager implements IContainerManager {
     private void initSlots() {
         slotRefs = InvTweaksObfuscation.getContainerSlotMap(container);
         if(slotRefs == null) {
-            slotRefs = new HashMap<ContainerSection, List<Slot>>();
+            slotRefs = new HashMap<>();
         }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
@@ -89,7 +59,6 @@ public class DirectContainerManager implements IContainerManager {
      * @param destSection The destination section
      * @param destIndex   The destination slot
      * @return false if the source slot is empty or the player is holding an item that couln't be put down.
-     * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this as a swap without the need for intermediate slots.
     @Override
@@ -124,6 +93,7 @@ public class DirectContainerManager implements IContainerManager {
         }
 
         // Use intermediate slot if we have to swap tools, maps, etc.
+        assert srcStack != null;
         if(destStack != null && srcStack.getItem() == destStack.getItem() && (srcStack.getMaxStackSize() == 1 ||
                 srcStack.hasTagCompound() || destStack.hasTagCompound())) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
@@ -188,7 +158,6 @@ public class DirectContainerManager implements IContainerManager {
      *                    as much as possible.
      * @return false if the destination slot is already occupied by a different item (meaning items cannot be moved to
      * destination).
-     * @throws TimeoutException
      */
     // TODO: Server helper directly implementing this.
     @Override
@@ -224,7 +193,6 @@ public class DirectContainerManager implements IContainerManager {
      * If an item is in hand (= attached to the cursor), puts it down.
      *
      * @return true unless the item could not be put down
-     * @throws Exception
      */
     @Override
     public boolean putHoldItemDown(ContainerSection destSection, int destIndex) {
@@ -249,15 +217,6 @@ public class DirectContainerManager implements IContainerManager {
             InvTweaksMod.proxy
                     .slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
                             InvTweaks.getInstance().getThePlayer());
-        }
-
-        if(clickDelay > 0) {
-            try {
-                Thread.sleep(clickDelay);
-            } catch(InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
     }
 
@@ -286,7 +245,6 @@ public class DirectContainerManager implements IContainerManager {
     /**
      * Returns the size of a section of the container.
      *
-     * @param section
      * @return The size, or 0 if there is no such section.
      */
     @Override
@@ -299,7 +257,6 @@ public class DirectContainerManager implements IContainerManager {
     }
 
     /**
-     * @param section
      * @return -1 if no slot is free
      */
     @Override
@@ -315,16 +272,11 @@ public class DirectContainerManager implements IContainerManager {
     }
 
     /**
-     * @param slot
      * @return true if the specified slot exists and is empty, false otherwise.
      */
     @Override
     public boolean isSlotEmpty(ContainerSection section, int slot) {
-        if(hasSection(section)) {
-            return getItemStack(section, slot) == null;
-        } else {
-            return false;
-        }
+        return hasSection(section) && getItemStack(section, slot) == null;
     }
 
     @Override
@@ -338,7 +290,6 @@ public class DirectContainerManager implements IContainerManager {
     }
 
     /**
-     * @param slotNumber
      * @param preferInventory Set to true if you prefer to have the index according to the whole inventory, instead of a
      *                        more specific section (hotbar/not hotbar)
      * @return Full index of slot in the container
@@ -363,7 +314,6 @@ public class DirectContainerManager implements IContainerManager {
     /**
      * Note: Prefers INVENTORY_HOTBAR/NOT_HOTBAR instead of INVENTORY.
      *
-     * @param slotNumber
      * @return null if the slot number is invalid.
      */
     @Override
@@ -384,8 +334,6 @@ public class DirectContainerManager implements IContainerManager {
     /**
      * Returns an ItemStack from the wanted section and slot.
      *
-     * @param section
-     * @param index
      * @return An ItemStack or null.
      */
     @Override
@@ -419,8 +367,6 @@ public class DirectContainerManager implements IContainerManager {
     /**
      * Converts section/index values to slot ID.
      *
-     * @param section
-     * @param index
      * @return -1 if not found
      */
     private int indexToSlot(ContainerSection section, int index) {
@@ -438,11 +384,6 @@ public class DirectContainerManager implements IContainerManager {
         } else {
             return -1;
         }
-    }
-
-    @Override
-    public void setClickDelay(int delay) {
-        this.clickDelay = delay;
     }
 
     @Override

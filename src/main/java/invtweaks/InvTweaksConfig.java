@@ -3,17 +3,14 @@ package invtweaks;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.forge.ClientProxy;
 import net.minecraftforge.common.MinecraftForge;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Vector;
 
 
 /**
@@ -53,17 +50,15 @@ public class InvTweaksConfig {
     public static final String AUTOREFILL = "autorefill";
     public static final String AUTOREFILL_NOTHING = "nothing";
     public static final String DEBUG = "debug";
-    public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
-    private static final Logger log = InvTweaks.log;
     private File rulesFile;
     private File treeFile;
 
     private InvTweaksConfigProperties properties;
     private InvTweaksItemTree tree;
-    private Vector<InvTweaksConfigInventoryRuleset> rulesets;
+    private List<InvTweaksConfigInventoryRuleset> rulesets;
     private int currentRuleset = 0;
     private String currentRulesetName = null;
-    private Vector<String> invalidKeywords;
+    private List<String> invalidKeywords;
 
     private long storedConfigLastModified;
 
@@ -71,9 +66,9 @@ public class InvTweaksConfig {
     /**
      * Creates a new configuration holder. The configuration is not yet loaded.
      */
-    public InvTweaksConfig(File rulesFile, File treeFile) {
-        this.rulesFile = rulesFile;
-        this.treeFile = treeFile;
+    public InvTweaksConfig(File rulesFile_, File treeFile_) {
+        rulesFile = rulesFile_;
+        treeFile = treeFile_;
 
         reset();
     }
@@ -119,7 +114,7 @@ public class InvTweaksConfig {
                 String trimmedLine = line.trim();
                 if(!trimmedLine.isEmpty()) {
                     // Change ruleset
-                    if(trimmedLine.matches("^[\\w]*[\\s]*\\:$")) {
+                    if(trimmedLine.matches("^[\\w]*[\\s]*:$")) {
                         // Make sure not to add an empty default config to the rulesets
                         if(!defaultRuleset || !defaultRulesetEmpty) {
                             activeRuleset.finalizeRules();
@@ -127,6 +122,7 @@ public class InvTweaksConfig {
                         }
                         activeRuleset = new InvTweaksConfigInventoryRuleset(tree, trimmedLine
                                 .substring(0, trimmedLine.length() - 1));
+                        defaultRuleset = false;
                     }
 
                     // Register line
@@ -192,6 +188,7 @@ public class InvTweaksConfig {
      */
     public void saveProperties() {
         File configPropsFile = getPropertyFile();
+        assert configPropsFile != null;
         if(configPropsFile.exists()) {
             try {
                 FileOutputStream fos = new FileOutputStream(configPropsFile);
@@ -207,7 +204,7 @@ public class InvTweaksConfig {
     }
 
     public Map<String, String> getProperties(String prefix) {
-        Map<String, String> result = new HashMap<String, String>();
+        Map<String, String> result = new HashMap<>();
         for(Object o : properties.keySet()) {
             String key = (String) o;
             if(key.startsWith(prefix)) {
@@ -220,7 +217,6 @@ public class InvTweaksConfig {
     /**
      * Get a configuration property value
      *
-     * @param key
      * @return The value or "" (never null)
      */
     public String getProperty(String key) {
@@ -270,14 +266,14 @@ public class InvTweaksConfig {
     /**
      * @return all sorting rules, themselves sorted by decreasing priority
      */
-    public Vector<InvTweaksConfigSortingRule> getRules() {
+    public List<InvTweaksConfigSortingRule> getRules() {
         return rulesets.get(currentRuleset).getRules();
     }
 
     /**
      * Returns all invalid keywords wrote in the config file.
      */
-    public Vector<String> getInvalidKeywords() {
+    public List<String> getInvalidKeywords() {
         return invalidKeywords;
     }
 
@@ -295,17 +291,10 @@ public class InvTweaksConfig {
         return rulesets.get(currentRuleset).getFrozenSlots();
     }
 
-    /**
-     * @return The locked slots only
-     */
-    public Vector<Integer> getLockedSlots() {
-        return rulesets.get(currentRuleset).getLockedSlots();
-    }
-
     public boolean isAutoRefillEnabled(String itemID, int itemDamage) {
         if(!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
             List<IItemTreeItem> items = tree.getItems(itemID, itemDamage);
-            Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
+            List<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
             boolean found = false;
             for(String keyword : autoReplaceRules) {
                 if(keyword.equals(AUTOREFILL_NOTHING)) {
@@ -315,22 +304,14 @@ public class InvTweaksConfig {
                     found = true;
                 }
             }
-            if(found) {
-                return true;
-            } else {
-                if(autoReplaceRules.isEmpty()) {
-                    return DEFAULT_AUTO_REFILL_BEHAVIOUR;
-                } else {
-                    return false;
-                }
-            }
+            return found || autoReplaceRules.isEmpty();
         } else {
             return false;
         }
     }
 
     private void reset() {
-        rulesets = new Vector<InvTweaksConfigInventoryRuleset>();
+        rulesets = new ArrayList<>();
         currentRuleset = -1;
 
         // Default property values
@@ -359,7 +340,7 @@ public class InvTweaksConfig {
 
         properties.put(PROP_VERSION, InvTweaksConst.MOD_VERSION.split(" ")[0]);
 
-        invalidKeywords = new Vector<String>();
+        invalidKeywords = new ArrayList<>();
     }
 
     private void loadProperties() throws IOException {
@@ -387,10 +368,11 @@ public class InvTweaksConfig {
      *
      * @return May return null in case of failure while creating the file.
      */
-    private File getPropertyFile() {
+    private static File getPropertyFile() {
         File configPropsFile = InvTweaksConst.CONFIG_PROPS_FILE;
         if(!configPropsFile.exists()) {
             try {
+                //noinspection ResultOfMethodCallIgnored (already checking for existence)
                 configPropsFile.createNewFile();
             } catch(IOException e) {
                 InvTweaks.logInGameStatic("invtweaks.propsfile.errors");
