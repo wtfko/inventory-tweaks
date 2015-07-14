@@ -52,7 +52,7 @@ public class MirroredContainerManager implements IContainerManager {
 
         slotItems = new ItemStack[size];
         for(int i = 0; i < size; ++i) {
-            slotItems[i] = slots.get(i).getStack();
+            slotItems[i] = slots.get(i).getStack().copy();
         }
 
         heldItem = InvTweaks.getInstance().getHeldStack();
@@ -84,7 +84,7 @@ public class MirroredContainerManager implements IContainerManager {
             return false;
         }
 
-        // TODO: Attempt to stack instead of always swapping? [will need to actually copy stacks in init if so, also makes applying to actual inventory harder]
+        // TODO: Attempt to stack instead of always swapping?
         slotItems[srcSlotIdx] = destItem;
         slotItems[destSlotIdx] = srcItem;
 
