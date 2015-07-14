@@ -643,7 +643,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             }
 
             // Create rule
-            String constraint = row + column + "-" + (char) (row - 1 + thisSpaceHeight) + (char) (column - 1 + thisSpaceWidth);
+            String constraint = String.format("%c%c-%c%c", row, column, (char) (row - 1 + thisSpaceHeight), (char) (column - 1 + thisSpaceWidth));
             if(!horizontal) {
                 constraint += 'v';
             }
