@@ -110,15 +110,28 @@ public class ContainerTransformer implements IClassTransformer {
 
     public static void transformCreativeContainer(ClassNode clazz) {
         ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerCreativeIsInventory",
-                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+                Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
-                                                   Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+                Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
         ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
                                                    Type.getObjectType("java/util/Map"),
                                                    Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+    }
+
+    public static void transformHorseInventoryContainer(ClassNode clazz) {
+        ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerHorseIsInventory",
+                Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+        ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerHorseIsInventory",
+                Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+        ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, true);
+        ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
+        ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 5);
+        ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerHorseSlots",
+                Type.getObjectType("java/util/Map"),
+                Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
     private static void transformTextField(ClassNode clazz) {
@@ -232,6 +245,13 @@ public class ContainerTransformer implements IClassTransformer {
         // TODO: Creative mode handling is really buggy for some reason.
         if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
             transformCreativeContainer(cn);
+
+            cn.accept(cw);
+            return cw.toByteArray();
+        }
+
+        if("net.minecraft.inventory.ContainerHorseInventory".equals(transformedName)) {
+            transformHorseInventoryContainer(cn);
 
             cn.accept(cw);
             return cw.toByteArray();

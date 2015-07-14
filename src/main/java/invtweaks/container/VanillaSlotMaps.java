@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerHorseInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,6 +52,20 @@ public class VanillaSlotMaps {
                 .size() - InvTweaksConst.INVENTORY_SIZE));
 
         return slotRefs;
+    }
+
+    public static Map<ContainerSection, List<Slot>> containerHorseSlots(ContainerHorseInventory container) {
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
+
+        if(container.theHorse.isChested()) { // Chest slots are only added if chest is added. Saddle/armor slots always exist.
+            slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(2, container.inventorySlots.size() - InvTweaksConst.INVENTORY_SIZE));
+        }
+
+        return slotRefs;
+    }
+
+    public static boolean containerHorseIsInventory(ContainerHorseInventory container) {
+        return container.theHorse.isChested();
     }
 
     public static Map<ContainerSection, List<Slot>> containerFurnaceSlots(Container container) {
