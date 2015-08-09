@@ -240,7 +240,7 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
-        categories.get(parentCategory.toLowerCase()).addCategory(newCategory);
+        categories.get(parentCategory).addCategory(newCategory);
 
         // Register category
         categories.put(newCategory.getName(), newCategory);
@@ -249,7 +249,7 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException {
         // Build tree
-        categories.get(parentCategory.toLowerCase()).addItem(newItem);
+        categories.get(parentCategory).addItem(newItem);
 
         // Register item
         if(itemsByName.containsKey(newItem.getName())) {

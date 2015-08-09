@@ -19,7 +19,7 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     private int order = -1;
 
     public InvTweaksItemTreeCategory(String name_) {
-        name = (name_ != null) ? name_.toLowerCase() : null;
+        name = name_;
     }
 
     @Override

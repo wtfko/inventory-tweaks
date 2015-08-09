@@ -47,7 +47,7 @@ public class InvTweaksConfigInventoryRuleset {
     public String registerLine(String rawLine) throws InvalidParameterException {
 
         InvTweaksConfigSortingRule newRule;
-        String lineText = rawLine.replaceAll("[\\s]+", " ").toLowerCase();
+        String lineText = rawLine.replaceAll("[\\s]+", " ");
         String[] words = lineText.split(" ");
 
         // Parse valid lines only
@@ -57,7 +57,7 @@ public class InvTweaksConfigInventoryRuleset {
             if(lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$") || lineText
                     .matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
 
-                words[0] = words[0].toLowerCase();
+                words[0] = words[0];
                 words[1] = words[1];
 
                 // Locking rule
@@ -89,13 +89,14 @@ public class InvTweaksConfigInventoryRuleset {
 
                     // Standard rule
                     default:
-                        String keyword = words[1].toLowerCase();
+                        String keyword = words[1];
                         boolean isValidKeyword = tree.isKeywordValid(keyword);
 
                         // If invalid keyword, guess something similar,
                         // but check first if it's not an item ID
                         // (can be used to make rules for unknown items)
-                        if(!isValidKeyword) {
+                        // TODO: Should try looking up string ID.
+                        /*if(!isValidKeyword) {
                             if(keyword.matches("^[0-9-]*$")) {
                                 isValidKeyword = true;
                             } else {
@@ -108,23 +109,23 @@ public class InvTweaksConfigInventoryRuleset {
                                     }
                                 }
                             }
-                        }
+                        }*/
 
                         if(isValidKeyword) {
-                            newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword.toLowerCase(),
+                            newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword,
                                     InvTweaksConst.INVENTORY_SIZE,
                                     InvTweaksConst.INVENTORY_ROW_SIZE);
                             rules.add(newRule);
                             return null;
                         } else {
-                            return keyword.toLowerCase();
+                            return keyword;
                         }
                 }
             }
 
             // Autoreplace rule
             else if(words[0].equals(InvTweaksConfig.AUTOREFILL) || words[0].equals("autoreplace")) { // Compatibility
-                words[1] = words[1].toLowerCase();
+                words[1] = words[1];
                 if(tree.isKeywordValid(words[1]) || words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {
                     autoReplaceRules.add(words[1]);
                 }
@@ -184,45 +185,5 @@ public class InvTweaksConfigInventoryRuleset {
      */
     public List<String> getAutoReplaceRules() {
         return autoReplaceRules;
-    }
-
-    /**
-     * Compute keyword variants to also match bad keywords. torches => torch diamondSword => sworddiamond woodenPlank =>
-     * woodPlank plankwooden plankwood
-     */
-    private static List<String> getKeywordVariants(String keyword) {
-        List<String> variants = new ArrayList<>();
-
-        if(keyword.endsWith("es")) { // ex: torches => torch
-            variants.add(keyword.substring(0, keyword.length() - 2));
-        }
-        if(keyword.endsWith("s")) { // ex: wools => wool
-            variants.add(keyword.substring(0, keyword.length() - 1));
-        }
-
-        if(keyword.contains("en")) { // ex: wooden => wood
-            variants.add(keyword.replaceAll("en", ""));
-        } else {
-            if(keyword.contains("wood")) {
-                variants.add(keyword.replaceAll("wood", "wooden"));
-            }
-            if(keyword.contains("gold")) {
-                variants.add(keyword.replaceAll("gold", "golden"));
-            }
-        }
-
-        // Swap words
-        if(keyword.matches("\\w*[A-Z]\\w*")) {
-            byte[] keywordBytes = keyword.getBytes();
-            for(int i = 0; i < keywordBytes.length; i++) {
-                if(keywordBytes[i] >= 'A' && keywordBytes[i] <= 'Z') {
-                    String swapped = (keyword.substring(i) + keyword.substring(0, i)).toLowerCase();
-                    variants.add(swapped);
-                    variants.addAll(getKeywordVariants(swapped));
-                }
-            }
-        }
-
-        return variants;
     }
 }
