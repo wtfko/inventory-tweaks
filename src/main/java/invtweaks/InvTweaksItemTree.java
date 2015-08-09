@@ -183,7 +183,7 @@ public class InvTweaksItemTree implements IItemTree {
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
             IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage,
-                    5000/*TODO: What to do here with non-int IDs + id * 16*/ + damage);
+                    5000/*TODO: What to do here with non-int IDs + id * 16 + damage*/);
             IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
                     InvTweaksConst.DAMAGE_WILDCARD, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
             addItem(getRootCategory().getName(), newItemId);
