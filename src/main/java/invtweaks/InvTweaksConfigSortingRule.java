@@ -3,6 +3,8 @@ package invtweaks;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Stores a sorting rule, as a target plus a keyword. The target is provided as an array of preferred slots (ex: target
@@ -18,6 +20,9 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private int priority;
     private int containerSize;
     private int containerRowSize;
+
+    private static final Pattern constraintVertical = Pattern.compile("v", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
+    private static final Pattern constraintReverse = Pattern.compile("r", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
 
     public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint_, String keyword_, int containerSize_,
                                       int containerRowSize_) {
@@ -48,13 +53,13 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         if(constraint.length() >= 5) {
 
             boolean vertical = false;
-            if(constraint.contains("v")) {
+            Matcher verticalMatcher = constraintVertical.matcher(constraint);
+            if(verticalMatcher.matches()) {
                 vertical = true;
-                constraint = constraint.replaceAll("v", "");
+                constraint = verticalMatcher.reset().replaceAll("");
             }
             String[] elements = constraint.split("-");
             if(elements.length == 2) {
-
                 int[] slots1 = getRulePreferredPositions(elements[0], containerSize, containerRowSize);
                 int[] slots2 = getRulePreferredPositions(elements[1], containerSize, containerRowSize);
                 if(slots1.length == 1 && slots2.length == 1) {
@@ -88,7 +93,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                         y += (point1.y < point2.y) ? 1 : -1;
                     }
 
-                    if(constraint.contains("r")) {
+                    if(constraintReverse.matcher(constraint).matches()) {
                         reverseArray(result);
                     }
 
@@ -103,13 +108,14 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
             // Extract chars
             for(int i = 0; i < constraint.length(); i++) {
                 char c = constraint.charAt(i);
-                if(c >= '1' && c - '1' <= containerRowSize) {
+                int digitValue = Character.digit(c, 36); // radix-36 maps 0-9 to 0-9, and [a-zA-Z] to 10-36, see javadoc
+                if(digitValue >= 1 && digitValue <= containerRowSize && digitValue < 10) {
                     // 1 column = 0, 9 column = 8
-                    column = c - '1';
-                } else if(c >= 'a' && c - 'a' <= containerColumnSize) {
+                    column = digitValue;
+                } else if(digitValue >= 10 && (digitValue-10) <= containerColumnSize) {
                     // A row = 0, D row = 3, H row = 7
-                    row = c - 'a';
-                } else if(c == 'r') {
+                    row = digitValue - 10;
+                } else if(charEqualsIgnoreCase(c, 'r')) {
                     reverse = true;
                 }
             }
@@ -141,10 +147,11 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
         InvTweaksConfigSortingRuleType result = InvTweaksConfigSortingRuleType.SLOT;
 
-        if(constraint.length() == 1 || (constraint.length() == 2 && constraint.contains("r"))) {
-            constraint = constraint.replace("r", "");
+        if(constraint.length() == 1 || (constraint.length() == 2 && constraintReverse.matcher(constraint).matches())) {
+            constraint = constraintReverse.matcher(constraint).replaceAll("");
             // Column rule
-            if(constraint.charAt(0) - '1' <= rowSize && constraint.charAt(0) >= '1') {
+            int digitValue = Character.digit(constraint.charAt(0), 10);
+            if(digitValue >= 1 && digitValue <= rowSize) {
                 result = InvTweaksConfigSortingRuleType.COLUMN;
             }
             // Row rule
@@ -155,11 +162,11 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         // Rectangle rule
         else if(constraint.length() > 4) {
             // Special case: rectangle rule on a single column
-            if(constraint.charAt(1) == constraint.charAt(4)) {
+            if(charEqualsIgnoreCase(constraint.charAt(1), constraint.charAt(4))) {
                 result = InvTweaksConfigSortingRuleType.COLUMN;
             }
             // Special case: rectangle rule on a single row
-            else if(constraint.charAt(0) == constraint.charAt(3)) {
+            else if(charEqualsIgnoreCase(constraint.charAt(0), constraint.charAt(3))) {
                 result = InvTweaksConfigSortingRuleType.ROW;
             }
             // Usual case
@@ -170,6 +177,12 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
         return result;
 
+    }
+
+    private static boolean charEqualsIgnoreCase(char a, char b) {
+        // A crappy basic case-folding comparison, see String.equalsIgnoreCase & the behavior of Pattern with CASE_INSENSITIVE | UNICODE_CASE
+        char aU = Character.toUpperCase(a), bU = Character.toUpperCase(b);
+        return aU == bU || Character.toLowerCase(aU) == Character.toLowerCase(bU);
     }
 
     private static int index(int rowSize, int row, int column) {

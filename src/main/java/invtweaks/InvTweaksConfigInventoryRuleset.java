@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Stores a whole configuration defined by rules. Several of them can be stored in the global configuration, as the mod
@@ -17,6 +18,8 @@ public class InvTweaksConfigInventoryRuleset {
     private boolean[] frozenSlots;
     private List<InvTweaksConfigSortingRule> rules;
     private List<String> autoReplaceRules;
+
+    private static final Pattern rulePattern = Pattern.compile("^(?:(?:[a-d1-9]r?)|(?:[a-d][1-9](?:-[a-d][1-9](?:rv?|vr?)?)?)) \\w+$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNICODE_CHARACTER_CLASS);
 
     private InvTweaksItemTree tree;
 
@@ -47,86 +50,75 @@ public class InvTweaksConfigInventoryRuleset {
     public String registerLine(String rawLine) throws InvalidParameterException {
 
         InvTweaksConfigSortingRule newRule;
-        String lineText = rawLine.replaceAll("[\\s]+", " ");
+        String lineText = rawLine.replaceAll("\\s+", " ");
         String[] words = lineText.split(" ");
 
         // Parse valid lines only
         if(words.length == 2) {
 
             // Standard rules format
-            if(lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$") || lineText
-                    .matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
-
-                words[0] = words[0];
-                words[1] = words[1];
-
-                // Locking rule
-                switch(words[1]) {
-                    case InvTweaksConfig.LOCKED: {
-                        int[] newLockedSlots = InvTweaksConfigSortingRule
-                                .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
-                                        InvTweaksConst.INVENTORY_ROW_SIZE);
-                        int lockPriority = InvTweaksConfigSortingRule.
-                                getRuleType(words[0],
-                                        InvTweaksConst.INVENTORY_ROW_SIZE)
-                                .getLowestPriority() - 1;
-                        for(int i : newLockedSlots) {
-                            lockPriorities[i] = lockPriority;
-                        }
-                        return null;
+            if(rulePattern.matcher(lineText).matches()) {
+                if(words[1].equalsIgnoreCase(InvTweaksConfig.LOCKED)) {
+                    // Locking rule
+                    int[] newLockedSlots = InvTweaksConfigSortingRule
+                            .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
+                                    InvTweaksConst.INVENTORY_ROW_SIZE);
+                    int lockPriority = InvTweaksConfigSortingRule.
+                            getRuleType(words[0],
+                                    InvTweaksConst.INVENTORY_ROW_SIZE)
+                            .getLowestPriority() - 1;
+                    for(int i : newLockedSlots) {
+                        lockPriorities[i] = lockPriority;
                     }
+                    return null;
+                } else if(words[1].equalsIgnoreCase(InvTweaksConfig.FROZEN)) {
 
                     // Freeze rule
-                    case InvTweaksConfig.FROZEN: {
-                        int[] newLockedSlots = InvTweaksConfigSortingRule
-                                .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
-                                        InvTweaksConst.INVENTORY_ROW_SIZE);
-                        for(int i : newLockedSlots) {
-                            frozenSlots[i] = true;
-                        }
-                        return null;
+                    int[] newLockedSlots = InvTweaksConfigSortingRule
+                            .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
+                                    InvTweaksConst.INVENTORY_ROW_SIZE);
+                    for(int i : newLockedSlots) {
+                        frozenSlots[i] = true;
                     }
-
+                    return null;
+                } else {
                     // Standard rule
-                    default:
-                        String keyword = words[1];
-                        boolean isValidKeyword = tree.isKeywordValid(keyword);
+                    String keyword = words[1];
+                    boolean isValidKeyword = tree.isKeywordValid(keyword);
 
-                        // If invalid keyword, guess something similar,
-                        // but check first if it's not an item ID
-                        // (can be used to make rules for unknown items)
-                        // TODO: Should try looking up string ID.
-                        /*if(!isValidKeyword) {
-                            if(keyword.matches("^[0-9-]*$")) {
-                                isValidKeyword = true;
-                            } else {
-                                List<String> wordVariants = getKeywordVariants(keyword);
-                                for(String wordVariant : wordVariants) {
-                                    if(tree.isKeywordValid(wordVariant.toLowerCase())) {
-                                        isValidKeyword = true;
-                                        keyword = wordVariant;
-                                        break;
-                                    }
+                    // If invalid keyword, guess something similar,
+                    // but check first if it's not an item ID
+                    // (can be used to make rules for unknown items)
+                    // TODO: Should try looking up string ID.
+                    /*if(!isValidKeyword) {
+                        if(keyword.matches("^[0-9-]*$")) {
+                            isValidKeyword = true;
+                        } else {
+                            List<String> wordVariants = getKeywordVariants(keyword);
+                            for(String wordVariant : wordVariants) {
+                                if(tree.isKeywordValid(wordVariant.toLowerCase())) {
+                                    isValidKeyword = true;
+                                    keyword = wordVariant;
+                                    break;
                                 }
                             }
-                        }*/
-
-                        if(isValidKeyword) {
-                            newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword,
-                                    InvTweaksConst.INVENTORY_SIZE,
-                                    InvTweaksConst.INVENTORY_ROW_SIZE);
-                            rules.add(newRule);
-                            return null;
-                        } else {
-                            return keyword;
                         }
-                }
-            }
+                    }*/
 
-            // Autoreplace rule
-            else if(words[0].equals(InvTweaksConfig.AUTOREFILL) || words[0].equals("autoreplace")) { // Compatibility
+                    if(isValidKeyword) {
+                        newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword,
+                                InvTweaksConst.INVENTORY_SIZE,
+                                InvTweaksConst.INVENTORY_ROW_SIZE);
+                        rules.add(newRule);
+                        return null;
+                    } else {
+                        return keyword;
+                    }
+                }
+            } else if(words[0].equalsIgnoreCase(InvTweaksConfig.AUTOREFILL) || words[0].equalsIgnoreCase("autoreplace")) { // Compatibility
+                // Autoreplace rule
                 words[1] = words[1];
-                if(tree.isKeywordValid(words[1]) || words[1].equals(InvTweaksConfig.AUTOREFILL_NOTHING)) {
+                if(tree.isKeywordValid(words[1]) || words[1].equalsIgnoreCase(InvTweaksConfig.AUTOREFILL_NOTHING)) {
                     autoReplaceRules.add(words[1]);
                 }
                 return null;
