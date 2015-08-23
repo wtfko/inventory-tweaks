@@ -1,23 +1,9 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name = 'forge'
-            url = 'http://files.minecraftforge.net/maven'
-        }
-        maven {
-            name = 'sonatype'
-            url = 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-    }
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.0"
+	id "com.matthewprenger.cursegradle" version "1.0.1"
 }
 
 apply plugin: 'idea'
-apply plugin: 'forge'
-apply plugin: 'curseforge'
 
 dependencies {
     compile 'org.jetbrains:annotations:13.0'
@@ -116,8 +102,8 @@ archivesBaseName = 'InventoryTweaks'
 
 ext.mcversion = '1.8'
 minecraft {
-    version = '1.8-11.14.3.1487'
-    mappings = 'stable_16'
+    version = '1.8-11.14.3.1504'
+    mappings = 'snapshot_20150823'
     at 'src/main/resources/invtweaks_at.cfg'
 
     replace '@VERSION@', project.internal_version
@@ -176,21 +162,32 @@ if(invtweaks_version.endsWith("-dev")) {
     ext.curseVersion = invtweaks_version
 }
 
-curse.onlyIf { curseKey }
+tasks.curseforge.onlyIf { curseKey }
+tasks.curseforge.dependsOn jar, apiJar, deobfJar
 
 if(curseKey) {
-    curse {
-        dependsOn apiJar, deobfJar
-
-        displayName = 'Inventory Tweaks ' + curseVersion
-        releaseType = curseType
-        projectId = '223094'
+    curseforge  {
         apiKey = curseKey
-        changelog = getGitChangelog()
-        gameVersions.add(mcversion)
 
-        additionalArtifact apiJar
-        additionalArtifact deobfJar
+		project {
+			id = '223094'
+			changelog = getGitChangelog()
+			releaseType = curseType
+			addGameVersion mcversion
+			addGameVersion "Java 8"
+
+			mainArtifact(jar) {
+				displayName = 'Inventory Tweaks ' + curseVersion
+			}
+
+			addArtifact(apiJar) {
+				displayName = 'Inventory Tweaks API ' + curseVersion
+			}
+
+			addArtifact(deobfJar) {
+				displayName = 'Inventory Tweaks Deobfuscated ' + curseVersion
+			}
+		}
     }
 }
 
