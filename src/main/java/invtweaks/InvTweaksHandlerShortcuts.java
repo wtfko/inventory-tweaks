@@ -7,6 +7,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -209,7 +210,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                             orderedSections.add(ContainerSection.FURNACE_IN);
                         } else if(container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
                             if(shortcutConfig.fromStack != null) {
-                                if(shortcutConfig.fromStack.getItem() == Item.itemRegistry.getObject("potion")) {
+                                // TODO: ResourceLocation
+                                if(shortcutConfig.fromStack.getItem() == Item.itemRegistry.getObject(new ResourceLocation("potion"))) {
                                     orderedSections.add(ContainerSection.BREWING_BOTTLES);
                                 } else {
                                     orderedSections.add(ContainerSection.BREWING_INGREDIENT);

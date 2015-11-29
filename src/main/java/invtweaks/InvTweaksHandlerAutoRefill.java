@@ -51,7 +51,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 .equals(InvTweaksConfig.VALUE_TRUE);
         boolean hasSubtypes = false;
 
-        Item original = (Item) Item.itemRegistry.getObject(wantedId);
+        // TODO: ResourceLocation
+        Item original = (Item) Item.itemRegistry.getObject(new ResourceLocation(wantedId));
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }

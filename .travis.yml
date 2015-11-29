@@ -7,3 +7,7 @@ sudo: false
 notifications:
   irc:
     - "irc.esper.net#inventorytweaks"
+branches:
+  only:
+    - develop
+    - release

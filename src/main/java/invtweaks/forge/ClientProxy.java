@@ -50,8 +50,7 @@ public class ClientProxy extends CommonProxy {
         instance = new InvTweaks(mc);
         ForgeClientTick clientTick = new ForgeClientTick(instance);
 
-        FMLCommonHandler.instance().bus().register(clientTick);
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(clientTick);
 
         ClientRegistry.registerKeyBinding(KEYBINDING_SORT);
     }

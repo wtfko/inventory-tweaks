@@ -73,7 +73,6 @@ public class InvTweaksObfuscation {
         return (slot == null) ? null : slot.getStack(); // getStack
     }
 
-    @SuppressWarnings("unchecked")
     public static int getSlotNumber(Slot slot) {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots

@@ -43,8 +43,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     public void initGui() {
         super.initGui();
 
-        @SuppressWarnings("unchecked")
-        List<Object> controlList = buttonList;
+        List<GuiButton> controlList = buttonList;
         Point p = new Point();
         int i = 0;
 
@@ -101,8 +100,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         // Check if links to files are supported, if not disable the buttons
         if(!Desktop.isDesktopSupported()) {
-            controlList.stream().filter(InvTweaksObfuscation::isGuiButton).forEach(o -> {
-                GuiButton button = (GuiButton) o;
+            controlList.stream().forEach(button -> {
                 if(button.id == ID_EDITSHORTCUTS) {
                     button.enabled = false;
                 }

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"unchecked", "unused"})
+@SuppressWarnings("unused")
 public class VanillaSlotMaps {
     public static Map<ContainerSection, List<Slot>> containerPlayerSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();

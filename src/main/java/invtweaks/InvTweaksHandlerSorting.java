@@ -10,6 +10,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
 
@@ -347,7 +348,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
             //skip hacked itemstacks that are larger than their max size
             //no idea why they would be here, but may as well account for them anyway
-            if(numPerSlot <= new ItemStack((Item) Item.itemRegistry.getObject(item.getLeft()), 1, 0).getMaxStackSize()) {
+            // TODO: ResourceLocation
+            if(numPerSlot <= new ItemStack((Item) Item.itemRegistry.getObject(new ResourceLocation(item.getLeft())), 1, 0).getMaxStackSize()) {
                 //linkedlists to store which stacks have too many/few items
                 LinkedList<Integer> smallStacks = new LinkedList<>();
                 LinkedList<Integer> largeStacks = new LinkedList<>();

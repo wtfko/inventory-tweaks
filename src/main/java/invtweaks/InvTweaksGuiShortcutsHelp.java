@@ -26,7 +26,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
 
     public void initGui() {
         // Create Done button
-        List<Object> controlList = new LinkedList<>();
+        List<GuiButton> controlList = new LinkedList<>();
         controlList.add(new GuiButton(ID_DONE, width / 2 - 100, height / 6 + 168, "Done"));
         buttonList = controlList;
     }

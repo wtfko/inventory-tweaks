@@ -40,8 +40,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     @Override
     public void initGui() {
-        @SuppressWarnings("unchecked")
-        List<Object> controlList = buttonList;
+        List<GuiButton> controlList = buttonList;
         Point p = new Point();
         moveToButtonCoords(1, p);
         controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168, LABEL_DONE)); // GuiButton

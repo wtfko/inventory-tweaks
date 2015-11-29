@@ -1,16 +1,30 @@
-plugins {
-    id "net.minecraftforge.gradle.forge" version "2.0.2"
-	id "com.matthewprenger.cursegradle" version "1.0.4"
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
 }
 
+plugins {
+    //id "net.minecraftforge.gradle.forge" version "2.0.2"
+    id "com.matthewprenger.cursegradle" version "1.0.4"
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'idea'
 
 dependencies {
     compile 'org.jetbrains:annotations:13.0'
 }
 
-if(!invtweaks_version) {
-    invtweaks_version = 'UNKNOWN'
+if(!hasProperty('mod_version')) {
+    mod_version = 'UNKNOWN'
 }
 
 def getGitCommitHash = { ->
@@ -83,9 +97,9 @@ if(!build_number) {
 }
 
 if(build_number) {
-    version = invtweaks_version + "-" + build_number
+    version = mod_version + "-" + build_number
 } else {
-    version = invtweaks_version
+    version = mod_version
 }
 
 if(git_version) {
@@ -97,18 +111,24 @@ if(git_version) {
     ext.internal_version = version
 }
 
-group = 'inventorytweaks' // No stupid URL conventions
-archivesBaseName = 'InventoryTweaks'
+group = mod_group
+archivesBaseName = mod_name
 
-ext.mcversion = '1.8'
 minecraft {
-    version = '1.8-11.14.3.1543'
-    mappings = 'snapshot_20151102'
-    at 'src/main/resources/invtweaks_at.cfg'
+    version = forge_version
+	mappings = mcp_version
+
+	runDir = "run"
+    makeObfSourceJar = false
 
     replace '@VERSION@', project.internal_version
     replaceIn 'InvTweaksConst.java'
 }
+
+if(hasProperty('mod_coreplugin')) {
+	minecraft.coreMod = mod_coreplugin
+}
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -125,10 +145,11 @@ jar {
 }
 
 task apiJar(type: Jar) {
+	onlyIf { project.hasProperty('api_filter') }
     dependsOn processResources
 
     from sourceSets.main.allJava
-    include 'invtweaks/api/**'
+    include api_filter
 
     appendix = 'api'
 }
@@ -151,41 +172,41 @@ artifacts {
 }
 
 ext.curseKey = System.getenv("CURSE_API_KEY")
-if(invtweaks_version.endsWith("-dev")) {
+if(mod_version.endsWith("-dev")) {
     ext.curseType = 'alpha'
     ext.curseVersion = version
-} else if(invtweaks_version.endsWith("-beta")) {
+} else if(mod_version.endsWith("-beta")) {
     ext.curseType = 'beta'
     ext.curseVersion = version
 } else {
     ext.curseType = 'release'
-    ext.curseVersion = invtweaks_version
+    ext.curseVersion = mod_version
 }
 
 tasks.curseforge.onlyIf { curseKey }
 tasks.curseforge.dependsOn jar, apiJar, deobfJar
 
-if(curseKey) {
+if(curseKey && hasProperty('curse_id')) {
     curseforge  {
         apiKey = curseKey
 
 		project {
-			id = '223094'
+			id = curse_id
 			changelog = getGitChangelog()
 			releaseType = curseType
-			addGameVersion mcversion
-			addGameVersion "Java 8"
+			addGameVersion mc_version
+			addGameVersion 'Java 8'
 
 			mainArtifact(jar) {
-				displayName = 'Inventory Tweaks ' + curseVersion
+				displayName = "$curse_filename $curseVersion"
 			}
 
 			addArtifact(apiJar) {
-				displayName = 'Inventory Tweaks API ' + curseVersion
+				displayName = "$curse_filename API $curseVersion"
 			}
 
 			addArtifact(deobfJar) {
-				displayName = 'Inventory Tweaks Deobfuscated ' + curseVersion
+				displayName = "$curse_filename Deobfuscated $curseVersion"
 			}
 		}
     }
@@ -193,13 +214,13 @@ if(curseKey) {
 
 processResources {
     inputs.property 'version', internal_version
-    inputs.property 'mcversion', mcversion
+    inputs.property 'mcversion', mc_version
 
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.png'
         exclude '**/*_at.cfg'
 
-        expand version: internal_version, mcversion: mcversion
+        expand version: internal_version, mcversion: mc_version
     }
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.png'

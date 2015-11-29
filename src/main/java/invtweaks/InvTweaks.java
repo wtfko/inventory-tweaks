@@ -336,8 +336,8 @@ public class InvTweaks extends InvTweaksObfuscation {
                         }
                     }
 
-                    @SuppressWarnings("unchecked") Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
-                    @SuppressWarnings("unchecked") Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
+                    Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
+                    Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
                     if(iEnchs.size() == jEnchs.size()) {
                         int iEnchMaxId = 0, iEnchMaxLvl = 0;
                         int jEnchMaxId = 0, jEnchMaxLvl = 0;
@@ -761,20 +761,15 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Look for the mods buttons
             boolean customButtonsAdded = false;
 
-            @SuppressWarnings("unchecked")
-            List<Object> controlList = guiContainer.buttonList;
-            @SuppressWarnings("unchecked")
-            List<Object> toRemove = new ArrayList<>();
-            for(Object o : controlList) {
-                if(isGuiButton(o)) {
-                    GuiButton button = (GuiButton) o;
-                    if(button.id >= InvTweaksConst.JIMEOWAN_ID && button.id < (InvTweaksConst.JIMEOWAN_ID + 4)) {
-                        if(relayout) {
-                            toRemove.add(button);
-                        } else {
-                            customButtonsAdded = true;
-                            break;
-                        }
+            List<GuiButton> controlList = guiContainer.buttonList;
+            List<GuiButton> toRemove = new ArrayList<>();
+            for(GuiButton button : controlList) {
+                if(button.id >= InvTweaksConst.JIMEOWAN_ID && button.id < (InvTweaksConst.JIMEOWAN_ID + 4)) {
+                    if(relayout) {
+                        toRemove.add(button);
+                    } else {
+                        customButtonsAdded = true;
+                        break;
                     }
                 }
             }
@@ -856,16 +851,12 @@ public class InvTweaks extends InvTweaksObfuscation {
         } else {
             // Remove "..." button from non-survival tabs of the creative screen
             if(isGuiInventoryCreative(guiContainer)) {
-                @SuppressWarnings("unchecked")
-                List<Object> controlList = guiContainer.buttonList;
+                List<GuiButton> controlList = guiContainer.buttonList;
                 GuiButton buttonToRemove = null;
-                for(Object o : controlList) {
-                    if(isGuiButton(o)) {
-                        // GuiButton
-                        if(((GuiButton) o).id == InvTweaksConst.JIMEOWAN_ID) {
-                            buttonToRemove = (GuiButton) o;
-                            break;
-                        }
+                for(GuiButton o : controlList) {
+                    if(o.id == InvTweaksConst.JIMEOWAN_ID) {
+                        buttonToRemove = o;
+                        break;
                     }
                 }
                 if(buttonToRemove != null) {

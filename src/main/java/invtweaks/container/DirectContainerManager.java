@@ -38,8 +38,7 @@ public class DirectContainerManager implements IContainerManager {
         }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
-        @SuppressWarnings("unchecked")
-        List<Slot> slots = (List<Slot>) container.inventorySlots;
+        List<Slot> slots = container.inventorySlots;
         int size = slots.size();
         if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
             slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
