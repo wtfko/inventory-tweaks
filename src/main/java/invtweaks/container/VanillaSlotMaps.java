@@ -24,6 +24,9 @@ public class VanillaSlotMaps {
         slotRefs.put(ContainerSection.CRAFTING_OUT, container.inventorySlots.subList(0, 1));
         slotRefs.put(ContainerSection.CRAFTING_IN, container.inventorySlots.subList(1, 5));
         slotRefs.put(ContainerSection.ARMOR, container.inventorySlots.subList(5, 9));
+        slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(9, 45));
+        slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, container.inventorySlots.subList(9, 36));
+        slotRefs.put(ContainerSection.INVENTORY_HOTBAR, container.inventorySlots.subList(36, 45));
 
         return slotRefs;
     }
