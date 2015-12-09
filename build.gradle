@@ -125,10 +125,15 @@ minecraft {
     replaceIn 'InvTweaksConst.java'
 }
 
-if(hasProperty('mod_coreplugin')) {
-	minecraft.coreMod = mod_coreplugin
-}
+if(hasProperty('mod_core_plugin')) {
+	minecraft.coreMod = mod_core_plugin
 
+    jar {
+        manifest {
+            attributes 'FMLCorePlugin': mod_core_plugin, 'FMLCorePluginContainsFMLMod': mod_core_hasfmlmod
+        }
+    }
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -136,12 +141,6 @@ targetCompatibility = 1.8
 compileJava {
     options.debug = true
     options.debugOptions.debugLevel = 'source,lines,vars'
-}
-
-jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'invtweaks.forge.asm.FMLPlugin', 'FMLCorePluginContainsFMLMod': 'true'
-    }
 }
 
 task apiJar(type: Jar) {
@@ -159,8 +158,10 @@ task deobfJar(type: Jar) {
 
     from sourceSets.main.output
 
-    manifest {
-        attributes 'FMLCorePlugin': 'invtweaks.forge.asm.FMLPlugin', 'FMLCorePluginContainsFMLMod': 'true'
+    if(project.hasProperty('mod_core_plugin')) {
+        manifest {
+            attributes 'FMLCorePlugin': mod_core_plugin, 'FMLCorePluginContainsFMLMod': mod_core_hasfmlmod
+        }
     }
 
     appendix = 'deobf'
