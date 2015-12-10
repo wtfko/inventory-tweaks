@@ -55,6 +55,7 @@ public class InvTweaksConst {
     // Minecraft constants
     public static final int INVENTORY_SIZE = 36;
     public static final int INVENTORY_ROW_SIZE = 9;
+    public static final int HOTBAR_SIZE = 9;
     public static final int INVENTORY_HOTBAR_SIZE = INVENTORY_ROW_SIZE;
     public static final int DAMAGE_WILDCARD = OreDictionary.WILDCARD_VALUE;
 }

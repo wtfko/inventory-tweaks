@@ -10,7 +10,6 @@ import java.util.concurrent.TimeoutException;
 
 public interface IContainerManager {
     int DROP_SLOT = -999;
-    int HOTBAR_SIZE = 9;
 
     /**
      * Moves a stack from source to destination, adapting the behavior according to the context: - If destination is

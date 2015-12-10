@@ -36,16 +36,6 @@ public class DirectContainerManager implements IContainerManager {
         if(slotRefs == null) {
             slotRefs = new HashMap<>();
         }
-
-        // TODO: Detect if there is a big enough unassigned section for inventory.
-        List<Slot> slots = container.inventorySlots;
-        int size = slots.size();
-        if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
-            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
-            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR,
-                    slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size - HOTBAR_SIZE));
-            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
-        }
     }
 
     /**

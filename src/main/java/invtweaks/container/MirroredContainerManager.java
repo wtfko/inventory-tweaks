@@ -33,15 +33,8 @@ public class MirroredContainerManager implements IContainerManager {
         }
 
         // TODO: Detect if there is a big enough unassigned section for inventory.
-        @SuppressWarnings("unchecked")
-        List<Slot> slots = (List<Slot>) container.inventorySlots;
+        List<Slot> slots = container.inventorySlots;
         int size = slots.size();
-        if(size >= InvTweaksConst.INVENTORY_SIZE && !slotRefs.containsKey(ContainerSection.INVENTORY)) {
-            slotRefs.put(ContainerSection.INVENTORY, slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size));
-            slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR,
-                    slots.subList(size - InvTweaksConst.INVENTORY_SIZE, size - HOTBAR_SIZE));
-            slotRefs.put(ContainerSection.INVENTORY_HOTBAR, slots.subList(size - HOTBAR_SIZE, size));
-        }
 
         itemRefs = new HashMap<>();
         for(Map.Entry<ContainerSection, List<Slot>> section : slotRefs.entrySet()) {
