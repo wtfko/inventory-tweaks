@@ -38,7 +38,7 @@ public class CommonProxy implements InvTweaksAPI {
                 .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec());
         invtweaksChannel.get(Side.SERVER).pipeline().addAfter("ITMessageToMessageCodec#0", "InvTweaks Handler Server", new ITPacketHandlerServer());
 
-        MinecraftForge.EVENT_BUS.register(this);
+        FMLCommonHandler.instance().bus().register(this);
     }
 
     public void postInit(@SuppressWarnings("unused") FMLPostInitializationEvent e) {

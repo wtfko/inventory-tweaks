@@ -116,9 +116,9 @@ archivesBaseName = mod_name
 
 minecraft {
     version = forge_version
-	mappings = mcp_version
+    mappings = mcp_version
 
-	runDir = "run"
+    runDir = "run"
     makeObfSourceJar = false
 
     replace '@VERSION@', project.internal_version
@@ -126,7 +126,7 @@ minecraft {
 }
 
 if(hasProperty('mod_core_plugin')) {
-	minecraft.coreMod = mod_core_plugin
+    minecraft.coreMod = mod_core_plugin
 
     jar {
         manifest {
@@ -144,7 +144,7 @@ compileJava {
 }
 
 task apiJar(type: Jar) {
-	onlyIf { project.hasProperty('api_filter') }
+    onlyIf { project.hasProperty('api_filter') }
     dependsOn processResources
 
     from sourceSets.main.allJava
@@ -187,29 +187,39 @@ if(mod_version.endsWith("-dev")) {
 tasks.curseforge.onlyIf { curseKey }
 tasks.curseforge.dependsOn jar, apiJar, deobfJar
 
+if(hasProperty('curse_extra_versions')) {
+    ext.curseExtraVersions = curse_extra_versions.tokenize(',')
+}
+
 if(curseKey && hasProperty('curse_id')) {
-    curseforge  {
+    curseforge {
         apiKey = curseKey
 
-		project {
-			id = curse_id
-			changelog = getGitChangelog()
-			releaseType = curseType
-			addGameVersion mc_version
-			addGameVersion 'Java 8'
+        project {
+            id = curse_id
+            changelog = getGitChangelog()
+            releaseType = curseType
+            addGameVersion mc_version
 
-			mainArtifact(jar) {
-				displayName = "$curse_filename $curseVersion"
-			}
+            if(curseExtraVersions) {
+                for(version in curseExtraVersions) {
+                    addGameVersion version
+                }
+            }
+            addGameVersion 'Java 8'
 
-			addArtifact(apiJar) {
-				displayName = "$curse_filename API $curseVersion"
-			}
+            mainArtifact(jar) {
+                displayName = "$curse_filename $curseVersion"
+            }
 
-			addArtifact(deobfJar) {
-				displayName = "$curse_filename Deobfuscated $curseVersion"
-			}
-		}
+            addArtifact(apiJar) {
+                displayName = "$curse_filename API $curseVersion"
+            }
+
+            addArtifact(deobfJar) {
+                displayName = "$curse_filename Deobfuscated $curseVersion"
+            }
+        }
     }
 }
 
