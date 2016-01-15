@@ -47,16 +47,12 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
             try {
                 containerMgr = new ContainerSectionManager(ContainerSection.INVENTORY);
                 if(obf.getHeldStack() != null) {
-                    try {
-                        // Put hold item down
-                        for(int k = containerMgr.getSize() - 1; k >= 0; k--) {
-                            if(containerMgr.getItemStack(k) == null) {
-                                containerMgr.leftClick(k);
-                                break;
-                            }
+                    // Put hold item down
+                    for(int k = containerMgr.getSize() - 1; k >= 0; k--) {
+                        if(containerMgr.getItemStack(k) == null) {
+                            containerMgr.leftClick(k);
+                            break;
                         }
-                    } catch(TimeoutException e) {
-                        InvTweaks.logInGameErrorStatic("invtweaks.sort.releaseitem.error", e);
                     }
                 }
             } catch(Exception e) {
