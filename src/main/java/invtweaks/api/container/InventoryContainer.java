@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * A marker for containers that need special treatment, such as crafting inputs or alternate player inventory positions,
  * but do not have a chest-like component.
- * <p/>
+ * <p>
  * Does not enable the Inventory Tweaks sorting buttons for this container.
  */
 @Retention(RetentionPolicy.RUNTIME)

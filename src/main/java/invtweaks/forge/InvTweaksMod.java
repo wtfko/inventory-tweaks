@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  * ModLoader entry point to load and configure the mod.
  *
  * @author Jimeo Wan
- *         <p/>
+ *         <p>
  *         Contact: jimeo.wan (at) gmail (dot) com Website: <a href="https://inventory-tweaks.readthedocs.org/">https://inventory-tweaks.readthedocs.org/</a>
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */

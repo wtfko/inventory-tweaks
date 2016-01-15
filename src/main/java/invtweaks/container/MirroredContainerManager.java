@@ -197,6 +197,7 @@ public class MirroredContainerManager implements IContainerManager {
         // TODO: Figure out what is needed to match container with virtual inventory.
         InvTweaksMod.proxy.sortComplete();
     }
+
     /**
      * Converts section/index values to slot ID.
      *

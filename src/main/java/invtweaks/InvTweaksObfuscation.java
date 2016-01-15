@@ -77,7 +77,7 @@ public class InvTweaksObfuscation {
         try {
             // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
             if(slot instanceof GuiContainerCreative.CreativeSlot) {
-                Slot underlyingSlot = ((GuiContainerCreative.CreativeSlot)slot).slot;
+                Slot underlyingSlot = ((GuiContainerCreative.CreativeSlot) slot).slot;
                 if(underlyingSlot != null) {
                     return underlyingSlot.slotNumber;
                 } else {
@@ -213,13 +213,35 @@ public class InvTweaksObfuscation {
 
     // Container members
 
+    public static Container getCurrentContainer() {
+        Minecraft mc = FMLClientHandler.instance().getClient();
+        Container currentContainer = mc.thePlayer.inventoryContainer;
+        if(InvTweaksObfuscation.isGuiContainer(mc.currentScreen)) {
+            currentContainer = ((GuiContainer) mc.currentScreen).inventorySlots;
+        }
+
+        return currentContainer;
+    }
+
+    // Slot members
+
+    public static boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
+        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
+                .getItem() == itemStack2.getItem());
+    }
+
+    public static boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
+        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
+                itemStack1.isStackable() &&
+                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
+                ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
+    }
+
     public void addChatMessage(String message) {
         if(mc.ingameGUI != null) {
             mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(message));
         }
     }
-
-    // Slot members
 
     public EntityPlayer getThePlayer() {
         return mc.thePlayer;
@@ -231,16 +253,6 @@ public class InvTweaksObfuscation {
 
     public GuiScreen getCurrentScreen() {
         return mc.currentScreen;
-    }
-
-    public static Container getCurrentContainer() {
-        Minecraft mc = FMLClientHandler.instance().getClient();
-        Container currentContainer = mc.thePlayer.inventoryContainer;
-        if(InvTweaksObfuscation.isGuiContainer(mc.currentScreen)) {
-            currentContainer = ((GuiContainer) mc.currentScreen).inventorySlots;
-        }
-
-        return currentContainer;
     }
 
     public FontRenderer getFontRenderer() {
@@ -259,6 +271,8 @@ public class InvTweaksObfuscation {
         return getGameSettings().keyBindForward.keyCode;
     }
 
+    // Classes
+
     public int getKeyBindingBackKeyCode() {
         return getGameSettings().keyBindBack.keyCode;
     }
@@ -266,8 +280,6 @@ public class InvTweaksObfuscation {
     public InventoryPlayer getInventoryPlayer() { // InventoryPlayer
         return getThePlayer().inventory;
     }
-
-    // Classes
 
     public ItemStack[] getMainInventory() {
         return getInventoryPlayer().mainInventory;
@@ -283,18 +295,6 @@ public class InvTweaksObfuscation {
 
     public int getFocusedSlot() {
         return getInventoryPlayer().currentItem; // currentItem
-    }
-
-    public static boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
-                .getItem() == itemStack2.getItem());
-    }
-
-    public static boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
-                itemStack1.isStackable() &&
-                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
-                ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 
     public boolean hasTexture(ResourceLocation texture) {

@@ -3,8 +3,8 @@ package invtweaks;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.IContainerManager;
 import invtweaks.container.ContainerSectionManager;
+import invtweaks.container.IContainerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -109,6 +109,18 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 }
             }
         });
+    }
+
+    private static boolean canMergeStacks(ItemStack from, ItemStack to) {
+        if(areItemsStackable(from, to)) {
+            if(from.stackSize > from.getMaxStackSize()) {
+                return false;
+            }
+            if(to.stackSize < to.getMaxStackSize()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void sort() {
@@ -434,18 +446,6 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             log.warn("Sorting takes too long, aborting.");
         }
 
-    }
-
-    private static boolean canMergeStacks(ItemStack from, ItemStack to) {
-        if(areItemsStackable(from, to)) {
-            if(from.stackSize > from.getMaxStackSize()) {
-                return false;
-            }
-            if(to.stackSize < to.getMaxStackSize()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean canSwapSlots(int i, int j, int priority) {

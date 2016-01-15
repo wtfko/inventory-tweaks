@@ -51,13 +51,13 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                         clickLabel, 0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_UP, obf.getKeyBindingForwardKeyCode(),
-                        StatCollector.translateToLocal(
-                                "invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
+                StatCollector.translateToLocal(
+                        "invtweaks.help.shortcuts.forward")) + " + " + clickLabel,
                 0x00FFFF00, y);
         y += 12;
         drawShortcutLine("", buildUpOrDownLabel(InvTweaksConfig.PROP_SHORTCUT_DOWN, obf.getKeyBindingBackKeyCode(),
-                        StatCollector.translateToLocal(
-                                "invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
+                StatCollector.translateToLocal(
+                        "invtweaks.help.shortcuts.backwards")) + " + " + clickLabel,
                 0x00FFFF00, y);
         y += 12;
         drawShortcutLine(StatCollector.translateToLocal("invtweaks.help.shortcuts.oneitem"),

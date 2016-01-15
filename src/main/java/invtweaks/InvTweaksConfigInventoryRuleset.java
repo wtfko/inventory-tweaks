@@ -13,14 +13,12 @@ import java.util.regex.Pattern;
  * @author Jimeo Wan
  */
 public class InvTweaksConfigInventoryRuleset {
+    private static final Pattern rulePattern = Pattern.compile("^(?:(?:[a-d1-9]r?)|(?:[a-d][1-9](?:-[a-d][1-9](?:rv?|vr?)?)?)) \\w+$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNICODE_CHARACTER_CLASS);
     private String name;
     private int[] lockPriorities;
     private boolean[] frozenSlots;
     private List<InvTweaksConfigSortingRule> rules;
     private List<String> autoReplaceRules;
-
-    private static final Pattern rulePattern = Pattern.compile("^(?:(?:[a-d1-9]r?)|(?:[a-d][1-9](?:-[a-d][1-9](?:rv?|vr?)?)?)) \\w+$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.UNICODE_CHARACTER_CLASS);
-
     private InvTweaksItemTree tree;
 
     /**

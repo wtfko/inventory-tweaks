@@ -7,7 +7,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Allows to perform various operations on a single section of the inventory and/or containers. Works in both single and

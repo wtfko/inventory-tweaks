@@ -73,6 +73,25 @@ public class InvTweaksConfig {
         reset();
     }
 
+    /**
+     * Returns the file when the properties are stored, after making sure the file exists.
+     *
+     * @return May return null in case of failure while creating the file.
+     */
+    private static File getPropertyFile() {
+        File configPropsFile = InvTweaksConst.CONFIG_PROPS_FILE;
+        if(!configPropsFile.exists()) {
+            try {
+                //noinspection ResultOfMethodCallIgnored (already checking for existence)
+                configPropsFile.createNewFile();
+            } catch(IOException e) {
+                InvTweaks.logInGameStatic("invtweaks.propsfile.errors");
+                return null;
+            }
+        }
+        return configPropsFile;
+    }
+
     public void load() throws Exception {
 
         synchronized(this) {
@@ -146,7 +165,7 @@ public class InvTweaksConfig {
             activeRuleset.finalizeRules();
             rulesets.add(activeRuleset);
 
-            // If a specific ruleset was loaded, 
+            // If a specific ruleset was loaded,
             // try to choose the same again, else load the first one
             currentRuleset = 0;
             if(currentRulesetName != null) {
@@ -361,25 +380,6 @@ public class InvTweaksConfig {
         }
 
         properties.put(PROP_VERSION, InvTweaksConst.MOD_VERSION.split(" ")[0]);
-    }
-
-    /**
-     * Returns the file when the properties are stored, after making sure the file exists.
-     *
-     * @return May return null in case of failure while creating the file.
-     */
-    private static File getPropertyFile() {
-        File configPropsFile = InvTweaksConst.CONFIG_PROPS_FILE;
-        if(!configPropsFile.exists()) {
-            try {
-                //noinspection ResultOfMethodCallIgnored (already checking for existence)
-                configPropsFile.createNewFile();
-            } catch(IOException e) {
-                InvTweaks.logInGameStatic("invtweaks.propsfile.errors");
-                return null;
-            }
-        }
-        return configPropsFile;
     }
 
     public int getSortKeyCode() {

@@ -117,8 +117,8 @@ public class ContainerTransformer implements IClassTransformer {
         ASMHelper.generateBooleanMethodConst(clazz, LARGE_CHEST_METHOD, false);
         ASMHelper.generateIntegerMethodConst(clazz, ROW_SIZE_METHOD, (short) 9);
         ASMHelper.generateForwardingToStaticMethod(clazz, SLOT_MAP_METHOD, "containerCreativeSlots",
-                                                   Type.getObjectType("java/util/Map"),
-                                                   Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
+                Type.getObjectType("java/util/Map"),
+                Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
     public static void transformHorseInventoryContainer(ClassNode clazz) {
@@ -211,6 +211,19 @@ public class ContainerTransformer implements IClassTransformer {
             configClasses = new HashMap<>();
             ex.printStackTrace();
         }
+    }
+
+    private static MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
+        for(MethodNode method : cn.methods) {
+            if(method.visibleAnnotations != null) {
+                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
+                    if(annotationDesc.equals(methodAnnotation.desc)) {
+                        return method;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -387,18 +400,5 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         return bytes;
-    }
-
-    private static MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
-        for(MethodNode method : cn.methods) {
-            if(method.visibleAnnotations != null) {
-                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
-                    if(annotationDesc.equals(methodAnnotation.desc)) {
-                        return method;
-                    }
-                }
-            }
-        }
-        return null;
     }
 }

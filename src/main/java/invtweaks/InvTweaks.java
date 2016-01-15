@@ -4,9 +4,9 @@ import invtweaks.api.IItemTree;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
-import invtweaks.container.IContainerManager;
-import invtweaks.container.DirectContainerManager;
 import invtweaks.container.ContainerSectionManager;
+import invtweaks.container.DirectContainerManager;
+import invtweaks.container.IContainerManager;
 import invtweaks.container.MirroredContainerManager;
 import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * Main class for Inventory Tweaks, which maintains various hooks and dispatches the events to the correct handlers.
  *
  * @author Jimeo Wan
- *         <p/>
+ *         <p>
  *         Contact: jimeo.wan (at) gmail (dot) com Website: <a href="https://inventory-tweaks.readthedocs.org/">https://inventory-tweaks.readthedocs.org/</a>
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
@@ -135,6 +135,40 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public static InvTweaksConfigManager getConfigManager() {
         return instance.cfgManager;
+    }
+
+    public static IContainerManager getContainerManager(Container container) {
+        if(getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_CONTAINER_MIRRORING).equals(InvTweaksConfig.VALUE_TRUE)) {
+            return new MirroredContainerManager(container);
+        } else {
+            return new DirectContainerManager(container);
+        }
+    }
+
+    public static IContainerManager getCurrentContainerManager() {
+        return getContainerManager(InvTweaksObfuscation.getCurrentContainer());
+    }
+
+    private static int getContainerRowSize(GuiContainer guiContainer) {
+        return getSpecialChestRowSize(guiContainer.inventorySlots);
+    }
+
+    private static String buildLogString(Level level, String message, Exception e) {
+        if(e != null) {
+            StackTraceElement exceptionLine = e.getStackTrace()[0];
+            if(exceptionLine != null && exceptionLine.getFileName() != null) {
+                return buildLogString(level, message) + ": " + e.getMessage() + " (l" + exceptionLine.getLineNumber() +
+                        " in " + exceptionLine.getFileName().replace("InvTweaks", "") + ")";
+            } else {
+                return buildLogString(level, message) + ": " + e.getMessage();
+            }
+        } else {
+            return buildLogString(level, message);
+        }
+    }
+
+    private static String buildLogString(Level level, String message) {
+        return InvTweaksConst.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
     }
 
     public void addScheduledTask(Runnable task) {
@@ -394,18 +428,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     public void setItemPickupPending(boolean value) {
         itemPickupPending = value;
         itemPickupTimeout = 5;
-    }
-
-    public static IContainerManager getContainerManager(Container container) {
-        if(getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_CONTAINER_MIRRORING).equals(InvTweaksConfig.VALUE_TRUE)) {
-            return new MirroredContainerManager(container);
-        } else {
-            return new DirectContainerManager(container);
-        }
-    }
-
-    public static IContainerManager getCurrentContainerManager() {
-        return getContainerManager(InvTweaksObfuscation.getCurrentContainer());
     }
 
     public void setSortKeyEnabled(boolean enabled) {
@@ -925,10 +947,6 @@ public class InvTweaks extends InvTweaksObfuscation {
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
-    private static int getContainerRowSize(GuiContainer guiContainer) {
-        return getSpecialChestRowSize(guiContainer.inventorySlots);
-    }
-
     private boolean isSortingShortcutDown() {
         if(sortKeyEnabled && !textboxMode) {
             int keyCode = cfgManager.getConfig().getSortKeyCode();
@@ -995,24 +1013,6 @@ public class InvTweaks extends InvTweaksObfuscation {
             mc.getSoundHandler()
                     .playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
         }
-    }
-
-    private static String buildLogString(Level level, String message, Exception e) {
-        if(e != null) {
-            StackTraceElement exceptionLine = e.getStackTrace()[0];
-            if(exceptionLine != null && exceptionLine.getFileName() != null) {
-                return buildLogString(level, message) + ": " + e.getMessage() + " (l" + exceptionLine.getLineNumber() +
-                        " in " + exceptionLine.getFileName().replace("InvTweaks", "") + ")";
-            } else {
-                return buildLogString(level, message) + ": " + e.getMessage();
-            }
-        } else {
-            return buildLogString(level, message);
-        }
-    }
-
-    private static String buildLogString(Level level, String message) {
-        return InvTweaksConst.INGAME_LOG_PREFIX + ((level.equals(Level.SEVERE)) ? "[ERROR] " : "") + message;
     }
 
 }

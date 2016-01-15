@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
  * @author Jimeo Wan
  */
 public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSortingRule> {
+    private static final Pattern constraintVertical = Pattern.compile("v", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
+    private static final Pattern constraintReverse = Pattern.compile("r", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
     private String constraint;
     private int[] preferredPositions;
     private String keyword;
@@ -20,9 +22,6 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private int priority;
     private int containerSize;
     private int containerRowSize;
-
-    private static final Pattern constraintVertical = Pattern.compile("v", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
-    private static final Pattern constraintReverse = Pattern.compile("r", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.LITERAL);
 
     public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint_, String keyword_, int containerSize_,
                                       int containerRowSize_) {
@@ -112,7 +111,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                 if(digitValue >= 1 && digitValue <= containerRowSize && digitValue < 10) {
                     // 1 column = 0, 9 column = 8
                     column = digitValue - 1;
-                } else if(digitValue >= 10 && (digitValue-10) <= containerColumnSize) {
+                } else if(digitValue >= 10 && (digitValue - 10) <= containerColumnSize) {
                     // A row = 0, D row = 3, H row = 7
                     row = digitValue - 10;
                 } else if(charEqualsIgnoreCase(c, 'r')) {

@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 public class ITPacketHandlerServer extends SimpleChannelInboundHandler<ITPacket> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ITPacket msg) throws Exception {
-        final NetHandlerPlayServer handler = (NetHandlerPlayServer)ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+        final NetHandlerPlayServer handler = (NetHandlerPlayServer) ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
         handler.playerEntity.getServerForPlayer().addScheduledTask(() -> msg.handle(handler));
     }
 }

@@ -33,6 +33,29 @@ public class InvTweaksConfigManager {
         mc = mc_;
     }
 
+    private static long computeConfigLastModified() {
+        return InvTweaksConst.CONFIG_RULES_FILE.lastModified() + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
+    }
+
+    private static void backupFile(File file) {
+        File newFile = new File(file.getName() + ".bak");
+        if(newFile.exists()) {
+            newFile.delete();
+        }
+        file.renameTo(newFile);
+    }
+
+    private static void showConfigErrors(@SuppressWarnings("ParameterHidesMemberVariable") InvTweaksConfig config) {
+        List<String> invalid = config.getInvalidKeywords();
+        if(invalid.size() > 0) {
+            String error = StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
+            for(String keyword : config.getInvalidKeywords()) {
+                error += keyword + " ";
+            }
+            InvTweaks.logInGameStatic(error);
+        }
+    }
+
     // TODO Only reload modified file(s)
     public boolean makeSureConfigurationIsLoaded() {
 
@@ -70,10 +93,6 @@ public class InvTweaksConfigManager {
 
     public InvTweaksHandlerShortcuts getShortcutsHandler() {
         return shortcutsHandler;
-    }
-
-    private static long computeConfigLastModified() {
-        return InvTweaksConst.CONFIG_RULES_FILE.lastModified() + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
     }
 
     /**
@@ -195,14 +214,6 @@ public class InvTweaksConfigManager {
         }
     }
 
-    private static void backupFile(File file) {
-        File newFile = new File(file.getName() + ".bak");
-        if(newFile.exists()) {
-            newFile.delete();
-        }
-        file.renameTo(newFile);
-    }
-
     private boolean extractFile(ResourceLocation resource, File destination) {
         InputStream input;
         try {
@@ -228,17 +239,6 @@ public class InvTweaksConfigManager {
 
             log.error("Cannot extract " + resource + " file: " + e.getMessage());
             return false;
-        }
-    }
-
-    private static void showConfigErrors(@SuppressWarnings("ParameterHidesMemberVariable") InvTweaksConfig config) {
-        List<String> invalid = config.getInvalidKeywords();
-        if(invalid.size() > 0) {
-            String error = StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
-            for(String keyword : config.getInvalidKeywords()) {
-                error += keyword + " ";
-            }
-            InvTweaks.logInGameStatic(error);
         }
     }
 

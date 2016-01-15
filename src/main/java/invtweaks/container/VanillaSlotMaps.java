@@ -36,6 +36,7 @@ public class VanillaSlotMaps {
         GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
         return currentScreen instanceof GuiContainerCreative && ((GuiContainerCreative) currentScreen).getSelectedTabIndex() == CreativeTabs.tabInventory.getTabIndex();
     }
+
     @SideOnly(Side.CLIENT)
     public static Map<ContainerSection, List<Slot>> containerCreativeSlots(GuiContainerCreative.ContainerCreative container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
