@@ -50,6 +50,8 @@ public class ClientProxy extends CommonProxy {
         instance = new InvTweaks(mc);
         ForgeClientTick clientTick = new ForgeClientTick(instance);
 
+        //Intentionally using old register for 1.8 compatibility.
+        //noinspection deprecation
         FMLCommonHandler.instance().bus().register(clientTick);
         MinecraftForge.EVENT_BUS.register(this);
 

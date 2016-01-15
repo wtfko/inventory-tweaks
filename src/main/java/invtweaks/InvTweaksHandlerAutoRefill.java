@@ -3,7 +3,6 @@ package invtweaks;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.container.ContainerSectionManager;
-import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.Item;
@@ -29,7 +28,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
     public InvTweaksHandlerAutoRefill(Minecraft mc_, InvTweaksConfig config_) {
         super(mc_);
-        setConfig(config_);
+        config = config_;
     }
 
     public void setConfig(InvTweaksConfig config_) {
@@ -52,7 +51,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         boolean hasSubtypes = false;
 
         // TODO: ResourceLocation
-        Item original = (Item) Item.itemRegistry.getObject(new ResourceLocation(wantedId));
+        Item original = Item.itemRegistry.getObject(new ResourceLocation(wantedId));
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
@@ -127,8 +126,9 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         else {
             for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                 candidateStack = container.getItemStack(i);
+                // TODO: ResourceLocation
                 if(candidateStack != null &&
-                        Objects.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()), wantedId) &&
+                        Objects.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()).toString(), wantedId) &&
                         candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;

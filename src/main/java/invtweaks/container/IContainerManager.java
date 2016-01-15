@@ -6,7 +6,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public interface IContainerManager {
     int DROP_SLOT = -999;

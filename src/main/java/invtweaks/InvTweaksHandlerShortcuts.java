@@ -417,7 +417,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
         });
     }
 
-    private void moveAll(ShortcutConfig shortcut, ItemStack stackToMatch) throws TimeoutException {
+    private void moveAll(ShortcutConfig shortcut, ItemStack stackToMatch) {
         int toIndex = Integer.MIN_VALUE; // This will always get overwritten before being used, but -1 caused a rapid break.
         int newIndex;
 

@@ -69,7 +69,7 @@ public class InvTweaksObfuscation {
 
     public static ItemStack getSlotStack(Container container, int i) {
         // Slot
-        Slot slot = (Slot) (container.inventorySlots.get(i));
+        Slot slot = container.inventorySlots.get(i);
         return (slot == null) ? null : slot.getStack(); // getStack
     }
 
@@ -99,7 +99,7 @@ public class InvTweaksObfuscation {
             int x = getMouseX(guiContainer);
             int y = getMouseY(guiContainer);
             for(int k = 0; k < container.inventorySlots.size(); k++) {
-                Slot slot = (Slot) container.inventorySlots.get(k);
+                Slot slot = container.inventorySlots.get(k);
                 if(getIsMouseOverSlot(guiContainer, slot, x, y)) {
                     return slot;
                 }
@@ -134,7 +134,7 @@ public class InvTweaksObfuscation {
     }
 
     @Contract("!null->_")
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public static int getSpecialChestRowSize(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$rowSize()"
         return 0;
@@ -144,14 +144,14 @@ public class InvTweaksObfuscation {
 
     // Static access
     @Contract("!null->_")
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public static boolean isValidChest(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validChest()"
         return false;
     }
 
     @Contract("!null->_")
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public static boolean isLargeChest(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$largeChest()"
         return false;
@@ -160,21 +160,21 @@ public class InvTweaksObfuscation {
     // InventoryPlayer members
 
     @Contract("!null->_")
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public static boolean isValidInventory(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$validInventory()"
         return false;
     }
 
     @Contract("!null->_")
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public static boolean showButtons(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$showButtons()"
         return false;
     }
 
     @Contract("!null->_")
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public static Map<ContainerSection, List<Slot>> getContainerSlotMap(Container container) {
         // This method gets replaced by the transformer with "return container.invtweaks$slotMap()"
         return null;

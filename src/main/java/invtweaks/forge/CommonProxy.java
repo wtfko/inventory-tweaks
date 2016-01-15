@@ -12,7 +12,6 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -38,10 +37,12 @@ public class CommonProxy implements InvTweaksAPI {
                 .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec());
         invtweaksChannel.get(Side.SERVER).pipeline().addAfter("ITMessageToMessageCodec#0", "InvTweaks Handler Server", new ITPacketHandlerServer());
 
+        //Intentionally using old register for 1.8 compatibility.
+        //noinspection deprecation
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    public void postInit(@SuppressWarnings("unused") FMLPostInitializationEvent e) {
+    public void postInit(@SuppressWarnings({"unused", "UnusedParameters"}) FMLPostInitializationEvent e) {
     }
 
     public void setServerAssistEnabled(boolean enabled) {

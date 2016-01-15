@@ -41,15 +41,15 @@ public class ContainerSectionManager {
         return containerMgr.moveSome(section, srcIndex, section, destIndex, amount);
     }
 
-    public boolean drop(int srcIndex) throws TimeoutException {
+    public boolean drop(int srcIndex) {
         return containerMgr.drop(section, srcIndex);
     }
 
-    public void leftClick(int index) throws TimeoutException {
+    public void leftClick(int index) {
         containerMgr.leftClick(section, index);
     }
 
-    public void click(int index, boolean rightClick) throws TimeoutException {
+    public void click(int index, boolean rightClick) {
         containerMgr.click(section, index, rightClick);
     }
 
