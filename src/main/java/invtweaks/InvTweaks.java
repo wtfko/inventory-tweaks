@@ -138,11 +138,12 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     public static IContainerManager getContainerManager(Container container) {
-        if(getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_CONTAINER_MIRRORING).equals(InvTweaksConfig.VALUE_TRUE)) {
-            return new MirroredContainerManager(container);
-        } else {
+        // TODO: Reenable when it doesn't just break everything
+        //if(getConfigManager().getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_CONTAINER_MIRRORING).equals(InvTweaksConfig.VALUE_TRUE)) {
+        //    return new MirroredContainerManager(container);
+        //} else {
             return new DirectContainerManager(container);
-        }
+        //}
     }
 
     public static IContainerManager getCurrentContainerManager() {

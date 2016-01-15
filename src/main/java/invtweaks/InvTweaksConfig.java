@@ -347,7 +347,8 @@ public class InvTweaksConfig {
         properties.put(PROP_ENABLE_AUTO_EQUIP_ARMOR, VALUE_FALSE);
         properties.put(PROP_ENABLE_SERVER_ITEMSWAP, VALUE_TRUE);
         properties.put(PROP_ENABLE_CONFIG_LOADED_MESSAGE, VALUE_FALSE);
-        properties.put(PROP_ENABLE_CONTAINER_MIRRORING, VALUE_FALSE);
+        // TODO: Reenable when it doesn't just break everything
+        //properties.put(PROP_ENABLE_CONTAINER_MIRRORING, VALUE_FALSE);
         properties.put(PROP_INVERT_TOOL_DAMAGE, VALUE_TRUE);
 
         properties.put(PROP_SHORTCUT_ALL_ITEMS, "LCONTROL+LSHIFT, RCONTROL+RSHIFT");
