@@ -183,7 +183,7 @@ public class ContainerTransformer implements IClassTransformer {
                 new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerMerchant", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerRepair",
-                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerPlayerSlots")));
+                new ContainerInfo(true, true, false, getVanillaSlotMapInfo("containerRepairSlots")));
         standardClasses.put("net.minecraft.inventory.ContainerHopper", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerBeacon", new ContainerInfo(true, true, false));
         standardClasses.put("net.minecraft.inventory.ContainerBrewingStand",

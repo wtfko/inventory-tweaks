@@ -128,6 +128,18 @@ public class VanillaSlotMaps {
         return slotRefs;
     }
 
+    public static Map<ContainerSection, List<Slot>> containerRepairSlots(Container container) {
+        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
+
+        slotRefs.put(ContainerSection.CRAFTING_IN, container.inventorySlots.subList(0, 2));
+        slotRefs.put(ContainerSection.CRAFTING_OUT, container.inventorySlots.subList(2, 3));
+        slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(3, 39));
+        slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, container.inventorySlots.subList(3, 30));
+        slotRefs.put(ContainerSection.INVENTORY_HOTBAR, container.inventorySlots.subList(30, 39));
+
+        return slotRefs;
+    }
+
     public static Map<ContainerSection, List<Slot>> unknownContainerSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<>();
 
