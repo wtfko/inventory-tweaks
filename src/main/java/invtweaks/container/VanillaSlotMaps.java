@@ -98,9 +98,9 @@ public class VanillaSlotMaps {
 
         slotRefs.put(ContainerSection.CRAFTING_OUT, container.inventorySlots.subList(0, 1));
         slotRefs.put(ContainerSection.CRAFTING_IN, container.inventorySlots.subList(1, 10));
-        slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(10, 45));
-        slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, container.inventorySlots.subList(10, 36));
-        slotRefs.put(ContainerSection.INVENTORY_HOTBAR, container.inventorySlots.subList(36, 45));
+        slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(10, 46));
+        slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, container.inventorySlots.subList(10, 37));
+        slotRefs.put(ContainerSection.INVENTORY_HOTBAR, container.inventorySlots.subList(37, 46));
 
         return slotRefs;
     }
