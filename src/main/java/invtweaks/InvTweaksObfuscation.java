@@ -226,8 +226,9 @@ public class InvTweaksObfuscation {
     // Slot members
 
     public static boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
-                .getItem() == itemStack2.getItem());
+        return itemStack1 != null && itemStack2 != null &&
+                (itemStack1.isItemEqual(itemStack2) ||
+                        (itemStack1.isItemStackDamageable() && itemStack1.getItem() == itemStack2.getItem()));
     }
 
     public static boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
