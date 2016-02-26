@@ -1,6 +1,7 @@
 package invtweaks.container;
 
 import invtweaks.InvTweaks;
+import invtweaks.InvTweaksHandlerSorting;
 import invtweaks.InvTweaksObfuscation;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
@@ -82,8 +83,7 @@ public class DirectContainerManager implements IContainerManager {
 
         // Use intermediate slot if we have to swap tools, maps, etc.
         assert srcStack != null;
-        if(destStack != null && srcStack.getItem() == destStack.getItem() && (srcStack.getMaxStackSize() == 1 ||
-                srcStack.hasTagCompound() || destStack.hasTagCompound())) {
+        if(destStack != null && !InvTweaksObfuscation.areItemsStackable(srcStack, destStack)) {
             int intermediateSlot = getFirstEmptyUsableSlotNumber();
             ContainerSection intermediateSection = getSlotSection(intermediateSlot);
             int intermediateIndex = getSlotIndex(intermediateSlot);
