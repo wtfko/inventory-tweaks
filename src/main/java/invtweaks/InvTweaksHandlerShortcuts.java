@@ -435,6 +435,12 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                     success = container.move(shortcut.fromSection, fromIndex, shortcut.toSection, toIndex);
                     newIndex = getNextTargetIndex(shortcut, slot.getStack());
 
+                    // This can lead to an infinite loop, but represents some part of the process having gone wrong.
+                    // So we want information on why.
+                    if(success && newIndex == toIndex && slot.getHasStack()) {
+                        throw new RuntimeException("Inventory in invalid sate after move");
+                    }
+
                     // Continue if movement succeeded, there is another slot to try, or we're dropping items.
                     // In reverse: fail if movement failed, AND there are no other slots AND we're not dropping.
                     if(success || (newIndex != toIndex) || (shortcut.action == ShortcutSpecification.Action.DROP)) {

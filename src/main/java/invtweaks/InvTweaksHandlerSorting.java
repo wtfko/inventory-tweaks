@@ -113,9 +113,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     private static boolean canMergeStacks(ItemStack from, ItemStack to) {
         if(areItemsStackable(from, to)) {
+            // We will not merge from a stack that exceeds its maximum size already, as these cannot be normally obtained.
             if(from.stackSize > from.getMaxStackSize()) {
                 return false;
             }
+
+            // If the destination stack has any room left, we can add to it.
             if(to.stackSize < to.getMaxStackSize()) {
                 return true;
             }
