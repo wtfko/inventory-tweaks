@@ -12,6 +12,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,11 +51,6 @@ public class ClientProxy extends CommonProxy {
         instance = new InvTweaks(mc);
         ForgeClientTick clientTick = new ForgeClientTick(instance);
 
-        //Intentionally using old register for 1.8 compatibility.
-        //noinspection deprecation
-        FMLCommonHandler.instance().bus().register(clientTick);
-        MinecraftForge.EVENT_BUS.register(this);
-
         ClientRegistry.registerKeyBinding(KEYBINDING_SORT);
     }
 
@@ -79,7 +75,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
+    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, ClickType action,
                           EntityPlayer player) {
         //int modiferKeys = (shiftHold) ? 1 : 0 /* XXX Placeholder */;
         if(serverSupportEnabled) {

@@ -17,7 +17,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -240,7 +240,7 @@ public class InvTweaksObfuscation {
 
     public void addChatMessage(String message) {
         if(mc.ingameGUI != null) {
-            mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(message));
+            mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentString(message));
         }
     }
 

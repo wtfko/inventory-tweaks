@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.minecraft.inventory.ClickType.PICKUP;
+
 /**
  * Allows to perform various operations on the inventory and/or containers. Works in both single and multiplayer.
  *
@@ -203,7 +205,7 @@ public class DirectContainerManager implements IContainerManager {
         if(slot != -1) {
             int data = (rightClick) ? 1 : 0;
             InvTweaksMod.proxy
-                    .slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, 0,
+                    .slotClick(InvTweaks.getInstance().getPlayerController(), container.windowId, slot, data, PICKUP,
                             InvTweaks.getInstance().getThePlayer());
         }
     }

@@ -5,6 +5,7 @@ import invtweaks.api.container.ContainerSection;
 import invtweaks.container.ContainerSectionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -185,8 +186,8 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                         if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                             if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                                     .equals(InvTweaksConfig.VALUE_FALSE)) {
-                                mc.getSoundHandler().playSound(PositionedSoundRecord.create(
-                                        new ResourceLocation("mob.chicken.plop"), 1.0F));
+                                mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(
+                                        SoundEvents.entity_chicken_egg, 1.0F));
                             }
                             // If item are swapped (like for mushroom soups),
                             // put the item back in the inventory if it is in the hotbar

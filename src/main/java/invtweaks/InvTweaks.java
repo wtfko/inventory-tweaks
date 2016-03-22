@@ -14,14 +14,16 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.logging.log4j.Logger;
@@ -371,27 +373,30 @@ public class InvTweaks extends InvTweaksObfuscation {
                         }
                     }
 
-                    Map<Integer, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
-                    Map<Integer, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
+                    Map<Enchantment, Integer> iEnchs = EnchantmentHelper.getEnchantments(i);
+                    Map<Enchantment, Integer> jEnchs = EnchantmentHelper.getEnchantments(j);
                     if(iEnchs.size() == jEnchs.size()) {
                         int iEnchMaxId = 0, iEnchMaxLvl = 0;
                         int jEnchMaxId = 0, jEnchMaxLvl = 0;
 
-                        for(Map.Entry<Integer, Integer> ench : iEnchs.entrySet()) {
+                        // TODO: This is really arbitrary but there's not really a good way to do this generically.
+                        for(Map.Entry<Enchantment, Integer> ench : iEnchs.entrySet()) {
+                            int enchId = Enchantment.getEnchantmentID(ench.getKey());
                             if(ench.getValue() > iEnchMaxLvl) {
-                                iEnchMaxId = ench.getKey();
+                                iEnchMaxId = enchId;
                                 iEnchMaxLvl = ench.getValue();
-                            } else if(ench.getValue() == iEnchMaxLvl && ench.getKey() > iEnchMaxId) {
-                                iEnchMaxId = ench.getKey();
+                            } else if(ench.getValue() == iEnchMaxLvl && enchId > iEnchMaxId) {
+                                iEnchMaxId = enchId;
                             }
                         }
 
-                        for(Map.Entry<Integer, Integer> ench : jEnchs.entrySet()) {
+                        for(Map.Entry<Enchantment, Integer> ench : jEnchs.entrySet()) {
+                            int enchId = Enchantment.getEnchantmentID(ench.getKey());
                             if(ench.getValue() > jEnchMaxLvl) {
-                                jEnchMaxId = ench.getKey();
+                                jEnchMaxId = enchId;
                                 jEnchMaxLvl = ench.getValue();
-                            } else if(ench.getValue() == jEnchMaxLvl && ench.getKey() > jEnchMaxId) {
-                                jEnchMaxId = ench.getKey();
+                            } else if(ench.getValue() == jEnchMaxLvl && enchId > jEnchMaxId) {
+                                jEnchMaxId = enchId;
                             }
                         }
 
@@ -452,7 +457,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void logInGame(String message, boolean alreadyTranslated) {
         String formattedMsg = buildLogString(Level.INFO,
-                (alreadyTranslated) ? message : StatCollector.translateToLocal(message));
+                (alreadyTranslated) ? message : I18n.translateToLocal(message));
 
         if(mc.ingameGUI == null) {
             queuedMessages.add(formattedMsg);
@@ -465,7 +470,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     public void logInGameError(String message, Exception e) {
         e.printStackTrace();
-        String formattedMsg = buildLogString(Level.SEVERE, StatCollector.translateToLocal(message), e);
+        String formattedMsg = buildLogString(Level.SEVERE, I18n.translateToLocal(message), e);
 
         if(mc.ingameGUI == null) {
             queuedMessages.add(formattedMsg);
@@ -558,7 +563,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             }
 
             if(newRuleset != null) {
-                logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
+                logInGame(String.format(I18n.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
                         true);
                 // Hack to prevent 2nd way to switch configs from being enabled
                 sortingKeyPressedDate = Integer.MAX_VALUE;
@@ -575,7 +580,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 String newRuleset = config.switchConfig();
                 // Log only if there is more than 1 ruleset
                 if(previousRuleset != null && newRuleset != null && !previousRuleset.equals(newRuleset)) {
-                    logInGame(String.format(StatCollector.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
+                    logInGame(String.format(I18n.translateToLocal("invtweaks.loadconfig.enabled"), newRuleset),
                             true);
                     handleSorting(currentScreen);
                 }
@@ -810,7 +815,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     controlList.add(new InvTweaksGuiSettingsButton(cfgManager, InvTweaksConst.JIMEOWAN_ID,
                             guiContainer.guiLeft + guiContainer.xSize - 15,
                             guiContainer.guiTop + 5, w, h, "...",
-                            StatCollector.translateToLocal(
+                            I18n.translateToLocal(
                                     "invtweaks.button.settings.tooltip"),
                             customTextureAvailable));
                 }
@@ -835,7 +840,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                     controlList
                             .add(new InvTweaksGuiSettingsButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 1,
                                     (isChestWayTooBig) ? y - 3 : y, w, h, "...",
-                                    StatCollector.translateToLocal(
+                                    I18n.translateToLocal(
                                             "invtweaks.button.settings.tooltip"),
                                     customTextureAvailable));
 
@@ -847,14 +852,14 @@ public class InvTweaks extends InvTweaksObfuscation {
                         GuiButton button = new InvTweaksGuiSortingButton(cfgManager, id++,
                                 (isChestWayTooBig) ? x + 22 : x - 13,
                                 (isChestWayTooBig) ? y + 12 : y, w, h, "h",
-                                StatCollector.translateToLocal(
+                                I18n.translateToLocal(
                                         "invtweaks.button.chest3.tooltip"),
                                 SortingMethod.HORIZONTAL,
                                 rowSize, customTextureAvailable);
                         controlList.add(button);
 
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 25,
-                                (isChestWayTooBig) ? y + 25 : y, w, h, "v", StatCollector
+                                (isChestWayTooBig) ? y + 25 : y, w, h, "v", I18n
                                 .translateToLocal("invtweaks.button.chest2.tooltip"),
                                 SortingMethod.VERTICAL, rowSize,
                                 customTextureAvailable);
@@ -862,7 +867,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                         //noinspection UnusedAssignment (Using ++ for extensibility)
                         button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
-                                (isChestWayTooBig) ? y + 38 : y, w, h, "s", StatCollector
+                                (isChestWayTooBig) ? y + 38 : y, w, h, "s", I18n
                                 .translateToLocal("invtweaks.button.chest1.tooltip"),
                                 SortingMethod.DEFAULT, rowSize,
                                 customTextureAvailable);
@@ -1012,7 +1017,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                 .equals(InvTweaksConfig.VALUE_FALSE)) {
             mc.getSoundHandler()
-                    .playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                    .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
         }
     }
 

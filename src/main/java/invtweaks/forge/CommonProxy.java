@@ -10,12 +10,11 @@ import invtweaks.network.ITPacketHandlerServer;
 import invtweaks.network.packets.ITPacketLogin;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
@@ -28,6 +27,7 @@ import java.util.EnumMap;
 
 public class CommonProxy implements InvTweaksAPI {
     protected static EnumMap<Side, FMLEmbeddedChannel> invtweaksChannel;
+    private static MinecraftServer server;
 
     public void preInit(FMLPreInitializationEvent e) {
     }
@@ -37,12 +37,18 @@ public class CommonProxy implements InvTweaksAPI {
                 .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec());
         invtweaksChannel.get(Side.SERVER).pipeline().addAfter("ITMessageToMessageCodec#0", "InvTweaks Handler Server", new ITPacketHandlerServer());
 
-        //Intentionally using old register for 1.8 compatibility.
-        //noinspection deprecation
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public void postInit(@SuppressWarnings({"unused", "UnusedParameters"}) FMLPostInitializationEvent e) {
+    public void postInit(FMLPostInitializationEvent e) {
+    }
+
+    public void serverAboutToStart(FMLServerAboutToStartEvent e) {
+        server = e.getServer();
+    }
+
+    public void serverStopped(FMLServerStoppedEvent e) {
+        server = null;
     }
 
     public void setServerAssistEnabled(boolean enabled) {
@@ -61,7 +67,7 @@ public class CommonProxy implements InvTweaksAPI {
      * 6: Merge all valid items with held item
      */
     @SideOnly(Side.CLIENT)
-    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
+    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, ClickType action,
                           EntityPlayer player) {
     }
 
@@ -109,7 +115,7 @@ public class CommonProxy implements InvTweaksAPI {
 
     @SuppressWarnings("unused")
     public void addServerScheduledTask(Runnable task) {
-        MinecraftServer.getServer().addScheduledTask(task);
+        server.addScheduledTask(task);
     }
 
     public void addClientScheduledTask(Runnable task) {

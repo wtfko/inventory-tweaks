@@ -7,9 +7,7 @@ import invtweaks.api.container.ContainerSection;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -55,6 +53,17 @@ public class InvTweaksMod implements InvTweaksAPI {
         proxy.postInit(e);
     }
 
+    @Mod.EventHandler
+    @SuppressWarnings("unused")
+    public void serverAboutToStart(FMLServerAboutToStartEvent e) {
+        proxy.serverAboutToStart(e);
+    }
+
+    @Mod.EventHandler
+    @SuppressWarnings("unused")
+    public void serverStopped(FMLServerStoppedEvent e) {
+        proxy.serverStopped(e);
+    }
     @Override
     public void addOnLoadListener(IItemTreeListener listener) {
         proxy.addOnLoadListener(listener);

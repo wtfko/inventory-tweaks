@@ -2,7 +2,7 @@ package invtweaks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
@@ -48,7 +48,7 @@ public class InvTweaksConfigManager {
     private static void showConfigErrors(@SuppressWarnings("ParameterHidesMemberVariable") InvTweaksConfig config) {
         List<String> invalid = config.getInvalidKeywords();
         if(invalid.size() > 0) {
-            String error = StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
+            String error = I18n.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
             for(String keyword : config.getInvalidKeywords()) {
                 error += keyword + " ";
             }
@@ -134,12 +134,12 @@ public class InvTweaksConfigManager {
         if(!InvTweaksConst.CONFIG_RULES_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE,
                 InvTweaksConst.CONFIG_RULES_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
-                    StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
+                    I18n.translateToLocal("invtweaks.loadconfig.filemissing"));
         }
         if(!InvTweaksConst.CONFIG_TREE_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE,
                 InvTweaksConst.CONFIG_TREE_FILE)) {
             InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
-                    StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
+                    I18n.translateToLocal("invtweaks.loadconfig.filemissing"));
         }
 
         storedConfigLastModified = computeConfigLastModified();
