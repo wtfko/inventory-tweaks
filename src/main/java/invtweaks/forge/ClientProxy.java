@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
@@ -49,9 +50,22 @@ public class ClientProxy extends CommonProxy {
         Minecraft mc = FMLClientHandler.instance().getClient();
         // Instantiate mod core
         instance = new InvTweaks(mc);
-        ForgeClientTick clientTick = new ForgeClientTick(instance);
 
         ClientRegistry.registerKeyBinding(KEYBINDING_SORT);
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent tick) {
+        if(tick.phase == TickEvent.Phase.START) {
+            Minecraft mc = FMLClientHandler.instance().getClient();
+            if(mc.theWorld != null) {
+                if(mc.currentScreen != null) {
+                    instance.onTickInGUI(mc.currentScreen);
+                } else {
+                    instance.onTickInGame();
+                }
+            }
+        }
     }
 
     @SubscribeEvent

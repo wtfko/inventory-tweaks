@@ -34,6 +34,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelMoreOptions;
     private static String labelBugSorting;
 
+    @SuppressWarnings("unused")
     public InvTweaksGuiSettings(GuiScreen parentScreen_) {
         this(Minecraft.getMinecraft(), parentScreen_, InvTweaks.getConfigManager().getConfig());
     }
