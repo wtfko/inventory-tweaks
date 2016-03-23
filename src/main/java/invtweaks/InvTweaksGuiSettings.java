@@ -34,6 +34,10 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     private static String labelMoreOptions;
     private static String labelBugSorting;
 
+    public InvTweaksGuiSettings(GuiScreen parentScreen_) {
+        this(Minecraft.getMinecraft(), parentScreen_, InvTweaks.getConfigManager().getConfig());
+    }
+
     public InvTweaksGuiSettings(Minecraft mc_, GuiScreen parentScreen_, InvTweaksConfig config_) {
         super(mc_, parentScreen_, config_);
 
