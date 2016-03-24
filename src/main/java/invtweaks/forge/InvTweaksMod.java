@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.event.*;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 @Mod(modid = "inventorytweaks",
-        dependencies = "required-after:Forge@[11.14.4,)",
+        dependencies = "required-after:Forge@[12.16.0,)",
         acceptableRemoteVersions = "*",
         acceptedMinecraftVersions = "",
         guiFactory = "invtweaks.forge.ModGuiFactory")
