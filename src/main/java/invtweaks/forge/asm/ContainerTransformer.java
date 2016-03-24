@@ -139,7 +139,7 @@ public class ContainerTransformer implements IClassTransformer {
             String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name, method.desc);
             String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
 
-            if("func_146195_b".equals(unmappedName) && "(Z)V".equals(unmappedDesc)) {
+            if(("func_146195_b".equals(unmappedName) || "setFocused".equals(unmappedName))&& "(Z)V".equals(unmappedDesc)) {
                 InsnList code = method.instructions;
                 AbstractInsnNode returnNode = null;
                 for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
