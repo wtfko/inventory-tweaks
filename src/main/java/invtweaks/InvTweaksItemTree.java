@@ -6,6 +6,9 @@ import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +50,7 @@ public class InvTweaksItemTree implements IItemTree {
 
         if(defaultItems == null) {
             defaultItems = new ArrayList<>();
-            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, null, InvTweaksConst.DAMAGE_WILDCARD,
+            defaultItems.add(new InvTweaksItemTreeItem(UNKNOWN_ITEM, null, InvTweaksConst.DAMAGE_WILDCARD, null,
                     Integer.MAX_VALUE));
         }
 
@@ -164,7 +167,7 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public List<IItemTreeItem> getItems(String id, int damage) {
+    public List<IItemTreeItem> getItems(String id, int damage, NBTTagCompound extra) {
         if(id == null) {
             return new ArrayList<>();
         }
@@ -180,12 +183,20 @@ public class InvTweaksItemTree implements IItemTree {
             items.stream().filter(item -> item.getDamage() != InvTweaksConst.DAMAGE_WILDCARD && item.getDamage() != damage).forEach(filteredItems::remove);
         }
 
+        items = filteredItems;
+        filteredItems = new ArrayList<>(items);
+
+        // Filter items that don't match extra data
+        if(extra != null && !items.isEmpty()) {
+            items.stream().filter(item -> !NBTUtil.areNBTEquals(item.getExtraData(), extra, true)).forEach(filteredItems::remove);
+        }
+
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
-            IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage,
+            IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage, null,
                     5000/*TODO: What to do here with non-int IDs + id * 16 + damage*/);
             IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
-                    InvTweaksConst.DAMAGE_WILDCARD, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
+                    InvTweaksConst.DAMAGE_WILDCARD, null, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
             addItem(getRootCategory().getName(), newItemId);
             addItem(getRootCategory().getName(), newItemDamage);
             filteredItems.add(newItemId);
@@ -200,6 +211,12 @@ public class InvTweaksItemTree implements IItemTree {
         }
 
         return filteredItems;
+
+    }
+
+    @Override
+    public List<IItemTreeItem> getItems(String id, int damage) {
+        return getItems(id, damage, null);
     }
 
     @Override
@@ -232,7 +249,13 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
             throws NullPointerException {
-        InvTweaksItemTreeItem addedItem = new InvTweaksItemTreeItem(name, id, damage, order);
+        return addItem(parentCategory, name, id, damage, null, order);
+    }
+
+    @Override
+    public IItemTreeItem addItem(String parentCategory, String name, String id, int damage, NBTTagCompound extra, int order)
+            throws NullPointerException {
+        InvTweaksItemTreeItem addedItem = new InvTweaksItemTreeItem(name, id, damage, extra, order);
         addItem(parentCategory, addedItem);
         return addedItem;
     }
@@ -274,7 +297,7 @@ public class InvTweaksItemTree implements IItemTree {
             if(i != null) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 addItem(category,
-                        new InvTweaksItemTreeItem(name, Item.REGISTRY.getNameForObject(i.getItem()).toString(), i.getItemDamage(), order));
+                        new InvTweaksItemTreeItem(name, Item.REGISTRY.getNameForObject(i.getItem()).toString(), i.getItemDamage(), null, order));
             } else {
                 log.warn(String.format("An OreDictionary entry for %s is null", oreName));
             }
@@ -290,7 +313,7 @@ public class InvTweaksItemTree implements IItemTree {
             if(evOre.getItem() != null) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.REGISTRY.getNameForObject(evOre.getItem()).toString(),
-                        evOre.getItemDamage(), ore.order));
+                        evOre.getItemDamage(), null, ore.order));
             } else {
                 log.warn(String.format("An OreDictionary entry for %s is null", ev.getName()));
             }

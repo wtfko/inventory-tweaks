@@ -1,6 +1,9 @@
 package invtweaks;
 
 import invtweaks.api.IItemTreeListener;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -25,6 +28,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_RANGE_DMIN = "dmin"; // Damage ranges
     private final static String ATTR_RANGE_DMAX = "dmax";
     private final static String ATTR_OREDICT_NAME = "oreDictName"; // OreDictionary names
+    private final static String ATTR_DATA = "data";
     private final static String ATTR_TREE_VERSION = "treeVersion";
     private static final List<IItemTreeListener> onLoadListeners = new ArrayList<>();
     private static InvTweaksItemTree tree;
@@ -117,7 +121,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
                 int rangeDMin = Integer.parseInt(rangeDMinAttr);
                 int rangeDMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_DMAX));
                 for(int damage = rangeDMin; damage <= rangeDMax; damage++) {
-                    tree.addItem(name, new InvTweaksItemTreeItem((name + id + "-" + damage), id, damage,
+                    tree.addItem(name, new InvTweaksItemTreeItem((name + id + "-" + damage), id, damage, null,
                             itemOrder++));
                 }
             }
@@ -129,11 +133,20 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         else if(attributes.getValue(ATTR_ID) != null) {
             String id = attributes.getValue(ATTR_ID);
             int damage = InvTweaksConst.DAMAGE_WILDCARD;
+            String extraDataAttr = attributes.getValue(ATTR_DATA);
+            NBTTagCompound extraData = null;
+            if(extraDataAttr != null) {
+                try {
+                    extraData = JsonToNBT.getTagFromJson(extraDataAttr);
+                } catch(NBTException e) {
+                    throw new RuntimeException("Data attribute failed for tree entry '" + name + "'", e);
+                }
+            }
             if(attributes.getValue(ATTR_DAMAGE) != null) {
                 damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
             }
             tree.addItem(categoryStack.getLast(),
-                    new InvTweaksItemTreeItem(name, id, damage, itemOrder++));
+                    new InvTweaksItemTreeItem(name, id, damage, extraData, itemOrder++));
         } else if(oreDictNameAttr != null) {
             tree.registerOre(categoryStack.getLast(), name, oreDictNameAttr, itemOrder++);
         }

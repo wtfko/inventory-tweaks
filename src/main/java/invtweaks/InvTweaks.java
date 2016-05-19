@@ -949,7 +949,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     private int getItemOrder(ItemStack itemStack) {
         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
         List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.REGISTRY.getNameForObject(itemStack.getItem()).toString(),
-                itemStack.getItemDamage());
+                itemStack.getItemDamage(), itemStack.getTagCompound());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 

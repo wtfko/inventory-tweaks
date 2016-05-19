@@ -849,9 +849,230 @@
             <chorusPlant id="chorus_plant"/>
         </plant>
         <fireworks id="firework_charge"/>
-        <potion id="potion"/>
-        <spalshPotion id="splash_potion"/>
-        <lingeringPotion id="lingering_potion"/>
+        <potion>
+            <drinkablePotion>
+                <neutralPotion>
+                    <potionEmpty id="potion" data='{Potion:"minecraft:empty"}'/>
+                    <potionWater id="potion" data='{Potion:"minecraft:water"}'/>
+                    <waterBottle id="potion" data='{Potion:"minecraft:water"}'/>
+                    <potionAwkward id="potion" data='{Potion:"minecraft:awkward"}'/>
+                    <potionThick id="potion" data='{Potion:"minecraft:thick"}'/>
+                    <potionMundane id="potion" data='{Potion:"minecraft:mundane"}'/>
+                </neutralPotion>
+                <positivePotion>
+                    <regenerationPotion>
+                        <potionRegeneration id="potion" data='{Potion:"minecraft:regeneration"}'/>
+                        <potionRegenerationEx id="potion" data='{Potion:"minecraft:long_regeneration"}'/>
+                        <potionRegenerationII id="potion" data='{Potion:"minecraft:strong_regeneration"}'/>
+                    </regenerationPotion>
+                    <swiftnessPotion>
+                        <potionSwiftness id="potion" data='{Potion:"minecraft:swiftness"}'/>
+                        <potionSwiftnessEx id="potion" data='{Potion:"minecraft:long_swiftness"}'/>
+                        <potionSwiftnessII id="potion" data='{Potion:"minecraft:strong_swiftness"}'/>
+                    </swiftnessPotion>
+                    <fireResistancePotion>
+                        <potionFireResistance id="potion" data='{Potion:"minecraft:fire_resistance"}'/>
+                        <potionFireResistanceEx id="potion" data='{Potion:"minecraft:long_fire_resistance"}'/>
+                    </fireResistancePotion>
+                    <healingPotion>
+                        <potionHealing id="potion" data='{Potion:"minecraft:healing"}'/>
+                        <potionHealingII id="potion" data='{Potion:"minecraft:strong_healing"}'/>
+                    </healingPotion>
+                    <strengthPotion>
+                        <potionStrength id="potion" data='{Potion:"minecraft:strength"}'/>
+                        <potionStrengthEx id="potion" data='{Potion:"minecraft:long_strength"}'/>
+                        <potionStrengthII id="potion" data='{Potion:"minecraft:strong_strength"}'/>
+                    </strengthPotion>
+                    <nightVisionPotion>
+                        <potionNightVision id="potion" data='{Potion:"minecraft:night_vision"}'/>
+                        <potionNightVisionEx id="potion" data='{Potion:"minecraft:long_night_vision"}'/>
+                    </nightVisionPotion>
+                    <invisibilityPotion>
+                        <potionInvisibility id="potion" data='{Potion:"minecraft:invisibility"}'/>
+                        <potionInvisibilityEx id="potion" data='{Potion:"minecraft:long_invisibility"}'/>
+                    </invisibilityPotion>
+                    <leapingPotion>
+                        <potionLeaping id="potion" data='{Potion:"minecraft:leaping"}'/>
+                        <potionLeapingEx id="potion" data='{Potion:"minecraft:long_leaping"}'/>
+                        <potionLeapingII id="potion" data='{Potion:"minecraft:strong_leaping"}'/>
+                    </leapingPotion>
+                    <waterBreahingPotion>
+                        <potionWaterBreathing id="potion" data='{Potion:"minecraft:water_breathing"}'/>
+                        <potionWaterBreathingEx id="potion" data='{Potion:"minecraft:long_water_breathing"}'/>
+                    </waterBreahingPotion>
+                    <luckPotion>
+                        <potionLuck id="potion" data='{Potion:"minecraft:luck"}'/>
+                    </luckPotion>
+                </positivePotion>
+                <negativePotion>
+                    <poisonPotion>
+                        <potionPoison id="potion" data='{Potion:"minecraft:poison"}'/>
+                        <potionPoisonEx id="potion" data='{Potion:"minecraft:long_poison"}'/>
+                        <potionPoisonII id="potion" data='{Potion:"minecraft:strong_poison"}'/>
+                    </poisonPotion>
+                    <weaknessPotion>
+                        <potionWeakness id="potion" data='{Potion:"minecraft:weakness"}'/>
+                        <potionWeaknessEx id="potion" data='{Potion:"minecraft:long_weakness"}'/>
+                    </weaknessPotion>
+                    <slownessPotion>
+                        <potionSlowness id="potion" data='{Potion:"minecraft:slowness"}'/>
+                        <potionSlownessEx id="potion" data='{Potion:"minecraft:long_slowness"}'/>
+                    </slownessPotion>
+                    <harmingPotion>
+                        <potionHarming id="potion" data='{Potion:"minecraft:harming"}'/>
+                        <potionHarmingII id="potion" data='{Potion:"minecraft:strong_harming"}'/>
+                    </harmingPotion>
+                </negativePotion>
+            </drinkablePotion>
+            <splashPotion>                <neutralSplashPotion>
+                <splashPotionEmpty id="splash_potion" data='{Potion:"minecraft:empty"}'/>
+                <splashPotionWater id="splash_potion" data='{Potion:"minecraft:water"}'/>
+                <splashWaterBottle id="splash_potion" data='{Potion:"minecraft:water"}'/>
+                <splashPotionAwkward id="splash_potion" data='{Potion:"minecraft:awkward"}'/>
+                <splashPotionThick id="splash_potion" data='{Potion:"minecraft:thick"}'/>
+                <splashPotionMundane id="splash_potion" data='{Potion:"minecraft:mundane"}'/>
+            </neutralSplashPotion>
+                <positiveSplashPotion>
+                    <regenerationSplashPotion>
+                        <splashPotionRegeneration id="splash_potion" data='{Potion:"minecraft:regeneration"}'/>
+                        <splashPotionRegenerationEx id="splash_potion" data='{Potion:"minecraft:long_regeneration"}'/>
+                        <splashPotionRegenerationII id="splash_potion" data='{Potion:"minecraft:strong_regeneration"}'/>
+                    </regenerationSplashPotion>
+                    <swiftnessSplashPotion>
+                        <splashPotionSwiftness id="splash_potion" data='{Potion:"minecraft:swiftness"}'/>
+                        <splashPotionSwiftnessEx id="splash_potion" data='{Potion:"minecraft:long_swiftness"}'/>
+                        <splashPotionSwiftnessII id="splash_potion" data='{Potion:"minecraft:strong_swiftness"}'/>
+                    </swiftnessSplashPotion>
+                    <fireResistanceSplashPotion>
+                        <splashPotionFireResistance id="splash_potion" data='{Potion:"minecraft:fire_resistance"}'/>
+                        <splashPotionFireResistanceEx id="splash_potion" data='{Potion:"minecraft:long_fire_resistance"}'/>
+                    </fireResistanceSplashPotion>
+                    <healingSplashPotion>
+                        <splashPotionHealing id="splash_potion" data='{Potion:"minecraft:healing"}'/>
+                        <splashPotionHealingII id="splash_potion" data='{Potion:"minecraft:strong_healing"}'/>
+                    </healingSplashPotion>
+                    <strengthSplashPotion>
+                        <splashPotionStrength id="splash_potion" data='{Potion:"minecraft:strength"}'/>
+                        <splashPotionStrengthEx id="splash_potion" data='{Potion:"minecraft:long_strength"}'/>
+                        <splashPotionStrengthII id="splash_potion" data='{Potion:"minecraft:strong_strength"}'/>
+                    </strengthSplashPotion>
+                    <nightVisionSplashPotion>
+                        <splashPotionNightVision id="splash_potion" data='{Potion:"minecraft:night_vision"}'/>
+                        <splashPotionNightVisionEx id="splash_potion" data='{Potion:"minecraft:long_night_vision"}'/>
+                    </nightVisionSplashPotion>
+                    <invisibilitySplashPotion>
+                        <splashPotionInvisibility id="splash_potion" data='{Potion:"minecraft:invisibility"}'/>
+                        <splashPotionInvisibilityEx id="splash_potion" data='{Potion:"minecraft:long_invisibility"}'/>
+                    </invisibilitySplashPotion>
+                    <leapingSplashPotion>
+                        <splashPotionLeaping id="splash_potion" data='{Potion:"minecraft:leaping"}'/>
+                        <splashPotionLeapingEx id="splash_potion" data='{Potion:"minecraft:long_leaping"}'/>
+                        <splashPotionLeapingII id="splash_potion" data='{Potion:"minecraft:strong_leaping"}'/>
+                    </leapingSplashPotion>
+                    <waterBreahingSplashPotion>
+                        <splashPotionWaterBreathing id="splash_potion" data='{Potion:"minecraft:water_breathing"}'/>
+                        <splashPotionWaterBreathingEx id="splash_potion" data='{Potion:"minecraft:long_water_breathing"}'/>
+                    </waterBreahingSplashPotion>
+                    <luckSplashPotion>
+                        <splashPotionLuck id="splash_potion" data='{Potion:"minecraft:luck"}'/>
+                    </luckSplashPotion>
+                </positiveSplashPotion>
+                <negativeSplashPotion>
+                    <poisonSplashPotion>
+                        <splashPotionPoison id="splash_potion" data='{Potion:"minecraft:poison"}'/>
+                        <splashPotionPoisonEx id="splash_potion" data='{Potion:"minecraft:long_poison"}'/>
+                        <splashPotionPoisonII id="splash_potion" data='{Potion:"minecraft:strong_poison"}'/>
+                    </poisonSplashPotion>
+                    <weaknessSplashPotion>
+                        <splashPotionWeakness id="splash_potion" data='{Potion:"minecraft:weakness"}'/>
+                        <splashPotionWeaknessEx id="splash_potion" data='{Potion:"minecraft:long_weakness"}'/>
+                    </weaknessSplashPotion>
+                    <slownessSplashPotion>
+                        <splashPotionSlowness id="splash_potion" data='{Potion:"minecraft:slowness"}'/>
+                        <splashPotionSlownessEx id="splash_potion" data='{Potion:"minecraft:long_slowness"}'/>
+                    </slownessSplashPotion>
+                    <harmingSplashPotion>
+                        <splashPotionHarming id="splash_potion" data='{Potion:"minecraft:harming"}'/>
+                        <splashPotionHarmingII id="splash_potion" data='{Potion:"minecraft:strong_harming"}'/>
+                    </harmingSplashPotion>
+                </negativeSplashPotion>
+            </splashPotion>
+            <lingeringPotion>                <neutralLingeringPotion>
+                <lingeringPotionEmpty id="lingering_potion" data='{Potion:"minecraft:empty"}'/>
+                <lingeringPotionWater id="lingering_potion" data='{Potion:"minecraft:water"}'/>
+                <lingeringWaterBottle id="lingering_potion" data='{Potion:"minecraft:water"}'/>
+                <lingeringPotionAwkward id="lingering_potion" data='{Potion:"minecraft:awkward"}'/>
+                <lingeringPotionThick id="lingering_potion" data='{Potion:"minecraft:thick"}'/>
+                <lingeringPotionMundane id="lingering_potion" data='{Potion:"minecraft:mundane"}'/>
+            </neutralLingeringPotion>
+                <positiveLingeringPotion>
+                    <regenerationLingeringPotion>
+                        <lingeringPotionRegeneration id="lingering_potion" data='{Potion:"minecraft:regeneration"}'/>
+                        <lingeringPotionRegenerationEx id="lingering_potion" data='{Potion:"minecraft:long_regeneration"}'/>
+                        <lingeringPotionRegenerationII id="lingering_potion" data='{Potion:"minecraft:strong_regeneration"}'/>
+                    </regenerationLingeringPotion>
+                    <swiftnessLingeringPotion>
+                        <lingeringPotionSwiftness id="lingering_potion" data='{Potion:"minecraft:swiftness"}'/>
+                        <lingeringPotionSwiftnessEx id="lingering_potion" data='{Potion:"minecraft:long_swiftness"}'/>
+                        <lingeringPotionSwiftnessII id="lingering_potion" data='{Potion:"minecraft:strong_swiftness"}'/>
+                    </swiftnessLingeringPotion>
+                    <fireResistanceLingeringPotion>
+                        <lingeringPotionFireResistance id="lingering_potion" data='{Potion:"minecraft:fire_resistance"}'/>
+                        <lingeringPotionFireResistanceEx id="lingering_potion" data='{Potion:"minecraft:long_fire_resistance"}'/>
+                    </fireResistanceLingeringPotion>
+                    <healingLingeringPotion>
+                        <lingeringPotionHealing id="lingering_potion" data='{Potion:"minecraft:healing"}'/>
+                        <lingeringPotionHealingII id="lingering_potion" data='{Potion:"minecraft:strong_healing"}'/>
+                    </healingLingeringPotion>
+                    <strengthLingeringPotion>
+                        <lingeringPotionStrength id="lingering_potion" data='{Potion:"minecraft:strength"}'/>
+                        <lingeringPotionStrengthEx id="lingering_potion" data='{Potion:"minecraft:long_strength"}'/>
+                        <lingeringPotionStrengthII id="lingering_potion" data='{Potion:"minecraft:strong_strength"}'/>
+                    </strengthLingeringPotion>
+                    <nightVisionLingeringPotion>
+                        <lingeringPotionNightVision id="lingering_potion" data='{Potion:"minecraft:night_vision"}'/>
+                        <lingeringPotionNightVisionEx id="lingering_potion" data='{Potion:"minecraft:long_night_vision"}'/>
+                    </nightVisionLingeringPotion>
+                    <invisibilityLingeringPotion>
+                        <lingeringPotionInvisibility id="lingering_potion" data='{Potion:"minecraft:invisibility"}'/>
+                        <lingeringPotionInvisibilityEx id="lingering_potion" data='{Potion:"minecraft:long_invisibility"}'/>
+                    </invisibilityLingeringPotion>
+                    <leapingLingeringPotion>
+                        <lingeringPotionLeaping id="lingering_potion" data='{Potion:"minecraft:leaping"}'/>
+                        <lingeringPotionLeapingEx id="lingering_potion" data='{Potion:"minecraft:long_leaping"}'/>
+                        <lingeringPotionLeapingII id="lingering_potion" data='{Potion:"minecraft:strong_leaping"}'/>
+                    </leapingLingeringPotion>
+                    <waterBreahingLingeringPotion>
+                        <lingeringPotionWaterBreathing id="lingering_potion" data='{Potion:"minecraft:water_breathing"}'/>
+                        <lingeringPotionWaterBreathingEx id="lingering_potion" data='{Potion:"minecraft:long_water_breathing"}'/>
+                    </waterBreahingLingeringPotion>
+                    <luckLingeringPotion>
+                        <lingeringPotionLuck id="lingering_potion" data='{Potion:"minecraft:luck"}'/>
+                    </luckLingeringPotion>
+                </positiveLingeringPotion>
+                <negativeLingeringPotion>
+                    <poisonLingeringPotion>
+                        <lingeringPotionPoison id="lingering_potion" data='{Potion:"minecraft:poison"}'/>
+                        <lingeringPotionPoisonEx id="lingering_potion" data='{Potion:"minecraft:long_poison"}'/>
+                        <lingeringPotionPoisonII id="lingering_potion" data='{Potion:"minecraft:strong_poison"}'/>
+                    </poisonLingeringPotion>
+                    <weaknessLingeringPotion>
+                        <lingeringPotionWeakness id="lingering_potion" data='{Potion:"minecraft:weakness"}'/>
+                        <lingeringPotionWeaknessEx id="lingering_potion" data='{Potion:"minecraft:long_weakness"}'/>
+                    </weaknessLingeringPotion>
+                    <slownessLingeringPotion>
+                        <lingeringPotionSlowness id="lingering_potion" data='{Potion:"minecraft:slowness"}'/>
+                        <lingeringPotionSlownessEx id="lingering_potion" data='{Potion:"minecraft:long_slowness"}'/>
+                    </slownessLingeringPotion>
+                    <harmingLingeringPotion>
+                        <lingeringPotionHarming id="lingering_potion" data='{Potion:"minecraft:harming"}'/>
+                        <lingeringPotionHarmingII id="lingering_potion" data='{Potion:"minecraft:strong_harming"}'/>
+                    </harmingLingeringPotion>
+                </negativeLingeringPotion>
+            </lingeringPotion>
+            <bottleOEnchanting id="experience_bottle"/>
+            <bottleEnchanting id="experience_bottle"/>
+        </potion>
         <glassBottle id="glass_bottle"/>
         <potionIngredient>
             <dragonsBreath id="dragon_breath"/>
