@@ -52,7 +52,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         boolean hasSubtypes = false;
 
         // TODO: ResourceLocation
-        Item original = Item.itemRegistry.getObject(new ResourceLocation(wantedId));
+        Item original = Item.REGISTRY.getObject(new ResourceLocation(wantedId));
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
@@ -99,7 +99,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     if(candidateStack != null) {
                         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                         List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()).toString(), candidateStack.getItemDamage());
+                                .getItems(Item.REGISTRY.getNameForObject(candidateStack.getItem()).toString(), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(candidateStack.getMaxStackSize() == 1) {
@@ -129,7 +129,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 candidateStack = container.getItemStack(i);
                 // TODO: ResourceLocation
                 if(candidateStack != null &&
-                        Objects.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()).toString(), wantedId) &&
+                        Objects.equals(Item.REGISTRY.getNameForObject(candidateStack.getItem()).toString(), wantedId) &&
                         candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;
@@ -162,7 +162,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     if(i_ != -1) {
                         i = i_;
                         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                        expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem()).toString();
+                        expectedItemId = Item.REGISTRY.getNameForObject(containerMgr.getItemStack(i).getItem()).toString();
                     } else {
                         i = containerMgr.getFirstEmptyIndex();
                         expectedItemId = null;
@@ -181,13 +181,13 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     ItemStack stack = containerMgr.getItemStack(i);
 
                     // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                    if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()).toString(),
+                    if(stack != null && StringUtils.equals(Item.REGISTRY.getNameForObject(stack.getItem()).toString(),
                             expectedItemId) || this.refillBeforeBreak) {
                         if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                             if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                                     .equals(InvTweaksConfig.VALUE_FALSE)) {
                                 mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(
-                                        SoundEvents.entity_chicken_egg, 1.0F));
+                                        SoundEvents.ENTITY_CHICKEN_EGG, 1.0F));
                             }
                             // If item are swapped (like for mushroom soups),
                             // put the item back in the inventory if it is in the hotbar

@@ -274,7 +274,7 @@ public class InvTweaksItemTree implements IItemTree {
             if(i != null) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 addItem(category,
-                        new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()).toString(), i.getItemDamage(), order));
+                        new InvTweaksItemTreeItem(name, Item.REGISTRY.getNameForObject(i.getItem()).toString(), i.getItemDamage(), order));
             } else {
                 log.warn(String.format("An OreDictionary entry for %s is null", oreName));
             }
@@ -285,13 +285,14 @@ public class InvTweaksItemTree implements IItemTree {
     @SubscribeEvent
     public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-        oresRegistered.stream().filter(ore -> ore.oreName.equals(ev.Name)).forEach(ore -> {
-            if(ev.Ore.getItem() != null) {
+        oresRegistered.stream().filter(ore -> ore.oreName.equals(ev.getName())).forEach(ore -> {
+            ItemStack evOre = ev.getOre();
+            if(evOre.getItem() != null) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()).toString(),
-                        ev.Ore.getItemDamage(), ore.order));
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.REGISTRY.getNameForObject(evOre.getItem()).toString(),
+                        evOre.getItemDamage(), ore.order));
             } else {
-                log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
+                log.warn(String.format("An OreDictionary entry for %s is null", ev.getName()));
             }
         });
     }

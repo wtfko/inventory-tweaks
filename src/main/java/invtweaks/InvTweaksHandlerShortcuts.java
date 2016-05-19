@@ -211,7 +211,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                         } else if(container.hasSection(ContainerSection.BREWING_INGREDIENT)) {
                             if(shortcutConfig.fromStack != null) {
                                 // TODO: ResourceLocation
-                                if(shortcutConfig.fromStack.getItem() == Item.itemRegistry.getObject(new ResourceLocation("potion"))) {
+                                if(shortcutConfig.fromStack.getItem() == Item.REGISTRY.getObject(new ResourceLocation("potion"))) {
                                     orderedSections.add(ContainerSection.BREWING_BOTTLES);
                                 } else {
                                     orderedSections.add(ContainerSection.BREWING_INGREDIENT);
