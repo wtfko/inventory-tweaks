@@ -38,7 +38,7 @@ public class InvTweaksConfigManager {
     }
 
     private static void backupFile(File file) {
-        File newFile = new File(file.getName() + ".bak");
+        File newFile = new File(file.getParentFile(), file.getName() + ".bak");
         if(newFile.exists()) {
             newFile.delete();
         }
