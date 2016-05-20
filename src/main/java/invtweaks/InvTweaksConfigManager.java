@@ -3,6 +3,7 @@ package invtweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
@@ -215,19 +216,9 @@ public class InvTweaksConfigManager {
     }
 
     private boolean extractFile(ResourceLocation resource, File destination) {
-        InputStream input;
-        try {
-            input = mc.getResourceManager().getResource(resource).getInputStream();
-
-            byte[] contents = new byte[input.available()];
-            input.read(contents);
-            input.close();
-
+        try(InputStream input = mc.getResourceManager().getResource(resource).getInputStream()) {
             try {
-                FileOutputStream f = new FileOutputStream(destination);
-                f.write(contents);
-                f.close();
-
+                FileUtils.copyInputStreamToFile(input, destination);
                 return true;
             } catch(IOException e) {
                 InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
@@ -236,7 +227,6 @@ public class InvTweaksConfigManager {
             }
         } catch(IOException e) {
             InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " extraction failed!");
-
             log.error("Cannot extract " + resource + " file: " + e.getMessage());
             return false;
         }
