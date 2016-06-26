@@ -68,6 +68,7 @@ public class InvTweaks extends InvTweaksObfuscation {
      * Various information concerning the context, stored on each tick to allow for certain features (auto-refill,
      * sorting on pick up...)
      */
+    private ItemStack storedStack = null;
     private String storedStackId = null;
     private int storedStackDamage = InvTweaksConst.DAMAGE_WILDCARD, storedFocusedSlot = -1;
     private ItemStack[] hotbarClone = new ItemStack[InvTweaksConst.INVENTORY_HOTBAR_SIZE];
@@ -631,51 +632,55 @@ public class InvTweaks extends InvTweaksObfuscation {
     private void handleAutoRefill() {
 
         ItemStack currentStack = getFocusedStack();
+        ItemStack offhandStack = getOffhandStack();
 
         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
         String currentStackId = (currentStack == null) ? null : Item.REGISTRY.getNameForObject(
                 currentStack.getItem()).toString();
+
         int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
 
-        if(!Objects.equals(currentStackId, storedStackId) || currentStackDamage != storedStackDamage) {
 
-            if(storedFocusedSlot != focusedSlot) { // Filter selection change
-                storedFocusedSlot = focusedSlot;
-            } else if(currentStack == null || (currentStack.getItem() == Items.BOWL && Objects.equals(storedStackId, "minecraft:mushroom_stew"))
-
+        if(storedFocusedSlot != focusedSlot) { // Filter selection change
+            storedFocusedSlot = focusedSlot;
+        } else if(!ItemStack.areItemsEqual(currentStack, storedStack) && storedStackId != null) {
+            if (!ItemStack.areItemStacksEqual(offhandStack, storedStack)) { // Checks not switched to offhand
+                if (currentStack == null || (currentStack.getItem() == Items.BOWL && Objects.equals(storedStackId, "minecraft:mushroom_stew"))
                     // Handle eaten mushroom soup
-                    && (getCurrentScreen() == null || // Filter open inventory or other window
-                    isGuiEditSign(
-                            getCurrentScreen()))) { // TODO: This should be more expandable on 'equivalent' items (API?) and allowed GUIs
+                        && (getCurrentScreen() == null || // Filter open inventory or other window
+                        isGuiEditSign(
+                                getCurrentScreen()))) { // TODO: This should be more expandable on 'equivalent' items (API?) and allowed GUIs
 
-                if(config.isAutoRefillEnabled(storedStackId, storedStackDamage)) {
-                    try {
-                        cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
-                    } catch(Exception e) {
-                        logInGameError("invtweaks.sort.autorefill.error", e);
+                    if (config.isAutoRefillEnabled(storedStackId, storedStackDamage)) {
+                        try {
+                            cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
+                        } catch(Exception e) {
+                            logInGameError("invtweaks.sort.autorefill.error", e);
+                        }
                     }
-                }
-            } else {
-                // Item
-                int itemMaxDamage = currentStack.getMaxDamage();
-                int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
-                if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
-                        .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
-                        .equals(InvTweaksConfig.VALUE_TRUE) && config
-                        .isAutoRefillEnabled(storedStackId, storedStackDamage)) {
-                    // Trigger auto-refill before the tool breaks
-                    try {
-                        cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
-                    } catch(Exception e) {
-                        logInGameError("invtweaks.sort.autorefill.error", e);
+                } else {
+                    // Item
+                    int itemMaxDamage = currentStack.getMaxDamage();
+                    int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
+                    if (canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
+                            .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
+                            .equals(InvTweaksConfig.VALUE_TRUE) && config
+                            .isAutoRefillEnabled(storedStackId, storedStackDamage)) {
+                        // Trigger auto-refill before the tool breaks
+                        try {
+                            cfgManager.getAutoRefillHandler().autoRefillSlot(focusedSlot, storedStackId, storedStackDamage);
+                        } catch (Exception e) {
+                            logInGameError("invtweaks.sort.autorefill.error", e);
+                        }
                     }
                 }
             }
         }
 
         // Copy some info about current selected stack for auto-refill
+        storedStack = currentStack;
         storedStackId = currentStackId;
         storedStackDamage = currentStackDamage;
 
