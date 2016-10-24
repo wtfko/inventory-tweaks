@@ -201,7 +201,7 @@ if(curseKey && hasProperty('curse_id')) {
             releaseType = curseType
             addGameVersion mc_version
 
-            if(curseExtraVersions) {
+            if(hasProperty('curseExtraVersions')) {
                 for(version in curseExtraVersions) {
                     addGameVersion version
                 }
