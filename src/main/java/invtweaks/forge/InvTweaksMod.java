@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * ModLoader entry point to load and configure the mod.
@@ -55,7 +56,7 @@ public class InvTweaksMod implements InvTweaksAPI {
 
     @Mod.EventHandler
     @SuppressWarnings("unused")
-    public void serverAboutToStart(FMLServerAboutToStartEvent e) {
+    public void serverAboutToStart(@NotNull FMLServerAboutToStartEvent e) {
         proxy.serverAboutToStart(e);
     }
 
@@ -85,7 +86,7 @@ public class InvTweaksMod implements InvTweaksAPI {
     }
 
     @Override
-    public int compareItems(ItemStack i, ItemStack j) {
+    public int compareItems(@NotNull ItemStack i, @NotNull ItemStack j) {
         return proxy.compareItems(i, j);
     }
 

@@ -22,11 +22,14 @@ import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 
 public class CommonProxy implements InvTweaksAPI {
     protected static EnumMap<Side, FMLEmbeddedChannel> invtweaksChannel;
+    @Nullable
     private static MinecraftServer server;
 
     public void preInit(FMLPreInitializationEvent e) {
@@ -43,7 +46,7 @@ public class CommonProxy implements InvTweaksAPI {
     public void postInit(FMLPostInitializationEvent e) {
     }
 
-    public void serverAboutToStart(FMLServerAboutToStartEvent e) {
+    public void serverAboutToStart(@NotNull FMLServerAboutToStartEvent e) {
         server = e.getServer();
     }
 
@@ -94,7 +97,7 @@ public class CommonProxy implements InvTweaksAPI {
     }
 
     @Override
-    public int compareItems(ItemStack i, ItemStack j) {
+    public int compareItems(@NotNull ItemStack i, @NotNull ItemStack j) {
         return 0;
     }
 
@@ -103,7 +106,7 @@ public class CommonProxy implements InvTweaksAPI {
     }
 
     @SubscribeEvent
-    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent e) {
+    public void onPlayerLoggedIn(@NotNull PlayerEvent.PlayerLoggedInEvent e) {
         FMLEmbeddedChannel channel = invtweaksChannel.get(Side.SERVER);
 
         channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(
@@ -114,7 +117,7 @@ public class CommonProxy implements InvTweaksAPI {
     }
 
     @SuppressWarnings("unused")
-    public void addServerScheduledTask(Runnable task) {
+    public void addServerScheduledTask(@NotNull Runnable task) {
         server.addScheduledTask(task);
     }
 

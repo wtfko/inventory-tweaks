@@ -4,17 +4,18 @@ import invtweaks.InvTweaksConst;
 import invtweaks.forge.InvTweaksMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.INetHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ITPacketLogin implements ITPacket {
     public byte protocolVersion = InvTweaksConst.PROTOCOL_VERSION;
 
     @Override
-    public void readBytes(ByteBuf bytes) {
+    public void readBytes(@NotNull ByteBuf bytes) {
         protocolVersion = bytes.readByte();
     }
 
     @Override
-    public void writeBytes(ByteBuf bytes) {
+    public void writeBytes(@NotNull ByteBuf bytes) {
         bytes.writeByte(protocolVersion);
     }
 

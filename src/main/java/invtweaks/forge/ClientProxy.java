@@ -24,6 +24,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 
 public class ClientProxy extends CommonProxy {
@@ -33,7 +34,7 @@ public class ClientProxy extends CommonProxy {
     private InvTweaks instance;
 
     @Override
-    public void preInit(FMLPreInitializationEvent e) {
+    public void preInit(@NotNull FMLPreInitializationEvent e) {
         super.preInit(e);
 
         InvTweaks.log = e.getModLog();
@@ -53,7 +54,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent tick) {
+    public void onTick(@NotNull TickEvent.ClientTickEvent tick) {
         if(tick.phase == TickEvent.Phase.START) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             if(mc.world != null) {
@@ -87,8 +88,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, ClickType action,
-                          EntityPlayer player) {
+    public void slotClick(@NotNull PlayerControllerMP playerController, int windowId, int slot, int data, @NotNull ClickType action,
+                          @NotNull EntityPlayer player) {
         //int modiferKeys = (shiftHold) ? 1 : 0 /* XXX Placeholder */;
         if(serverSupportEnabled) {
             player.openContainer.slotClick(slot, data, action, player);
@@ -127,7 +128,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public int compareItems(ItemStack i, ItemStack j) {
+    public int compareItems(@NotNull ItemStack i, @NotNull ItemStack j) {
         return instance.compareItems(i, j);
     }
 
@@ -149,7 +150,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void addClientScheduledTask(Runnable task) {
+    public void addClientScheduledTask(@NotNull Runnable task) {
         Minecraft.getMinecraft().addScheduledTask(task);
     }
 

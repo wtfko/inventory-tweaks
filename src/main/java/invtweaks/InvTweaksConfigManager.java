@@ -5,6 +5,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.List;
@@ -24,10 +26,13 @@ public class InvTweaksConfigManager {
     /**
      * The mod's configuration.
      */
+    @Nullable
     private InvTweaksConfig config = null;
     private long storedConfigLastModified = 0;
 
+    @Nullable
     private InvTweaksHandlerAutoRefill autoRefillHandler = null;
+    @Nullable
     private InvTweaksHandlerShortcuts shortcutsHandler = null;
 
     public InvTweaksConfigManager(Minecraft mc_) {
@@ -38,18 +43,18 @@ public class InvTweaksConfigManager {
         return InvTweaksConst.CONFIG_RULES_FILE.lastModified() + InvTweaksConst.CONFIG_TREE_FILE.lastModified();
     }
 
-    private static void backupFile(File file) {
-        File newFile = new File(file.getParentFile(), file.getName() + ".bak");
+    private static void backupFile(@NotNull File file) {
+        @NotNull File newFile = new File(file.getParentFile(), file.getName() + ".bak");
         if(newFile.exists()) {
             newFile.delete();
         }
         file.renameTo(newFile);
     }
 
-    private static void showConfigErrors(@SuppressWarnings("ParameterHidesMemberVariable") InvTweaksConfig config) {
+    private static void showConfigErrors(@NotNull @SuppressWarnings("ParameterHidesMemberVariable") InvTweaksConfig config) {
         List<String> invalid = config.getInvalidKeywords();
         if(invalid.size() > 0) {
-            String error = I18n.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
+            @NotNull String error = I18n.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
             for(String keyword : config.getInvalidKeywords()) {
                 error += keyword + " ";
             }
@@ -84,14 +89,17 @@ public class InvTweaksConfigManager {
         }
     }
 
+    @Nullable
     public InvTweaksConfig getConfig() {
         return config;
     }
 
+    @Nullable
     public InvTweaksHandlerAutoRefill getAutoRefillHandler() {
         return autoRefillHandler;
     }
 
+    @Nullable
     public InvTweaksHandlerShortcuts getShortcutsHandler() {
         return shortcutsHandler;
     }
@@ -103,7 +111,7 @@ public class InvTweaksConfigManager {
     private boolean loadConfig() {
 
         // Ensure the config folder exists
-        File configDir = InvTweaksConst.MINECRAFT_CONFIG_DIR;
+        @NotNull File configDir = InvTweaksConst.MINECRAFT_CONFIG_DIR;
         if(!configDir.exists()) {
             configDir.mkdir();
         }
@@ -147,8 +155,8 @@ public class InvTweaksConfigManager {
 
         // Load
 
-        String error = null;
-        Exception errorException = null;
+        @Nullable String error = null;
+        @Nullable Exception errorException = null;
 
         try {
 
@@ -215,8 +223,8 @@ public class InvTweaksConfigManager {
         }
     }
 
-    private boolean extractFile(ResourceLocation resource, File destination) {
-        try(InputStream input = mc.getResourceManager().getResource(resource).getInputStream()) {
+    private boolean extractFile(@NotNull ResourceLocation resource, @NotNull File destination) {
+        try(@NotNull InputStream input = mc.getResourceManager().getResource(resource).getInputStream()) {
             try {
                 FileUtils.copyInputStreamToFile(input, destination);
                 return true;

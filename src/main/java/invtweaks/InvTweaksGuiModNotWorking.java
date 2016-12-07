@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A help menu for the NoCheatPlus conflict.
@@ -31,7 +32,7 @@ public class InvTweaksGuiModNotWorking extends InvTweaksGuiSettingsAbstract {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(@NotNull GuiButton guibutton) {
         // GuiButton
         switch(guibutton.id) {
             // Back to main settings screen

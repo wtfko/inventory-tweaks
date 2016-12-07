@@ -12,6 +12,8 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -25,21 +27,26 @@ public class InvTweaksItemTree implements IItemTree {
     public static final String UNKNOWN_ITEM = "unknown";
 
     private static final Logger log = InvTweaks.log;
+    @Nullable
     private static List<IItemTreeItem> defaultItems = null;
     /**
      * All categories, stored by name
      */
+    @NotNull
     private Map<String, IItemTreeCategory> categories = new HashMap<>();
     /**
      * Items stored by ID. A same ID can hold several names.
      */
+    @NotNull
     private Map<String, List<IItemTreeItem>> itemsById = new HashMap<>(500);
     /**
      * Items stored by name. A same name can match several IDs.
      */
+    @NotNull
     private Map<String, List<IItemTreeItem>> itemsByName = new HashMap<>(500);
 
     private String rootCategory;
+    @NotNull
     private List<OreDictInfo> oresRegistered = new ArrayList<>();
 
     public InvTweaksItemTree() {
@@ -66,14 +73,14 @@ public class InvTweaksItemTree implements IItemTree {
      * category)
      */
     @Override
-    public boolean matches(List<IItemTreeItem> items, String keyword) {
+    public boolean matches(@Nullable List<IItemTreeItem> items, @NotNull String keyword) {
 
         if(items == null) {
             return false;
         }
 
         // The keyword is an item
-        for(IItemTreeItem item : items) {
+        for(@NotNull IItemTreeItem item : items) {
             if(item.getName() != null && item.getName().equals(keyword)) {
                 return true;
             }
@@ -140,6 +147,7 @@ public class InvTweaksItemTree implements IItemTree {
     /**
      * Returns a reference to all categories.
      */
+    @NotNull
     @Override
     public Collection<IItemTreeCategory> getAllCategories() {
         return categories.values();
@@ -151,7 +159,7 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public void setRootCategory(IItemTreeCategory category) {
+    public void setRootCategory(@NotNull IItemTreeCategory category) {
         rootCategory = category.getName();
         categories.put(rootCategory, category);
     }
@@ -166,14 +174,15 @@ public class InvTweaksItemTree implements IItemTree {
         return itemsById.get(id) == null;
     }
 
+    @NotNull
     @Override
-    public List<IItemTreeItem> getItems(String id, int damage, NBTTagCompound extra) {
+    public List<IItemTreeItem> getItems(@Nullable String id, int damage, @Nullable NBTTagCompound extra) {
         if(id == null) {
             return new ArrayList<>();
         }
 
         List<IItemTreeItem> items = itemsById.get(id);
-        List<IItemTreeItem> filteredItems = new ArrayList<>();
+        @NotNull List<IItemTreeItem> filteredItems = new ArrayList<>();
         if(items != null) {
             filteredItems.addAll(items);
         }
@@ -193,9 +202,9 @@ public class InvTweaksItemTree implements IItemTree {
 
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
-            IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage, null,
+            @NotNull IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage, null,
                     5000/*TODO: What to do here with non-int IDs + id * 16 + damage*/);
-            IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
+            @NotNull IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
                     InvTweaksConst.DAMAGE_WILDCARD, null, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
             addItem(getRootCategory().getName(), newItemId);
             addItem(getRootCategory().getName(), newItemDamage);
@@ -203,17 +212,13 @@ public class InvTweaksItemTree implements IItemTree {
             filteredItems.add(newItemDamage);
         }
 
-        Iterator<IItemTreeItem> it = filteredItems.iterator();
-        while(it.hasNext()) {
-            if(it.next() == null) {
-                it.remove();
-            }
-        }
+        filteredItems.removeIf(Objects::isNull);
 
         return filteredItems;
 
     }
 
+    @NotNull
     @Override
     public List<IItemTreeItem> getItems(String id, int damage) {
         return getItems(id, damage, null);
@@ -224,8 +229,9 @@ public class InvTweaksItemTree implements IItemTree {
         return itemsByName.get(name);
     }
 
+    @NotNull
     @Override
-    public IItemTreeItem getRandomItem(Random r) {
+    public IItemTreeItem getRandomItem(@NotNull Random r) {
         return (IItemTreeItem) itemsByName.values().toArray()[r.nextInt(itemsByName.size())];
     }
 
@@ -239,29 +245,32 @@ public class InvTweaksItemTree implements IItemTree {
         return categories.containsKey(name);
     }
 
+    @NotNull
     @Override
     public IItemTreeCategory addCategory(String parentCategory, String newCategory) throws NullPointerException {
-        IItemTreeCategory addedCategory = new InvTweaksItemTreeCategory(newCategory);
+        @NotNull IItemTreeCategory addedCategory = new InvTweaksItemTreeCategory(newCategory);
         addCategory(parentCategory, addedCategory);
         return addedCategory;
     }
 
+    @NotNull
     @Override
     public IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
             throws NullPointerException {
         return addItem(parentCategory, name, id, damage, null, order);
     }
 
+    @NotNull
     @Override
     public IItemTreeItem addItem(String parentCategory, String name, String id, int damage, NBTTagCompound extra, int order)
             throws NullPointerException {
-        InvTweaksItemTreeItem addedItem = new InvTweaksItemTreeItem(name, id, damage, extra, order);
+        @NotNull InvTweaksItemTreeItem addedItem = new InvTweaksItemTreeItem(name, id, damage, extra, order);
         addItem(parentCategory, addedItem);
         return addedItem;
     }
 
     @Override
-    public void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException {
+    public void addCategory(String parentCategory, @NotNull IItemTreeCategory newCategory) throws NullPointerException {
         // Build tree
         categories.get(parentCategory).addCategory(newCategory);
 
@@ -270,7 +279,7 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @Override
-    public void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException {
+    public void addItem(String parentCategory, @NotNull IItemTreeItem newItem) throws NullPointerException {
         // Build tree
         categories.get(parentCategory).addItem(newItem);
 
@@ -278,14 +287,14 @@ public class InvTweaksItemTree implements IItemTree {
         if(itemsByName.containsKey(newItem.getName())) {
             itemsByName.get(newItem.getName()).add(newItem);
         } else {
-            List<IItemTreeItem> list = new ArrayList<>();
+            @NotNull List<IItemTreeItem> list = new ArrayList<>();
             list.add(newItem);
             itemsByName.put(newItem.getName(), list);
         }
         if(itemsById.containsKey(newItem.getId())) {
             itemsById.get(newItem.getId()).add(newItem);
         } else {
-            List<IItemTreeItem> list = new ArrayList<>();
+            @NotNull List<IItemTreeItem> list = new ArrayList<>();
             list.add(newItem);
             itemsById.put(newItem.getId(), list);
         }
@@ -293,7 +302,7 @@ public class InvTweaksItemTree implements IItemTree {
 
     @Override
     public void registerOre(String category, String name, String oreName, int order) {
-        for(ItemStack i : OreDictionary.getOres(oreName)) {
+        for(@Nullable ItemStack i : OreDictionary.getOres(oreName)) {
             if(i != null) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 addItem(category,
@@ -306,11 +315,11 @@ public class InvTweaksItemTree implements IItemTree {
     }
 
     @SubscribeEvent
-    public void oreRegistered(OreDictionary.OreRegisterEvent ev) {
+    public void oreRegistered(@NotNull OreDictionary.OreRegisterEvent ev) {
         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
         oresRegistered.stream().filter(ore -> ore.oreName.equals(ev.getName())).forEach(ore -> {
-            ItemStack evOre = ev.getOre();
-            if(evOre.getItem() != null) {
+            @NotNull ItemStack evOre = ev.getOre();
+            if(!evOre.isEmpty()) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.REGISTRY.getNameForObject(evOre.getItem()).toString(),
                         evOre.getItemDamage(), null, ore.order));

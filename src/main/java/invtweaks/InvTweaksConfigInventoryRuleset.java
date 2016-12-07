@@ -1,5 +1,8 @@
 package invtweaks;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +27,7 @@ public class InvTweaksConfigInventoryRuleset {
     /**
      * Creates a new configuration holder. The configuration is not yet loaded.
      */
-    public InvTweaksConfigInventoryRuleset(InvTweaksItemTree tree_, String name_) {
+    public InvTweaksConfigInventoryRuleset(InvTweaksItemTree tree_, @NotNull String name_) {
         tree = tree_;
         name = name_.trim();
 
@@ -45,11 +48,12 @@ public class InvTweaksConfigInventoryRuleset {
      * @return If not null, returns the invalid keyword found
      * @throws InvalidParameterException
      */
-    public String registerLine(String rawLine) throws InvalidParameterException {
+    @Nullable
+    public String registerLine(@NotNull String rawLine) throws InvalidParameterException {
 
         InvTweaksConfigSortingRule newRule;
         String lineText = rawLine.replaceAll("\\s+", " ");
-        String[] words = lineText.split(" ");
+        @NotNull String[] words = lineText.split(" ");
 
         // Parse valid lines only
         if(words.length == 2) {
@@ -58,7 +62,7 @@ public class InvTweaksConfigInventoryRuleset {
             if(rulePattern.matcher(lineText).matches()) {
                 if(words[1].equalsIgnoreCase(InvTweaksConfig.LOCKED)) {
                     // Locking rule
-                    int[] newLockedSlots = InvTweaksConfigSortingRule
+                    @Nullable int[] newLockedSlots = InvTweaksConfigSortingRule
                             .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
                                     InvTweaksConst.INVENTORY_ROW_SIZE);
                     int lockPriority = InvTweaksConfigSortingRule.
@@ -72,7 +76,7 @@ public class InvTweaksConfigInventoryRuleset {
                 } else if(words[1].equalsIgnoreCase(InvTweaksConfig.FROZEN)) {
 
                     // Freeze rule
-                    int[] newLockedSlots = InvTweaksConfigSortingRule
+                    @Nullable int[] newLockedSlots = InvTweaksConfigSortingRule
                             .getRulePreferredPositions(words[0], InvTweaksConst.INVENTORY_SIZE,
                                     InvTweaksConst.INVENTORY_ROW_SIZE);
                     for(int i : newLockedSlots) {
@@ -139,7 +143,7 @@ public class InvTweaksConfigInventoryRuleset {
         }
 
         // Sort rules by priority, highest first
-        Collections.sort(rules, Collections.reverseOrder());
+        rules.sort(Collections.reverseOrder());
     }
 
     /**

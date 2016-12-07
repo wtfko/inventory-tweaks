@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
 
@@ -41,7 +42,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     @Override
     public void initGui() {
         List<GuiButton> controlList = buttonList;
-        Point p = new Point();
+        @NotNull Point p = new Point();
         moveToButtonCoords(1, p);
         controlList.add(new GuiButton(ID_DONE, p.getX() + 55, height / 6 + 168, LABEL_DONE)); // GuiButton
 
@@ -59,7 +60,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(@NotNull GuiButton guibutton) {
         // GuiButton
         if(guibutton.id == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
@@ -73,19 +74,20 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
         }
     }
 
-    protected void moveToButtonCoords(int buttonOrder, Point p) {
+    protected void moveToButtonCoords(int buttonOrder, @NotNull Point p) {
         p.setX(width / 2 - 155 + ((buttonOrder + 1) % 2) * 160);
         p.setY(height / 6 + (buttonOrder / 2) * 24);
     }
 
-    protected void toggleBooleanButton(GuiButton guibutton, String property, String label) {
-        Boolean enabled = !Boolean.valueOf(config.getProperty(property));
+    protected void toggleBooleanButton(@NotNull GuiButton guibutton, @NotNull String property, String label) {
+        @NotNull Boolean enabled = !Boolean.valueOf(config.getProperty(property));
         config.setProperty(property, enabled.toString());
         guibutton.displayString = computeBooleanButtonLabel(property, label);
     }
 
-    protected String computeBooleanButtonLabel(String property, String label) {
-        String propertyValue = config.getProperty(property);
+    @NotNull
+    protected String computeBooleanButtonLabel(@NotNull String property, String label) {
+        @NotNull String propertyValue = config.getProperty(property);
         Boolean enabled = Boolean.valueOf(propertyValue);
         return label + ((enabled) ? ON : OFF);
     }

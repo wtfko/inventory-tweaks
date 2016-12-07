@@ -7,6 +7,8 @@ import invtweaks.forge.InvTweaksMod;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +18,14 @@ import java.util.stream.Collectors;
 
 public class MirroredContainerManager implements IContainerManager {
     private ItemStack[] slotItems;
+    @Nullable
     private ItemStack heldItem;
+    @NotNull
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection") // Partially implemented
     private List<ItemStack> droppedItems = new ArrayList<>();
     private Container container;
     private Map<ContainerSection, List<Integer>> itemRefs;
+    @Nullable
     private Map<ContainerSection, List<Slot>> slotRefs;
 
     public MirroredContainerManager(Container cont) {
@@ -36,7 +41,7 @@ public class MirroredContainerManager implements IContainerManager {
         int size = slots.size();
 
         itemRefs = new HashMap<>();
-        for(Map.Entry<ContainerSection, List<Slot>> section : slotRefs.entrySet()) {
+        for(@NotNull Map.Entry<ContainerSection, List<Slot>> section : slotRefs.entrySet()) {
             List<Integer> slotIndices = section.getValue().stream().map(slots::indexOf).collect(Collectors.toList());
 
             itemRefs.put(section.getKey(), slotIndices);
@@ -61,11 +66,11 @@ public class MirroredContainerManager implements IContainerManager {
 
         int destSlotIdx = slotPositionToIndex(destSection, destIndex);
 
-        Slot srcSlot = getSlot(srcSection, srcIndex);
-        Slot destSlot = getSlot(destSection, destIndex);
+        @NotNull Slot srcSlot = getSlot(srcSection, srcIndex);
+        @NotNull Slot destSlot = getSlot(destSection, destIndex);
 
-        ItemStack srcItem = slotItems[srcSlotIdx];
-        ItemStack destItem = slotItems[destSlotIdx];
+        @NotNull ItemStack srcItem = slotItems[srcSlotIdx];
+        @NotNull ItemStack destItem = slotItems[destSlotIdx];
 
         if(srcItem != null && !destSlot.isItemValid(srcItem)) {
             return false;
@@ -145,6 +150,7 @@ public class MirroredContainerManager implements IContainerManager {
         return getItemStack(section, slot).isEmpty();
     }
 
+    @NotNull
     @Override
     public Slot getSlot(ContainerSection section, int index) {
         return container.getSlot(slotPositionToIndex(section, index));
@@ -167,6 +173,7 @@ public class MirroredContainerManager implements IContainerManager {
         return -1;
     }
 
+    @Nullable
     @Override
     public ContainerSection getSlotSection(int slotNumber) {
         // TODO Caching with getSlotIndex
@@ -183,6 +190,7 @@ public class MirroredContainerManager implements IContainerManager {
     }
 
     @Override
+    @NotNull
     public ItemStack getItemStack(ContainerSection section, int index) {
         return slotItems[slotPositionToIndex(section, index)];
     }

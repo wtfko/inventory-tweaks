@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
@@ -55,7 +56,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         super.initGui();
 
         List<GuiButton> controlList = buttonList;
-        Point p = new Point();
+        @NotNull Point p = new Point();
         int i = 0;
 
         // Create large buttons
@@ -73,7 +74,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         moveToButtonCoords(i++, p);
         controlList.add(new InvTweaksGuiTooltipButton(ID_SHORTCUTS_HELP, p.getX() + 130, p.getY(), 20, 20, "?",
                 "Shortcuts help"));
-        InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130,
+        @NotNull InvTweaksGuiTooltipButton shortcutsBtn = new InvTweaksGuiTooltipButton(ID_SHORTCUTS, p.getX(), p.getY(), 130,
                 20, computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_SHORTCUTS, labelShortcuts),
                 I18n.translateToLocal(
@@ -81,7 +82,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         controlList.add(shortcutsBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton beforeBreakBtn = new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(),
+        @NotNull InvTweaksGuiTooltipButton beforeBreakBtn = new InvTweaksGuiTooltipButton(ID_BEFORE_BREAK, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
                         InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK,
                         labelAutoRefillBeforeBreak),
@@ -90,7 +91,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
         controlList.add(beforeBreakBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(),
+        @NotNull InvTweaksGuiTooltipButton autoRefillBtn = new InvTweaksGuiTooltipButton(ID_AUTO_REFILL, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
                         InvTweaksConfig.PROP_ENABLE_AUTO_REFILL,
                         labelAutoRefill), I18n
@@ -108,7 +109,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
 
         //noinspection UnusedAssignment
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
+        @NotNull InvTweaksGuiTooltipButton middleClickBtn = new InvTweaksGuiTooltipButton(ID_MIDDLE_CLICK, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
                         InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK,
                         labelMiddleClick),
@@ -131,7 +132,7 @@ public class InvTweaksGuiSettings extends InvTweaksGuiSettingsAbstract {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(@NotNull GuiButton guibutton) {
         super.actionPerformed(guibutton);
 
         // GuiButton

@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +27,15 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
     private static final Logger log = InvTweaks.log;
 
-    private InvTweaksConfig config = null;
+    @NotNull
+    private InvTweaksConfig config;
 
-    public InvTweaksHandlerAutoRefill(Minecraft mc_, InvTweaksConfig config_) {
+    public InvTweaksHandlerAutoRefill(Minecraft mc_, @NotNull InvTweaksConfig config_) {
         super(mc_);
         config = config_;
     }
 
-    public void setConfig(InvTweaksConfig config_) {
+    public void setConfig(@NotNull InvTweaksConfig config_) {
         config = config_;
     }
 
@@ -41,23 +44,23 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
      *
      * @throws Exception
      */
-    public void autoRefillSlot(int slot, String wantedId, int wantedDamage) throws Exception {
+    public void autoRefillSlot(int slot, @NotNull String wantedId, int wantedDamage) throws Exception {
 
-        ContainerSectionManager container = new ContainerSectionManager(
+        @NotNull ContainerSectionManager container = new ContainerSectionManager(
                 ContainerSection.INVENTORY);
-        ItemStack candidateStack, replacementStack = ItemStack.EMPTY;
+        @NotNull ItemStack candidateStack, replacementStack = ItemStack.EMPTY;
         int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
                 .equals(InvTweaksConfig.VALUE_TRUE);
         boolean hasSubtypes = false;
 
         // TODO: ResourceLocation
-        Item original = Item.REGISTRY.getObject(new ResourceLocation(wantedId));
+        @Nullable Item original = Item.REGISTRY.getObject(new ResourceLocation(wantedId));
         if(original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
 
-        List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<>();
+        @NotNull List<InvTweaksConfigSortingRule> matchingRules = new ArrayList<>();
         List<InvTweaksConfigSortingRule> rules = config.getRules();
         InvTweaksItemTree tree = config.getTree();
 
@@ -66,10 +69,10 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
             //// Search replacement
 
-            List<IItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
+            @NotNull List<IItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
 
             // Find rules that match the slot
-            for(IItemTreeItem item : items) {
+            for(@NotNull IItemTreeItem item : items) {
                 if(!hasSubtypes || ((item.getDamage() == wantedDamage) || (item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD))) {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
@@ -78,7 +81,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                             InvTweaksConst.INVENTORY_ROW_SIZE));
                 }
             }
-            for(InvTweaksConfigSortingRule rule : rules) {
+            for(@NotNull InvTweaksConfigSortingRule rule : rules) {
                 if(rule.getType() == InvTweaksConfigSortingRuleType.SLOT || rule
                         .getType() == InvTweaksConfigSortingRuleType.COLUMN) {
                     for(int preferredSlot : rule.getPreferredSlots()) {
@@ -93,12 +96,12 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
             // Look only for a matching stack
             // First, look for the same item,
             // else one that matches the slot's rules
-            for(InvTweaksConfigSortingRule rule : matchingRules) {
+            for(@NotNull InvTweaksConfigSortingRule rule : matchingRules) {
                 for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
                     if(!candidateStack.isEmpty()) {
                         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                        List<IItemTreeItem> candidateItems = tree
+                        @NotNull List<IItemTreeItem> candidateItems = tree
                                 .getItems(Item.REGISTRY.getNameForObject(candidateStack.getItem()).toString(), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
@@ -153,9 +156,11 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 private ContainerSectionManager containerMgr;
                 private int targetedSlot;
                 private int i;
+                @Nullable
                 private String expectedItemId;
                 private boolean refillBeforeBreak;
 
+                @NotNull
                 public Runnable init(int i_, int currentItem, boolean refillBeforeBreak_) throws Exception {
                     containerMgr = new ContainerSectionManager(ContainerSection.INVENTORY);
                     targetedSlot = currentItem;
@@ -178,7 +183,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
                     // TODO: Look for better update detection now that this runs tick-based. It'll probably fail a bit if latency is > 50ms (1 tick)
                     // Since last tick, things might have changed
-                    ItemStack stack = containerMgr.getItemStack(i);
+                    @NotNull ItemStack stack = containerMgr.getItemStack(i);
 
                     // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                     if(!stack.isEmpty() && StringUtils.equals(Item.REGISTRY.getNameForObject(stack.getItem()).toString(),

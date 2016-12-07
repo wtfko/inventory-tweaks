@@ -4,6 +4,7 @@ import invtweaks.api.IItemTreeItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 public class InvTweaksItemTreeItem implements IItemTreeItem {
 
     private String name;
+    @Nullable
     private String id;
     private int damage;
     private NBTTagCompound extraData;
@@ -39,6 +41,7 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
         return name;
     }
 
+    @Nullable
     @Override
     public String getId() {
         return id;
@@ -63,11 +66,11 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
      * Warning: the item equality is not reflective. They are equal if "o" matches the item constraints (the opposite
      * can be false).
      */
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if(o == null || !(o instanceof IItemTreeItem)) {
             return false;
         }
-        IItemTreeItem item = (IItemTreeItem) o;
+        @Nullable IItemTreeItem item = (IItemTreeItem) o;
         return Objects.equals(id, item.getId())
                 && NBTUtil.areNBTEquals(extraData, item.getExtraData(), true)
                 && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());

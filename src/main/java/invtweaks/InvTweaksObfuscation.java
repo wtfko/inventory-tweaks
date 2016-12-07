@@ -25,6 +25,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -47,7 +49,8 @@ public class InvTweaksObfuscation {
 
     // Minecraft members
 
-    public static String getNamespacedID(String id) {
+    @Nullable
+    public static String getNamespacedID(@Nullable String id) {
         if(id == null) {
             return null;
         } else if(id.indexOf(':') == -1) {
@@ -64,14 +67,15 @@ public class InvTweaksObfuscation {
         return FMLClientHandler.instance().getClient().displayHeight;
     }
 
-    public static boolean areItemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
+    public static boolean areItemStacksEqual(@NotNull ItemStack itemStack1, @NotNull ItemStack itemStack2) {
         return itemStack1.isItemEqual(itemStack2) && itemStack1.getCount() == itemStack2.getCount();
     }
 
-    public static ItemStack getSlotStack(Container container, int i) {
+    @NotNull
+    public static ItemStack getSlotStack(@NotNull Container container, int i) {
         // Slot
         Slot slot = container.inventorySlots.get(i);
-        return (slot == null) ? null : slot.getStack(); // getStack
+        return (slot == null) ? ItemStack.EMPTY : slot.getStack(); // getStack
     }
 
     public static int getSlotNumber(Slot slot) {
@@ -91,8 +95,9 @@ public class InvTweaksObfuscation {
         return slot.slotNumber;
     }
 
+    @Nullable
     @SideOnly(Side.CLIENT)
-    public static Slot getSlotAtMousePosition(GuiContainer guiContainer) {
+    public static Slot getSlotAtMousePosition(@Nullable GuiContainer guiContainer) {
         // Copied from GuiContainer
         if(guiContainer != null) {
             Container container = guiContainer.inventorySlots;
@@ -112,7 +117,7 @@ public class InvTweaksObfuscation {
     }
 
     @SideOnly(Side.CLIENT)
-    private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
+    private static boolean getIsMouseOverSlot(@Nullable GuiContainer guiContainer, @NotNull Slot slot, int x, int y) {
         // Copied from GuiContainer
         if(guiContainer != null) {
             x -= guiContainer.guiLeft;
@@ -124,12 +129,12 @@ public class InvTweaksObfuscation {
     }
 
     @SideOnly(Side.CLIENT)
-    private static int getMouseX(GuiContainer guiContainer) {
+    private static int getMouseX(@NotNull GuiContainer guiContainer) {
         return (Mouse.getEventX() * guiContainer.width) / getDisplayWidth();
     }
 
     @SideOnly(Side.CLIENT)
-    private static int getMouseY(GuiContainer guiContainer) {
+    private static int getMouseY(@NotNull GuiContainer guiContainer) {
         return guiContainer.height -
                 (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
     }
@@ -181,33 +186,33 @@ public class InvTweaksObfuscation {
         return null;
     }
 
-    public static boolean isGuiContainer(Object o) { // GuiContainer (abstract class)
+    public static boolean isGuiContainer(@Nullable Object o) { // GuiContainer (abstract class)
         return o != null && o instanceof GuiContainer;
     }
 
-    public static boolean isGuiInventoryCreative(Object o) { // GuiInventoryCreative
+    public static boolean isGuiInventoryCreative(@Nullable Object o) { // GuiInventoryCreative
         return o != null && o.getClass().equals(GuiContainerCreative.class);
     }
 
-    public static boolean isGuiInventory(Object o) { // GuiInventory
+    public static boolean isGuiInventory(@Nullable Object o) { // GuiInventory
         return o != null && o.getClass().equals(GuiInventory.class);
     }
 
-    public static boolean isGuiButton(Object o) { // GuiButton
+    public static boolean isGuiButton(@Nullable Object o) { // GuiButton
         return o != null && o instanceof GuiButton;
     }
 
     // FontRenderer members
 
-    public static boolean isGuiEditSign(Object o) {
+    public static boolean isGuiEditSign(@Nullable Object o) {
         return o != null && o.getClass().equals(GuiEditSign.class);
     }
 
-    public static boolean isItemArmor(Object o) { // ItemArmor
+    public static boolean isItemArmor(@Nullable Object o) { // ItemArmor
         return o != null && o instanceof ItemArmor;
     }
 
-    public static boolean isBasicSlot(Object o) { // Slot
+    public static boolean isBasicSlot(@Nullable Object o) { // Slot
         return o != null && (o.getClass()
                 .equals(Slot.class) || o.getClass().equals(GuiContainerCreative.CreativeSlot.class));
     }
@@ -226,20 +231,20 @@ public class InvTweaksObfuscation {
 
     // Slot members
 
-    public static boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null &&
+    public static boolean areSameItemType(@NotNull ItemStack itemStack1, @NotNull ItemStack itemStack2) {
+        return !itemStack1.isEmpty() && !itemStack2.isEmpty() &&
                 (itemStack1.isItemEqual(itemStack2) ||
                         (itemStack1.isItemStackDamageable() && itemStack1.getItem() == itemStack2.getItem()));
     }
 
-    public static boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
+    public static boolean areItemsStackable(@NotNull ItemStack itemStack1, @NotNull ItemStack itemStack2) {
+        return !itemStack1.isEmpty() && !itemStack2.isEmpty() && itemStack1.isItemEqual(itemStack2) &&
                 itemStack1.isStackable() &&
                 (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
                 ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 
-    public void addChatMessage(String message) {
+    public void addChatMessage(@NotNull String message) {
         if(mc.ingameGUI != null) {
             mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentString(message));
         }
@@ -253,6 +258,7 @@ public class InvTweaksObfuscation {
         return mc.playerController;
     }
 
+    @Nullable
     public GuiScreen getCurrentScreen() {
         return mc.currentScreen;
     }
@@ -287,10 +293,12 @@ public class InvTweaksObfuscation {
         return getInventoryPlayer().mainInventory;
     }
 
+    @NotNull
     public ItemStack getHeldStack() {
         return getInventoryPlayer().getItemStack(); // getItemStack
     }
 
+    @NotNull
     public ItemStack getFocusedStack() {
         return getInventoryPlayer().getCurrentItem(); // getCurrentItem
     }
@@ -299,7 +307,7 @@ public class InvTweaksObfuscation {
         return getInventoryPlayer().currentItem; // currentItem
     }
 
-    public boolean hasTexture(ResourceLocation texture) {
+    public boolean hasTexture(@NotNull ResourceLocation texture) {
         try {
             mc.getResourceManager().getResource(texture);
         } catch(IOException e) {
@@ -308,6 +316,7 @@ public class InvTweaksObfuscation {
         return true;
     }
 
+    @NotNull
     public ItemStack getOffhandStack() {
         return getInventoryPlayer().offHandInventory.get(0);
     }

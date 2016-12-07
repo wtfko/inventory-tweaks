@@ -5,6 +5,8 @@ import invtweaks.api.container.ContainerSection;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -64,10 +66,12 @@ public class ContainerSectionManager {
         return containerMgr.getFirstEmptyIndex(section);
     }
 
+    @Nullable
     public Slot getSlot(int index) {
         return containerMgr.getSlot(section, index);
     }
 
+    @NotNull
     public ItemStack getItemStack(int index) throws NullPointerException, IndexOutOfBoundsException {
         return containerMgr.getItemStack(section, index);
     }

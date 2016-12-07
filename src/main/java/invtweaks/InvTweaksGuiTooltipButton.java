@@ -3,6 +3,8 @@ package invtweaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Icon-size button, which get drawns in a specific way to fit its small size.
@@ -15,7 +17,9 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     private int hoverTime = 0;
     private long prevSystemTime = 0;
 
+    @Nullable
     private String tooltip = null;
+    @Nullable
     private String[] tooltipLines = null;
     private int tooltipWidth = -1;
     private boolean drawBackground = true;
@@ -23,18 +27,18 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     /**
      * Default size is 150, the common "GuiSmallButton" button size.
      */
-    public InvTweaksGuiTooltipButton(int id_, int x, int y, String displayString_, String tooltip_) {
+    public InvTweaksGuiTooltipButton(int id_, int x, int y, @NotNull String displayString_, String tooltip_) {
         this(id_, x, y, 150, 20, displayString_, tooltip_);
     }
 
-    public InvTweaksGuiTooltipButton(int id_, int x, int y, int w, int h, String displayString_, String tooltip_) {
+    public InvTweaksGuiTooltipButton(int id_, int x, int y, int w, int h, @NotNull String displayString_, @Nullable String tooltip_) {
         super(id_, x, y, w, h, displayString_);
         if(tooltip_ != null) {
             setTooltip(tooltip_);
         }
     }
 
-    public InvTweaksGuiTooltipButton(int id_, int x, int y, int w, int h, String displayString_, String tooltip_,
+    public InvTweaksGuiTooltipButton(int id_, int x, int y, int w, int h, @NotNull String displayString_, @Nullable String tooltip_,
                                      boolean drawBackground_) {
         super(id_, x, y, w, h, displayString_);
         if(tooltip_ != null) {
@@ -44,7 +48,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft minecraft, int i, int j) {
+    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
         if(this.drawBackground) {
             super.drawButton(minecraft, i, j);
         } else {
@@ -52,7 +56,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                     this.yPosition + (this.height - 8) / 2, 0x999999);
         }
 
-        InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
+        @NotNull InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
 
         if(tooltipLines != null) {
             // Compute hover time
@@ -89,7 +93,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
                 // Draw lines
                 int lineCount = 0;
-                for(String line : tooltipLines) {
+                for(@NotNull String line : tooltipLines) {
                     int j1 = y + (lineCount++) * LINE_HEIGHT;
                     int k = -1;
                     fontRenderer.drawStringWithShadow(line, x, j1, k);
@@ -115,11 +119,12 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
 
     }
 
+    @Nullable
     public String getTooltip() {
         return tooltip;
     }
 
-    public void setTooltip(String tooltip_) {
+    public void setTooltip(@NotNull String tooltip_) {
         tooltip_ = tooltip_.replace("\\n", "\n");
         tooltip = tooltip_;
         tooltipLines = tooltip.split("\n");

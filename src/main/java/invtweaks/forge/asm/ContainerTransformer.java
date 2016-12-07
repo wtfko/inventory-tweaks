@@ -6,6 +6,8 @@ import invtweaks.forge.asm.compatibility.MethodInfo;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -34,7 +36,9 @@ public class ContainerTransformer implements IClassTransformer {
     public static final String ANNOTATION_IGNORE_CONTAINER = "Linvtweaks/api/container/IgnoreContainer;";
     public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
 
+    @NotNull
     private static Map<String, ContainerInfo> standardClasses = new HashMap<>();
+    @NotNull
     private static Map<String, ContainerInfo> configClasses = new HashMap<>();
     private static String containerClassName;
 
@@ -47,7 +51,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param clazz Class to alter
      * @param info  Information used to alter class
      */
-    public static void transformContainer(ClassNode clazz, ContainerInfo info) {
+    public static void transformContainer(@NotNull ClassNode clazz, @NotNull ContainerInfo info) {
         ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, info.showButtons);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
@@ -96,7 +100,7 @@ public class ContainerTransformer implements IClassTransformer {
      *
      * @param clazz Class to alter
      */
-    public static void transformBaseContainer(ClassNode clazz) {
+    public static void transformBaseContainer(@NotNull ClassNode clazz) {
         ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
@@ -108,7 +112,7 @@ public class ContainerTransformer implements IClassTransformer {
                 Type.getObjectType(CONTAINER_CLASS_INTERNAL));
     }
 
-    public static void transformCreativeContainer(ClassNode clazz) {
+    public static void transformCreativeContainer(@NotNull ClassNode clazz) {
         ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerCreativeIsInventory",
                 Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
@@ -121,7 +125,7 @@ public class ContainerTransformer implements IClassTransformer {
                 Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
-    public static void transformHorseInventoryContainer(ClassNode clazz) {
+    public static void transformHorseInventoryContainer(@NotNull ClassNode clazz) {
         ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerHorseIsInventory",
                 Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerHorseIsInventory",
@@ -134,14 +138,14 @@ public class ContainerTransformer implements IClassTransformer {
                 Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
-    private static void transformTextField(ClassNode clazz) {
-        for(MethodNode method : clazz.methods) {
+    private static void transformTextField(@NotNull ClassNode clazz) {
+        for(@NotNull MethodNode method : clazz.methods) {
             String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name, method.desc);
             String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
 
             if(("func_146195_b".equals(unmappedName) || "setFocused".equals(unmappedName))&& "(Z)V".equals(unmappedDesc)) {
                 InsnList code = method.instructions;
-                AbstractInsnNode returnNode = null;
+                @Nullable AbstractInsnNode returnNode = null;
                 for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
                     AbstractInsnNode insn = iterator.next();
 
@@ -166,10 +170,12 @@ public class ContainerTransformer implements IClassTransformer {
         }
     }
 
+    @NotNull
     public static MethodInfo getVanillaSlotMapInfo(String name) {
         return getSlotMapInfo(Type.getObjectType(SLOT_MAPS_VANILLA_CLASS), name, true);
     }
 
+    @NotNull
     public static MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
         return new MethodInfo(
                 Type.getMethodType(Type.getObjectType("java/util/Map"), Type.getObjectType(containerClassName)), mClass,
@@ -213,10 +219,10 @@ public class ContainerTransformer implements IClassTransformer {
         }
     }
 
-    private static MethodNode findAnnotatedMethod(ClassNode cn, String annotationDesc) {
-        for(MethodNode method : cn.methods) {
+    private static MethodNode findAnnotatedMethod(@NotNull ClassNode cn, @NotNull String annotationDesc) {
+        for(@NotNull MethodNode method : cn.methods) {
             if(method.visibleAnnotations != null) {
-                for(AnnotationNode methodAnnotation : method.visibleAnnotations) {
+                for(@NotNull AnnotationNode methodAnnotation : method.visibleAnnotations) {
                     if(annotationDesc.equals(methodAnnotation.desc)) {
                         return method;
                     }
@@ -226,8 +232,9 @@ public class ContainerTransformer implements IClassTransformer {
         return null;
     }
 
+    @Nullable
     @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
+    public byte[] transform(String name, String transformedName, @Nullable byte[] bytes) {
         if(containerClassName == null) {
             if(FMLPlugin.runtimeDeobfEnabled) {
                 containerClassName = FMLDeobfuscatingRemapper.INSTANCE.unmap(CONTAINER_CLASS_INTERNAL);
@@ -242,9 +249,9 @@ public class ContainerTransformer implements IClassTransformer {
             return bytes;
         }
 
-        ClassReader cr = new ClassReader(bytes);
-        ClassNode cn = new ClassNode(Opcodes.ASM4);
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+        @NotNull ClassReader cr = new ClassReader(bytes);
+        @NotNull ClassNode cn = new ClassNode(Opcodes.ASM4);
+        @NotNull ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
         cr.accept(cn, 0);
 
@@ -280,8 +287,8 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         if("invtweaks.InvTweaksObfuscation".equals(transformedName)) {
-            Type containertype = Type.getObjectType(containerClassName);
-            for(MethodNode method : cn.methods) {
+            @NotNull Type containertype = Type.getObjectType(containerClassName);
+            for(@NotNull MethodNode method : cn.methods) {
                 if("isValidChest".equals(method.name)) {
                     ASMHelper.replaceSelfForwardingMethod(method, VALID_CHEST_METHOD, containertype);
                 } else if("isValidInventory".equals(method.name)) {
@@ -311,9 +318,9 @@ public class ContainerTransformer implements IClassTransformer {
         }
 
         if(cn.visibleAnnotations != null) {
-            for(AnnotationNode annotation : cn.visibleAnnotations) {
+            for(@Nullable AnnotationNode annotation : cn.visibleAnnotations) {
                 if(annotation != null) {
-                    ContainerInfo apiInfo = null;
+                    @Nullable ContainerInfo apiInfo = null;
 
                     if(ANNOTATION_CHEST_CONTAINER.equals(annotation.desc)) {
                         short rowSize = 9;
@@ -322,29 +329,33 @@ public class ContainerTransformer implements IClassTransformer {
 
                         if(annotation.values != null) {
                             for(int i = 0; i < annotation.values.size(); i += 2) {
-                                String valueName = (String) annotation.values.get(i);
+                                @NotNull String valueName = (String) annotation.values.get(i);
                                 Object value = annotation.values.get(i + 1);
 
-                                if("rowSize".equals(valueName)) {
-                                    rowSize = (short) ((Integer) value).intValue();
-                                } else if("isLargeChest".equals(valueName)) {
-                                    isLargeChest = (Boolean) value;
-                                } else if("showButtons".equals(valueName)) {
-                                    showButtons = (Boolean) value;
+                                switch(valueName) {
+                                    case "rowSize":
+                                        rowSize = (short) ((Integer) value).intValue();
+                                        break;
+                                    case "isLargeChest":
+                                        isLargeChest = (Boolean) value;
+                                        break;
+                                    case "showButtons":
+                                        showButtons = (Boolean) value;
+                                        break;
                                 }
                             }
                         }
 
                         apiInfo = new ContainerInfo(showButtons, false, true, isLargeChest, rowSize);
 
-                        MethodNode row_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
+                        @Nullable MethodNode row_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK);
 
                         if(row_method != null) {
                             apiInfo.rowSizeMethod = new MethodInfo(Type.getMethodType(row_method.desc),
                                     Type.getObjectType(cn.name), row_method.name);
                         }
 
-                        MethodNode large_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK);
+                        @Nullable MethodNode large_method = findAnnotatedMethod(cn, ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK);
 
                         if(large_method != null) {
                             apiInfo.largeChestMethod = new MethodInfo(Type.getMethodType(large_method.desc),
@@ -355,7 +366,7 @@ public class ContainerTransformer implements IClassTransformer {
 
                         if(annotation.values != null) {
                             for(int i = 0; i < annotation.values.size(); i += 2) {
-                                String valueName = (String) annotation.values.get(i);
+                                @NotNull String valueName = (String) annotation.values.get(i);
                                 Object value = annotation.values.get(i + 1);
 
                                 if("showOptions".equals(valueName)) {
@@ -376,7 +387,7 @@ public class ContainerTransformer implements IClassTransformer {
 
                     if(apiInfo != null) {
                         // Search methods to see if any have the ContainerSectionCallback attribute.
-                        MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CONTAINER_SECTION_CALLBACK);
+                        @Nullable MethodNode method = findAnnotatedMethod(cn, ANNOTATION_CONTAINER_SECTION_CALLBACK);
 
                         if(method != null) {
                             apiInfo.slotMapMethod = new MethodInfo(Type.getMethodType(method.desc),

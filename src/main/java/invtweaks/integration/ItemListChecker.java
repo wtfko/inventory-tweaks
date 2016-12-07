@@ -4,14 +4,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.minecraftforge.fml.common.Loader;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Checks if the NEI or JEI item lists are visible on the screen.
  * Used to make sure InvTweaks buttons do not overlap with the item list.
  */
 public class ItemListChecker {
-	private Method neiHidden;
-	private Method jeiShown;
+	@Nullable
+    private Method neiHidden;
+	@Nullable
+    private Method jeiShown;
 
 	private boolean visible = false;
 	private boolean wasVisible = false;
@@ -38,7 +42,7 @@ public class ItemListChecker {
 				if (clientConfig != null) {
 					return clientConfig.getMethod("isHidden");
 				}
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException ignored) {
+			} catch (@NotNull ClassNotFoundException | NoSuchMethodException | SecurityException ignored) {
 				return null;
 			}
 		}
@@ -52,7 +56,7 @@ public class ItemListChecker {
 				if (clientConfig != null) {
 					return clientConfig.getMethod("isOverlayEnabled");
 				}
-			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException ignored) {
+			} catch (@NotNull ClassNotFoundException | NoSuchMethodException | SecurityException ignored) {
 				return null;
 			}
 		}
@@ -63,7 +67,7 @@ public class ItemListChecker {
 		if (neiHidden != null) {
 			try {
 				return !(Boolean) neiHidden.invoke(null);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (@NotNull IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				neiHidden = null;
 				return false;
 			}
@@ -75,7 +79,7 @@ public class ItemListChecker {
 		if (jeiShown != null) {
 			try {
 				return (Boolean) jeiShown.invoke(null);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (@NotNull IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				jeiShown = null;
 				return false;
 			}

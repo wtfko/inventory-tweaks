@@ -1,5 +1,6 @@
 package invtweaks;
 
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -11,13 +12,14 @@ import java.util.Map;
  */
 public class InvTweaksShortcutMapping {
 
+    @NotNull
     private List<Integer> keysToHold = new ArrayList<>();
 
     public InvTweaksShortcutMapping(int keyCode) {
         keysToHold.add(keyCode);
     }
 
-    public InvTweaksShortcutMapping(String... keyNames) {
+    public InvTweaksShortcutMapping(@NotNull String... keyNames) {
         for(String keyName : keyNames) {
             // - Accept both KEY_### and ###, in case someone
             //   takes the LWJGL Javadoc at face value
@@ -27,7 +29,7 @@ public class InvTweaksShortcutMapping {
         }
     }
 
-    public boolean isTriggered(Map<Integer, Boolean> pressedKeys) {
+    public boolean isTriggered(@NotNull Map<Integer, Boolean> pressedKeys) {
         for(Integer keyToHold : keysToHold) {
             if(keyToHold != Keyboard.KEY_LCONTROL) {
                 if(!pressedKeys.get(keyToHold)) {
@@ -42,6 +44,7 @@ public class InvTweaksShortcutMapping {
         return true;
     }
 
+    @NotNull
     public List<Integer> getKeyCodes() {
         return this.keysToHold;
     }

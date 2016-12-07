@@ -2,6 +2,7 @@ package invtweaks;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -11,8 +12,10 @@ import org.lwjgl.opengl.GL11;
  */
 public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
 
+    @NotNull
     private static ResourceLocation resourceButtonCustom = new ResourceLocation("inventorytweaks",
             "textures/gui/button10px.png");
+    @NotNull
     private static ResourceLocation resourceButtonDefault = new ResourceLocation("textures/gui/widgets.png");
     protected InvTweaksConfigManager cfgManager;
     private boolean useCustomTexture;
@@ -25,7 +28,7 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
     }
 
     @Override
-    public void drawButton(Minecraft minecraft, int i, int j) {
+    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
         super.drawButton(minecraft, i, j);
 
         // Draw background (use the 4 corners of the texture to fit best its small size)

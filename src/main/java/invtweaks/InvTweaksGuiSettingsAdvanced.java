@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.util.Point;
 
 import java.awt.*;
@@ -44,7 +45,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         super.initGui();
 
         List<GuiButton> controlList = buttonList;
-        Point p = new Point();
+        @NotNull Point p = new Point();
         int i = 0;
 
         // Create large buttons
@@ -57,7 +58,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         i += 2;
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(),
+        @NotNull InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
                         InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
                         labelSortOnPickup),
@@ -66,7 +67,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         controlList.add(sortOnPickupBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(),
+        @NotNull InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
                         InvTweaksConfig.PROP_ENABLE_SOUNDS,
                         labelEnableSounds),
@@ -82,7 +83,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                         "invtweaks.settings.chestbuttons.tooltip")));
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(),
+        @NotNull InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(),
                 p.getY(), computeBooleanButtonLabel(
                 InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), I18n.translateToLocal(
                 "invtweaks.settings.advanced.autoequip.tooltip"));
@@ -90,7 +91,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
 
         //noinspection UnusedAssignment
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(),
+        @NotNull InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(),
                 computeBooleanButtonLabel(
                         InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP,
                         labelServerAssist),
@@ -124,7 +125,7 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
     }
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(@NotNull GuiButton guibutton) {
 
         // GuiButton
         switch(guibutton.id) {

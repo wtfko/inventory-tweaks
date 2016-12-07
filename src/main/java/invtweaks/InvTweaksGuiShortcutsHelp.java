@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.translation.I18n;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
 
 import java.util.LinkedList;
@@ -26,7 +28,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
 
     public void initGui() {
         // Create Done button
-        List<GuiButton> controlList = new LinkedList<>();
+        @NotNull List<GuiButton> controlList = new LinkedList<>();
         controlList.add(new GuiButton(ID_DONE, width / 2 - 100, height / 6 + 168, "Done"));
         buttonList = controlList;
     }
@@ -42,7 +44,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
                 width / 2, 5, 0xff0000);
         drawCenteredString(obf.getFontRenderer(), I18n.translateToLocal("invtweaks.help.shortcuts.title"),
                 width / 2, 20, 0xffffff); // Gui.drawCenteredString
-        String clickLabel = I18n.translateToLocal("invtweaks.help.shortcuts.click");
+        @NotNull String clickLabel = I18n.translateToLocal("invtweaks.help.shortcuts.click");
 
         int y = height / 6 - 2;
 
@@ -98,7 +100,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
         super.drawScreen(i, j, f);
     }
 
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(@NotNull GuiButton guibutton) {
         // GuiButton
         switch(guibutton.id) {
             case ID_DONE:
@@ -113,8 +115,8 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
         }
     }
 
-    private String buildUpOrDownLabel(String shortcutProp, int keyCode, String defaultKeyName) {
-        String shortcutLabel = config.getProperty(shortcutProp);
+    private String buildUpOrDownLabel(@NotNull String shortcutProp, int keyCode, String defaultKeyName) {
+        @NotNull String shortcutLabel = config.getProperty(shortcutProp);
         String keyLabel = getKeyName(keyCode, defaultKeyName);
         if(keyLabel.equals(shortcutLabel)) {
             return keyLabel;
@@ -131,7 +133,7 @@ public class InvTweaksGuiShortcutsHelp extends GuiScreen {
         }
     }
 
-    private void drawShortcutLine(String label, String value, int color, int y) {
+    private void drawShortcutLine(@NotNull String label, @Nullable String value, int color, int y) {
         drawString(obf.getFontRenderer(), label, 30, y, -1); // drawString
         if(value != null) {
             drawString(obf.getFontRenderer(), value.contains("DEFAULT") ? "-" : value

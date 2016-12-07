@@ -24,6 +24,7 @@ package invtweaks.api;
 
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.item.ItemStack;
+import javax.annotation.Nonnull;
 
 /**
  * Interface to access functions exposed by Inventory Tweaks
@@ -66,7 +67,7 @@ public interface InvTweaksAPI {
      * @param j
      * @return A value with a sign representing the relative order of the item stacks
      */
-    int compareItems(ItemStack i, ItemStack j);
+    int compareItems(@Nonnull ItemStack i, @Nonnull ItemStack j);
 
     /**
      * Initiate a sort as if the player had clicked on a sorting button or pressed the sort key.

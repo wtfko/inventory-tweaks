@@ -3,6 +3,7 @@ package invtweaks;
 import invtweaks.api.SortingMethod;
 import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Chest sorting button
@@ -25,7 +26,7 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     }
 
     @Override
-    public void drawButton(Minecraft minecraft, int i, int j) {
+    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
         super.drawButton(minecraft, i, j);
 
         // Display symbol

@@ -1,5 +1,7 @@
 package invtweaks.forge.asm;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -12,8 +14,8 @@ public class ASMHelper {
      * @param name   Name of method
      * @param retval Return value of method
      */
-    public static void generateBooleanMethodConst(ClassNode clazz, String name, boolean retval) {
-        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()Z", null,
+    public static void generateBooleanMethodConst(@NotNull ClassNode clazz, String name, boolean retval) {
+        @Nullable MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()Z", null,
                 null);
         InsnList code = method.instructions;
 
@@ -30,8 +32,8 @@ public class ASMHelper {
      * @param name   Name of method
      * @param retval Return value of method
      */
-    public static void generateIntegerMethodConst(ClassNode clazz, String name, short retval) {
-        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()I", null,
+    public static void generateIntegerMethodConst(@NotNull ClassNode clazz, String name, short retval) {
+        @NotNull MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name, "()I", null,
                 null);
         InsnList code = method.instructions;
 
@@ -54,8 +56,8 @@ public class ASMHelper {
      * @param forwardname Name of method to call
      * @param rettype     Return type of method
      */
-    public static void generateSelfForwardingMethod(ClassNode clazz, String name, String forwardname, Type rettype) {
-        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
+    public static void generateSelfForwardingMethod(@NotNull ClassNode clazz, String name, String forwardname, @NotNull Type rettype) {
+        @Nullable MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
                 "()" + rettype.getDescriptor(), null, null);
 
         populateSelfForwardingMethod(method, forwardname, rettype, Type.getObjectType(clazz.name));
@@ -71,9 +73,9 @@ public class ASMHelper {
      * @param forwardname Name of method to call
      * @param rettype     Return type of method
      */
-    public static void generateForwardingToStaticMethod(ClassNode clazz, String name, String forwardname, Type rettype,
-                                                        Type fowardtype) {
-        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
+    public static void generateForwardingToStaticMethod(@NotNull ClassNode clazz, String name, String forwardname, @NotNull Type rettype,
+                                                        @NotNull Type fowardtype) {
+        @NotNull MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
                 "()" + rettype.getDescriptor(), null, null);
 
         populateForwardingToStaticMethod(method, forwardname, rettype, Type.getObjectType(clazz.name), fowardtype);
@@ -90,9 +92,9 @@ public class ASMHelper {
      * @param rettype     Return type of method
      * @param thistype    Type to treat 'this' as for overload searching purposes
      */
-    public static void generateForwardingToStaticMethod(ClassNode clazz, String name, String forwardname, Type rettype,
-                                                        Type fowardtype, Type thistype) {
-        MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
+    public static void generateForwardingToStaticMethod(@NotNull ClassNode clazz, String name, String forwardname, @NotNull Type rettype,
+                                                        @NotNull Type fowardtype, @NotNull Type thistype) {
+        @NotNull MethodNode method = new MethodNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, name,
                 "()" + rettype.getDescriptor(), null, null);
 
         populateForwardingToStaticMethod(method, forwardname, rettype, thistype, fowardtype);
@@ -108,7 +110,7 @@ public class ASMHelper {
      * @param forwardname Name of method to forward to
      * @param thistype    Type of object method is being replaced on
      */
-    public static void replaceSelfForwardingMethod(MethodNode method, String forwardname, Type thistype) {
+    public static void replaceSelfForwardingMethod(@NotNull MethodNode method, String forwardname, @NotNull Type thistype) {
         Type methodType = Type.getMethodType(method.desc);
 
         method.instructions.clear();
@@ -125,8 +127,8 @@ public class ASMHelper {
      * @param thistype    Type of object method is being generated on
      * @param forwardtype Type to forward method to
      */
-    public static void populateForwardingToStaticMethod(MethodNode method, String forwardname, Type rettype,
-                                                        Type thistype, Type forwardtype) {
+    public static void populateForwardingToStaticMethod(@NotNull MethodNode method, String forwardname, @NotNull Type rettype,
+                                                        @NotNull Type thistype, @NotNull Type forwardtype) {
         InsnList code = method.instructions;
 
         code.add(new VarInsnNode(thistype.getOpcode(Opcodes.ILOAD), 0));
@@ -144,8 +146,8 @@ public class ASMHelper {
      * @param rettype     Return type of method
      * @param thistype    Type of object method is being generated on
      */
-    public static void populateSelfForwardingMethod(MethodNode method, String forwardname, Type rettype,
-                                                    Type thistype) {
+    public static void populateSelfForwardingMethod(@NotNull MethodNode method, String forwardname, @NotNull Type rettype,
+                                                    @NotNull Type thistype) {
         InsnList code = method.instructions;
 
         code.add(new VarInsnNode(thistype.getOpcode(Opcodes.ILOAD), 0));

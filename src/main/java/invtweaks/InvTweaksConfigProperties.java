@@ -1,5 +1,7 @@
 package invtweaks;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 /**
@@ -13,11 +15,12 @@ public class InvTweaksConfigProperties extends Properties {
 
     private final List<String> keys = new ArrayList<>();
 
+    @NotNull
     public Enumeration<Object> keys() {
         return Collections.enumeration(new LinkedHashSet<>(keys));
     }
 
-    public Object put(String key, Object value) {
+    public Object put(@NotNull String key, @NotNull Object value) {
         keys.add(key);
         return super.put(key, value);
     }

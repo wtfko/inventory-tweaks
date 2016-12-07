@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import org.jetbrains.annotations.NotNull;
 
 public class ITPacketClick implements ITPacket {
     public int slot;
@@ -24,7 +25,7 @@ public class ITPacketClick implements ITPacket {
     }
 
     @Override
-    public void readBytes(ByteBuf bytes) {
+    public void readBytes(@NotNull ByteBuf bytes) {
         slot = bytes.readInt();
         data = bytes.readInt();
         action = ClickType.values()[bytes.readInt()];
@@ -32,7 +33,7 @@ public class ITPacketClick implements ITPacket {
     }
 
     @Override
-    public void writeBytes(ByteBuf bytes) {
+    public void writeBytes(@NotNull ByteBuf bytes) {
         bytes.writeInt(slot);
         bytes.writeInt(data);
         bytes.writeInt(action.ordinal());
@@ -42,7 +43,7 @@ public class ITPacketClick implements ITPacket {
     @Override
     public void handle(INetHandler handler) {
         if(handler instanceof NetHandlerPlayServer) {
-            NetHandlerPlayServer serverHandler = (NetHandlerPlayServer) handler;
+            @NotNull NetHandlerPlayServer serverHandler = (NetHandlerPlayServer) handler;
             EntityPlayerMP player = serverHandler.playerEntity;
 
             if(player.openContainer.windowId == window) {

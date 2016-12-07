@@ -4,6 +4,8 @@ import invtweaks.api.container.ContainerSection;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -93,6 +95,7 @@ public interface IContainerManager {
      */
     boolean isSlotEmpty(ContainerSection section, int slot);
 
+    @Nullable
     Slot getSlot(ContainerSection section, int index);
 
     /**
@@ -114,6 +117,7 @@ public interface IContainerManager {
      *
      * @return null if the slot number is invalid.
      */
+    @Nullable
     ContainerSection getSlotSection(int slotNumber);
 
     /**
@@ -121,6 +125,7 @@ public interface IContainerManager {
      *
      * @return An ItemStack or null.
      */
+    @NotNull
     ItemStack getItemStack(ContainerSection section, int index);
 
     Container getContainer();

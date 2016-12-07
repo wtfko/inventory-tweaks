@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -26,7 +28,9 @@ import java.util.Map.Entry;
 public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private static final Logger log = InvTweaks.log;
     private static final int MAX_CONTAINER_SIZE = 999;
+    @Nullable
     private static int[] DEFAULT_LOCK_PRIORITIES = null;
+    @Nullable
     private static boolean[] DEFAULT_FROZEN_SLOTS = null;
     private ContainerSectionManager containerMgr;
     private SortingMethod algorithm;
@@ -37,10 +41,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private List<InvTweaksConfigSortingRule> rules;
     private int[] rulePriority;
     private int[] keywordOrder;
+    @Nullable
     private int[] lockPriorities;
+    @Nullable
     private boolean[] frozenSlots;
 
-    public InvTweaksHandlerSorting(Minecraft mc_, InvTweaksConfig config, ContainerSection section, SortingMethod algorithm_,
+    public InvTweaksHandlerSorting(Minecraft mc_, @NotNull InvTweaksConfig config, ContainerSection section, SortingMethod algorithm_,
                                    int rowSize) throws Exception {
         super(mc_);
 
@@ -86,7 +92,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         keywordOrder = new int[size];
         for(int i = 0; i < size; i++) {
             rulePriority[i] = -1;
-            ItemStack stack = containerMgr.getItemStack(i);
+            @NotNull ItemStack stack = containerMgr.getItemStack(i);
             if(!stack.isEmpty()) {
                 keywordOrder[i] = getItemOrder(stack);
             } else {
@@ -99,9 +105,9 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         rules.stream().filter(rule -> rule.getContainerSize() == size).forEach(rule -> {
             int priority = rule.getPriority();
             for(int slot : rule.getPreferredSlots()) {
-                ItemStack stack = containerMgr.getItemStack(slot);
+                @NotNull ItemStack stack = containerMgr.getItemStack(slot);
                 if(!stack.isEmpty()) {
-                    List<IItemTreeItem> items = tree
+                    @NotNull List<IItemTreeItem> items = tree
                             .getItems(Item.REGISTRY.getNameForObject(stack.getItem()).toString(), stack.getItemDamage(), stack.getTagCompound());
                     if(rulePriority[slot] < priority && tree.matches(items, rule.getKeyword())) {
                         rulePriority[slot] = priority;
@@ -111,7 +117,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         });
     }
 
-    private static boolean canMergeStacks(ItemStack from, ItemStack to) {
+    private static boolean canMergeStacks(@NotNull ItemStack from, @NotNull ItemStack to) {
         if(areItemsStackable(from, to)) {
             // We will not merge from a stack that exceeds its maximum size already, as these cannot be normally obtained.
             if(from.getCount() > from.getMaxStackSize()) {
@@ -128,7 +134,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     public void sort() {
         long timer = System.nanoTime();
-        IContainerManager globalContainer = InvTweaks.getCurrentContainerManager();
+        @NotNull IContainerManager globalContainer = InvTweaks.getCurrentContainerManager();
 
         // Put hold item down
         if(!getHeldStack().isEmpty()) {
@@ -173,7 +179,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         log.info("Applying rules.");
 
         // Sorts rule by rule, themselves being already sorted by decreasing priority
-        for(InvTweaksConfigSortingRule rule : rules) {
+        for(@NotNull InvTweaksConfigSortingRule rule : rules) {
             int priority = rule.getPriority();
 
             if(log.isEnabled(InvTweaksConst.DEBUG)) {
@@ -182,12 +188,12 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
             // For every item in the inventory
             for(int i = 0; i < size; i++) {
-                ItemStack from = containerMgr.getItemStack(i);
+                @NotNull ItemStack from = containerMgr.getItemStack(i);
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i, priority) && lockPriorities[i] < priority) {
                     // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                    List<IItemTreeItem> fromItems = tree
+                    @NotNull List<IItemTreeItem> fromItems = tree
                             .getItems(Item.REGISTRY.getNameForObject(from.getItem()).toString(), from.getItemDamage(), from.getTagCompound());
                     if(tree.matches(fromItems, rule.getKeyword())) {
 
@@ -234,14 +240,14 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void sortInventory(IContainerManager globalContainer) {
+    private void sortInventory(@NotNull IContainerManager globalContainer) {
         //// Move items out of the crafting slots
         log.info("Handling crafting slots.");
         if(globalContainer.hasSection(ContainerSection.CRAFTING_IN)) {
             List<Slot> craftingSlots = globalContainer.getSlots(ContainerSection.CRAFTING_IN);
             int emptyIndex = globalContainer.getFirstEmptyIndex(ContainerSection.INVENTORY);
             if(emptyIndex != -1) {
-                for(Slot craftingSlot : craftingSlots) {
+                for(@NotNull Slot craftingSlot : craftingSlots) {
                     if(craftingSlot.getHasStack()) {
                         globalContainer.move(ContainerSection.CRAFTING_IN,
                                 globalContainer.getSlotIndex(getSlotNumber(craftingSlot)),
@@ -258,16 +264,16 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         sortMergeArmor(globalContainer);
     }
 
-    private void sortMergeArmor(IContainerManager globalContainer) {
+    private void sortMergeArmor(@NotNull IContainerManager globalContainer) {
         //// Merge stacks to fill the ones in locked slots
         //// + Move armor parts to the armor slots
         log.info("Merging stacks.");
         for(int i = size - 1; i >= 0; i--) {
-            ItemStack from = containerMgr.getItemStack(i);
+            @NotNull ItemStack from = containerMgr.getItemStack(i);
             if(!from.isEmpty()) {
                 // Move armor parts
                 // Item
-                Item fromItem = from.getItem();
+                @NotNull Item fromItem = from.getItem();
                 if(fromItem.isDamageable()) {
                     moveArmor(globalContainer, i, from, fromItem);
                 }
@@ -279,11 +285,11 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void mergeItem(int i, ItemStack from) {
+    private void mergeItem(int i, @NotNull ItemStack from) {
         int j = 0;
         for(Integer lockPriority : lockPriorities) {
             if(lockPriority > 0) {
-                ItemStack to = containerMgr.getItemStack(j);
+                @NotNull ItemStack to = containerMgr.getItemStack(j);
                 if(!to.isEmpty() && areItemsStackable(from, to)) {
                     move(i, j, Integer.MAX_VALUE);
                     markAsNotMoved(j);
@@ -296,20 +302,20 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
     }
 
-    private void moveArmor(IContainerManager globalContainer, int i, ItemStack from, Item fromItem) {
+    private void moveArmor(@NotNull IContainerManager globalContainer, int i, @NotNull ItemStack from, Item fromItem) {
         if(sortArmorParts) {
             if(isItemArmor(fromItem)) {
                 // ItemArmor
-                ItemArmor fromItemArmor = (ItemArmor) fromItem;
+                @NotNull ItemArmor fromItemArmor = (ItemArmor) fromItem;
                 if(globalContainer.hasSection(ContainerSection.ARMOR)) {
                     List<Slot> armorSlots = globalContainer.getSlots(ContainerSection.ARMOR);
-                    for(Slot slot : armorSlots) {
+                    for(@NotNull Slot slot : armorSlots) {
                         boolean move = false;
                         if(!slot.getHasStack()) {
                             move = true;
                         } else {
                             // Item
-                            Item currentArmor = slot.getStack().getItem();
+                            @NotNull Item currentArmor = slot.getStack().getItem();
                             if(isItemArmor(currentArmor)) {
                                 // ItemArmor
                                 // ItemArmor
@@ -338,15 +344,15 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         log.info("Distributing items.");
 
         //item and slot counts for each unique item
-        HashMap<Pair<String, Integer>, int[]> itemCounts = new HashMap<>();
+        @NotNull HashMap<Pair<String, Integer>, int[]> itemCounts = new HashMap<>();
         for(int i = 0; i < size; i++) {
-            ItemStack stack = containerMgr.getItemStack(i);
+            @NotNull ItemStack stack = containerMgr.getItemStack(i);
             if(!stack.isEmpty()) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                Pair<String, Integer> item = Pair.of(Item.REGISTRY.getNameForObject(stack.getItem()).toString(), stack.getItemDamage());
+                @NotNull Pair<String, Integer> item = Pair.of(Item.REGISTRY.getNameForObject(stack.getItem()).toString(), stack.getItemDamage());
                 int[] count = itemCounts.get(item);
                 if(count == null) {
-                    int[] newCount = {stack.getCount(), 1};
+                    @NotNull int[] newCount = {stack.getCount(), 1};
                     itemCounts.put(item, newCount);
                 } else {
                     count[0] += stack.getCount(); //amount of item
@@ -356,7 +362,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
 
         //handle each unique item separately
-        for(Entry<Pair<String, Integer>, int[]> entry : itemCounts.entrySet()) {
+        for(@NotNull Entry<Pair<String, Integer>, int[]> entry : itemCounts.entrySet()) {
             Pair<String, Integer> item = entry.getKey();
             int[] count = entry.getValue();
             int numPerSlot = count[0] / count[1];  //totalNumber/numberOfSlots
@@ -366,10 +372,10 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             // TODO: ResourceLocation
             if(numPerSlot <= new ItemStack(Item.REGISTRY.getObject(new ResourceLocation(item.getLeft())), 1, 0).getMaxStackSize()) {
                 //linkedlists to store which stacks have too many/few items
-                LinkedList<Integer> smallStacks = new LinkedList<>();
-                LinkedList<Integer> largeStacks = new LinkedList<>();
+                @NotNull LinkedList<Integer> smallStacks = new LinkedList<>();
+                @NotNull LinkedList<Integer> largeStacks = new LinkedList<>();
                 for(int i = 0; i < size; i++) {
-                    ItemStack stack = containerMgr.getItemStack(i);
+                    @NotNull ItemStack stack = containerMgr.getItemStack(i);
                     // TODO: ResourceLocation
                     if(!stack.isEmpty() && Pair.of(Item.REGISTRY.getNameForObject(stack.getItem()).toString(), stack.getItemDamage())
                             .equals(item)) {
@@ -420,7 +426,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     private void defaultSorting() {
         log.info("Default sorting.");
 
-        ArrayList<Integer> remaining = new ArrayList<>(), nextRemaining = new ArrayList<>();
+        @NotNull ArrayList<Integer> remaining = new ArrayList<>(), nextRemaining = new ArrayList<>();
         for(int i = 0; i < size; i++) {
             if(hasToBeMoved(i, 1)) {
                 remaining.add(i);
@@ -466,7 +472,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
      * @return -1 if it failed, j if the stacks were merged into one, n if the j stack has been moved to the n slot.
      */
     private int move(int i, int j, int priority) {
-        ItemStack from = containerMgr.getItemStack(i), to = containerMgr.getItemStack(j);
+        @NotNull ItemStack from = containerMgr.getItemStack(i), to = containerMgr.getItemStack(j);
 
         if(from.isEmpty()|| frozenSlots[j] || frozenSlots[i]) {
             return -1;
@@ -503,7 +509,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                     boolean success = containerMgr.move(i, j);
 
                     if(success) {
-                        ItemStack remains = containerMgr.getItemStack(i);
+                        @NotNull ItemStack remains = containerMgr.getItemStack(i);
 
                         if(!remains.isEmpty()) {
                             int dropSlot = i;
@@ -551,15 +557,15 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private boolean isOrderedBefore(int i, int j) {
-        ItemStack iStack = containerMgr.getItemStack(i), jStack = containerMgr.getItemStack(j);
+        @NotNull ItemStack iStack = containerMgr.getItemStack(i), jStack = containerMgr.getItemStack(j);
 
         return InvTweaks.getInstance().compareItems(iStack, jStack, keywordOrder[i], keywordOrder[j]) < 0;
     }
 
-    private int getItemOrder(ItemStack itemStack) {
+    private int getItemOrder(@NotNull ItemStack itemStack) {
         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-        List<IItemTreeItem> items = tree.getItems(Item.REGISTRY.getNameForObject(itemStack.getItem()).toString(), itemStack.getItemDamage(), itemStack.getTagCompound());
-        return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
+        @NotNull List<IItemTreeItem> items = tree.getItems(Item.REGISTRY.getNameForObject(itemStack.getItem()).toString(), itemStack.getItemDamage(), itemStack.getTagCompound());
+        return (items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
     private void computeLineSortingRules(int rowSize, boolean horizontal) {
@@ -567,8 +573,8 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         rules = new ArrayList<>();
 
 
-        Map<IItemTreeItem, Integer> stats = computeContainerStats();
-        List<IItemTreeItem> itemOrder = new ArrayList<>();
+        @NotNull Map<IItemTreeItem, Integer> stats = computeContainerStats();
+        @NotNull List<IItemTreeItem> itemOrder = new ArrayList<>();
 
         int distinctItems = stats.size();
         int columnSize = getContainerColumnSize(rowSize);
@@ -586,7 +592,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         }
 
         // (Partially) sort stats by decreasing item stack count
-        List<IItemTreeItem> unorderedItems = new ArrayList<>(stats.keySet());
+        @NotNull List<IItemTreeItem> unorderedItems = new ArrayList<>(stats.keySet());
         boolean hasStacksToOrderFirst = true;
         while(hasStacksToOrderFirst) {
             hasStacksToOrderFirst = false;
@@ -600,7 +606,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 }
             }
         }
-        Collections.sort(unorderedItems, Collections.reverseOrder());
+        unorderedItems.sort(Collections.reverseOrder());
         itemOrder.addAll(unorderedItems);
 
         // Define space size used for each item type.
@@ -616,7 +622,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         char column = '1', maxColumn = (char) (column - 1 + rowSize);
 
         // Create rules
-        for(IItemTreeItem item : itemOrder) {
+        for(@NotNull IItemTreeItem item : itemOrder) {
 
             // Adapt rule dimensions to fit the amount
             int thisSpaceWidth = spaceWidth,
@@ -693,12 +699,13 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
     }
 
+    @NotNull
     private Map<IItemTreeItem, Integer> computeContainerStats() {
-        Map<IItemTreeItem, Integer> stats = new HashMap<>();
-        Map<Integer, IItemTreeItem> itemSearch = new HashMap<>();
+        @NotNull Map<IItemTreeItem, Integer> stats = new HashMap<>();
+        @NotNull Map<Integer, IItemTreeItem> itemSearch = new HashMap<>();
 
         for(int i = 0; i < size; i++) {
-            ItemStack stack = containerMgr.getItemStack(i);
+            @NotNull ItemStack stack = containerMgr.getItemStack(i);
             if(!stack.isEmpty()) {
                 // TODO: ID Changes (Leaving as-is for now because WHY)
                 int itemSearchKey = Item.getIdFromItem(stack.getItem()) * 100000 + ((stack

@@ -3,6 +3,7 @@ package invtweaks;
 
 import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -23,16 +24,16 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     }
 
     @Override
-    public boolean contains(IItemTreeItem item) {
+    public boolean contains(@NotNull IItemTreeItem item) {
         List<IItemTreeItem> storedItems = items.get(item.getId());
         if(storedItems != null) {
-            for(IItemTreeItem storedItem : storedItems) {
+            for(@NotNull IItemTreeItem storedItem : storedItems) {
                 if(storedItem.equals(item)) {
                     return true;
                 }
             }
         }
-        for(IItemTreeCategory category : subCategories) {
+        for(@NotNull IItemTreeCategory category : subCategories) {
             if(category.contains(item)) {
                 return true;
             }
@@ -46,11 +47,11 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     }
 
     @Override
-    public void addItem(IItemTreeItem item) {
+    public void addItem(@NotNull IItemTreeItem item) {
 
         // Add item to category
         if(items.get(item.getId()) == null) {
-            List<IItemTreeItem> itemList = new ArrayList<>();
+            @NotNull List<IItemTreeItem> itemList = new ArrayList<>();
             itemList.add(item);
             items.put(item.getId(), itemList);
         } else {
@@ -70,7 +71,7 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
             return this.order;
         } else {
             int catOrder;
-            for(IItemTreeCategory category : subCategories) {
+            for(@NotNull IItemTreeCategory category : subCategories) {
                 catOrder = category.getCategoryOrder();
                 if(catOrder != -1) {
                     return catOrder;
@@ -81,12 +82,12 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     }
 
     @Override
-    public int findCategoryOrder(String keyword) {
+    public int findCategoryOrder(@NotNull String keyword) {
         if(keyword.equals(name)) {
             return getCategoryOrder();
         } else {
             int result;
-            for(IItemTreeCategory category : subCategories) {
+            for(@NotNull IItemTreeCategory category : subCategories) {
                 result = category.findCategoryOrder(keyword);
                 if(result != -1) {
                     return result;
@@ -104,7 +105,7 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
             return 1;
         } else {
             int result;
-            for(IItemTreeCategory category : subCategories) {
+            for(@NotNull IItemTreeCategory category : subCategories) {
                 result = category.findKeywordDepth(keyword);
                 if(result != -1) {
                     return result + 1;
@@ -117,11 +118,13 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
     /**
      * @return all categories contained in this one.
      */
+    @NotNull
     @Override
     public Collection<IItemTreeCategory> getSubCategories() {
         return subCategories;
     }
 
+    @NotNull
     @Override
     public Collection<List<IItemTreeItem>> getItems() {
         return items.values();
@@ -132,6 +135,7 @@ public class InvTweaksItemTreeCategory implements IItemTreeCategory {
         return name;
     }
 
+    @NotNull
     public String toString() {
         return name + " (" + subCategories.size() +
                 " cats, " + items.size() + " items)";

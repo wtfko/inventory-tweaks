@@ -1,5 +1,6 @@
 package invtweaks.forge.asm.compatibility;
 
+import org.jetbrains.annotations.NotNull;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -17,8 +18,9 @@ public class CompatibilityConfigLoader extends DefaultHandler {
         config = compatibilityConfig;
     }
 
-    public static Map<String, ContainerInfo> load(String filePath) throws Exception {
-        Map<String, ContainerInfo> config = new HashMap<>();
+    @NotNull
+    public static Map<String, ContainerInfo> load(@NotNull String filePath) throws Exception {
+        @NotNull Map<String, ContainerInfo> config = new HashMap<>();
 
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser = parserFactory.newSAXParser();
@@ -46,9 +48,9 @@ public class CompatibilityConfigLoader extends DefaultHandler {
      * @see org.xml.sax.ContentHandler#startElement
      */
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, @NotNull Attributes attributes) throws SAXException {
         if("chest".equals(qName) || "inventory".equals(qName)) {
-            ContainerInfo info = new ContainerInfo();
+            @NotNull ContainerInfo info = new ContainerInfo();
             String className = attributes.getValue("class");
 
             if(className == null) {

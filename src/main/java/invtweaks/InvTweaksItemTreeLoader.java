@@ -5,6 +5,8 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -32,6 +34,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     private final static String ATTR_TREE_VERSION = "treeVersion";
     private static final List<IItemTreeListener> onLoadListeners = new ArrayList<>();
     private static InvTweaksItemTree tree;
+    @Nullable
     private static String treeVersion;
     private static int itemOrder;
     private static LinkedList<String> categoryStack;
@@ -44,7 +47,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         categoryStack = new LinkedList<>();
     }
 
-    public synchronized static InvTweaksItemTree load(File file) throws Exception {
+    public synchronized static InvTweaksItemTree load(@NotNull File file) throws Exception {
         init();
 
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -54,7 +57,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         // Tree loaded event
         synchronized(onLoadListeners) {
             treeLoaded = true;
-            for(IItemTreeListener onLoadListener : onLoadListeners) {
+            for(@NotNull IItemTreeListener onLoadListener : onLoadListeners) {
                 onLoadListener.onTreeLoaded(tree);
             }
         }
@@ -64,7 +67,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         return tree;
     }
 
-    public synchronized static boolean isValidVersion(File file) throws Exception {
+    public synchronized static boolean isValidVersion(@NotNull File file) throws Exception {
         init();
 
         if(file.exists()) {
@@ -78,7 +81,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         }
     }
 
-    public synchronized static void addOnLoadListener(IItemTreeListener listener) {
+    public synchronized static void addOnLoadListener(@NotNull IItemTreeListener listener) {
         onLoadListeners.add(listener);
         if(treeLoaded) {
             // Late event triggering
@@ -92,7 +95,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
 
 
     @Override
-    public synchronized void startElement(String uri, String localName, String name, Attributes attributes)
+    public synchronized void startElement(String uri, String localName, String name, @NotNull Attributes attributes)
             throws SAXException {
 
         String rangeDMinAttr = attributes.getValue(ATTR_RANGE_DMIN);
@@ -134,7 +137,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             String id = attributes.getValue(ATTR_ID);
             int damage = InvTweaksConst.DAMAGE_WILDCARD;
             String extraDataAttr = attributes.getValue(ATTR_DATA);
-            NBTTagCompound extraData = null;
+            @Nullable NBTTagCompound extraData = null;
             if(extraDataAttr != null) {
                 try {
                     extraData = JsonToNBT.getTagFromJson(extraDataAttr);
@@ -153,7 +156,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     }
 
     @Override
-    public synchronized void endElement(String uri, String localName, String name) throws SAXException {
+    public synchronized void endElement(String uri, String localName, @NotNull String name) throws SAXException {
         if(!categoryStack.isEmpty() && name.equals(categoryStack.getLast())) {
             categoryStack.removeLast();
         }

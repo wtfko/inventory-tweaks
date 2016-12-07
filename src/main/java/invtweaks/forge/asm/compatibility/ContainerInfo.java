@@ -1,6 +1,7 @@
 package invtweaks.forge.asm.compatibility;
 
 import invtweaks.forge.asm.ContainerTransformer;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnusedDeclaration")
 public class ContainerInfo {
@@ -10,7 +11,9 @@ public class ContainerInfo {
     public boolean largeChest = false;
     public short rowSize = 9;
     public MethodInfo slotMapMethod = ContainerTransformer.getVanillaSlotMapInfo("unknownContainerSlots");
+    @Nullable
     public MethodInfo rowSizeMethod = null;
+    @Nullable
     public MethodInfo largeChestMethod = null;
 
     public ContainerInfo() {
