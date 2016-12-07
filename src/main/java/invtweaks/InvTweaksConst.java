@@ -14,7 +14,7 @@ public class InvTweaksConst {
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs
-    public static final String TREE_VERSION = "1.10.0";
+    public static final String TREE_VERSION = "1.11.0";
 
     public static final String INVTWEAKS_CHANNEL = "InventoryTweaks";
 
@@ -41,9 +41,9 @@ public class InvTweaksConst {
 
     public static final String INVTWEAKS_RESOURCE_DOMAIN = "inventorytweaks";
     public static final ResourceLocation DEFAULT_CONFIG_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
-            "DefaultConfig.dat");
+            "defaultconfig.dat");
     public static final ResourceLocation DEFAULT_CONFIG_TREE_FILE = new ResourceLocation(INVTWEAKS_RESOURCE_DOMAIN,
-            "ItemTree.xml");
+            "itemtree.xml");
 
     public static final String HELP_URL = "http://inventory-tweaks.readthedocs.org";
 
