@@ -215,7 +215,7 @@ public class InvTweaksConfig {
             try {
                 @Nullable FileOutputStream fos = new FileOutputStream(configPropsFile);
                 properties.store(fos,
-                        "Inventory Tweaks Configuration\n" + "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
+                        "Inventory Tweaks Configuration\n" + "(Regarding shortcuts, all key names can be found at: http://legacy.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
                 storedConfigLastModified = InvTweaksConst.CONFIG_PROPS_FILE.lastModified();
