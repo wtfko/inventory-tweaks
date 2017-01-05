@@ -208,6 +208,9 @@ public class ContainerTransformer implements IClassTransformer {
         standardClasses.put("net.minecraft.inventory.ContainerChest", new ContainerInfo(true, false, true,
                 getVanillaSlotMapInfo(
                         "containerChestDispenserSlots")));
+        standardClasses.put("net.minecraft.inventory.ContainerShulkerBox", new ContainerInfo(true, false, true,
+                getVanillaSlotMapInfo(
+                        "containerChestDispenserSlots")));
 
         try {
             configClasses = CompatibilityConfigLoader.load("config/InvTweaksCompatibility.xml");
