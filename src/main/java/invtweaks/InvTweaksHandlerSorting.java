@@ -102,7 +102,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
         // Initialize rule priority for currently matching items
         // TODO: J1.8 streams?
-        rules.stream().filter(rule -> rule.getContainerSize() == size).forEach(rule -> {
+        rules.stream().filter(rule -> (rule.getContainerSize() == size && rule.getPreferredSlots() != null)).forEach(rule -> {
             int priority = rule.getPriority();
             for(int slot : rule.getPreferredSlots()) {
                 @NotNull ItemStack stack = containerMgr.getItemStack(slot);

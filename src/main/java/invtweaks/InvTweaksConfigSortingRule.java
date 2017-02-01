@@ -142,6 +142,9 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
             }
         }
 
+        if(result == null) {
+            InvTweaks.logInGameStatic("InvTweaks Config: Rule Constraint \"" + constraint + "\" was unable to be correctly determined.");
+        }
         return result;
     }
 
