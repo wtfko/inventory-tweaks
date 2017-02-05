@@ -729,7 +729,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                             playClick();
 
                             long timestamp = System.currentTimeMillis();
-                            if(timestamp - chestAlgorithmClickTimestamp > InvTweaksConst.CHEST_ALGORITHM_SWAP_MAX_INTERVAL) {
+                            if(timestamp - chestAlgorithmClickTimestamp > InvTweaksConst.CHEST_ALGORITHM_SWAP_MAX_INTERVAL || getContainerRowSize(guiContainer) > 9) {
                                 chestAlgorithm = SortingMethod.DEFAULT;
                             }
                             try {
@@ -859,32 +859,32 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                     // Sorting buttons
                     if(!config.getProperty(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS).equals("false")) {
-
                         int rowSize = getContainerRowSize(guiContainer);
-
-                        @NotNull GuiButton button = new InvTweaksGuiSortingButton(cfgManager, id++,
-                                (isChestWayTooBig) ? x + 22 : x - 13,
-                                (isChestWayTooBig) ? y + 12 : y, w, h, "h",
-                                I18n.translateToLocal(
-                                        "invtweaks.button.chest3.tooltip"),
-                                SortingMethod.HORIZONTAL,
-                                rowSize, customTextureAvailable);
-                        controlList.add(button);
-
-                        button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 25,
-                                (isChestWayTooBig) ? y + 25 : y, w, h, "v", I18n
-                                .translateToLocal("invtweaks.button.chest2.tooltip"),
-                                SortingMethod.VERTICAL, rowSize,
-                                customTextureAvailable);
-                        controlList.add(button);
-
-                        //noinspection UnusedAssignment (Using ++ for extensibility)
-                        button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
+                        @NotNull GuiButton button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 37,
                                 (isChestWayTooBig) ? y + 38 : y, w, h, "s", I18n
                                 .translateToLocal("invtweaks.button.chest1.tooltip"),
                                 SortingMethod.DEFAULT, rowSize,
                                 customTextureAvailable);
                         controlList.add(button);
+
+                        if(rowSize <= 9) {
+                             button = new InvTweaksGuiSortingButton(cfgManager, id++,
+                                    (isChestWayTooBig) ? x + 22 : x - 13,
+                                    (isChestWayTooBig) ? y + 12 : y, w, h, "h",
+                                    I18n.translateToLocal(
+                                            "invtweaks.button.chest3.tooltip"),
+                                    SortingMethod.HORIZONTAL,
+                                    rowSize, customTextureAvailable);
+                            controlList.add(button);
+
+                            //noinspection UnusedAssignment (Using ++ for extensibility)
+                            button = new InvTweaksGuiSortingButton(cfgManager, id++, (isChestWayTooBig) ? x + 22 : x - 25,
+                                    (isChestWayTooBig) ? y + 25 : y, w, h, "v", I18n
+                                    .translateToLocal("invtweaks.button.chest2.tooltip"),
+                                    SortingMethod.VERTICAL, rowSize,
+                                    customTextureAvailable);
+                            controlList.add(button);
+                        }
 
                     }
                 }

@@ -569,6 +569,10 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private void computeLineSortingRules(int rowSize, boolean horizontal) {
+        // Abort if rowSize is too great.
+        if(rowSize > 9) {
+            return;
+        }
 
         rules = new ArrayList<>();
 
