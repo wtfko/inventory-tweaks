@@ -44,7 +44,7 @@ public class ITPacketClick implements ITPacket {
     public void handle(INetHandler handler) {
         if(handler instanceof NetHandlerPlayServer) {
             @NotNull NetHandlerPlayServer serverHandler = (NetHandlerPlayServer) handler;
-            EntityPlayerMP player = serverHandler.playerEntity;
+            EntityPlayerMP player = serverHandler.player;
 
             if(player.openContainer.windowId == window) {
                 player.openContainer.slotClick(slot, data, action, player);

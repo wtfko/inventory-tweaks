@@ -264,7 +264,7 @@ public class InvTweaksObfuscation {
     }
 
     public FontRenderer getFontRenderer() {
-        return mc.fontRendererObj;
+        return mc.fontRenderer;
     }
 
     public void displayGuiScreen(GuiScreen parentScreen) {
