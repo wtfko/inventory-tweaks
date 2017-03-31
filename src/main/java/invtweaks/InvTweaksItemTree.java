@@ -49,6 +49,8 @@ public class InvTweaksItemTree implements IItemTree {
     @NotNull
     private List<OreDictInfo> oresRegistered = new ArrayList<>();
 
+    private int highestOrder = 0;
+
     public InvTweaksItemTree() {
         reset();
     }
@@ -202,10 +204,11 @@ public class InvTweaksItemTree implements IItemTree {
 
         // If there's no matching item, create new ones
         if(filteredItems.isEmpty()) {
+            int newItemOrder = highestOrder + 1;
             @NotNull IItemTreeItem newItemId = new InvTweaksItemTreeItem(String.format("%s-%d", id, damage), id, damage, null,
-                    5000/*TODO: What to do here with non-int IDs + id * 16 + damage*/);
+                    newItemOrder);
             @NotNull IItemTreeItem newItemDamage = new InvTweaksItemTreeItem(id, id,
-                    InvTweaksConst.DAMAGE_WILDCARD, null, 5000/*TODO: What to do here with non-int IDs + id * 16*/);
+                    InvTweaksConst.DAMAGE_WILDCARD, null, newItemOrder);
             addItem(getRootCategory().getName(), newItemId);
             addItem(getRootCategory().getName(), newItemDamage);
             filteredItems.add(newItemId);
@@ -280,6 +283,8 @@ public class InvTweaksItemTree implements IItemTree {
 
     @Override
     public void addItem(String parentCategory, @NotNull IItemTreeItem newItem) throws NullPointerException {
+        highestOrder = Math.max(highestOrder, newItem.getOrder());
+
         // Build tree
         categories.get(parentCategory).addItem(newItem);
 
@@ -298,6 +303,10 @@ public class InvTweaksItemTree implements IItemTree {
             list.add(newItem);
             itemsById.put(newItem.getId(), list);
         }
+    }
+
+    public int getHighestOrder() {
+        return highestOrder;
     }
 
     @Override
