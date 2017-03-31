@@ -637,7 +637,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         @NotNull ItemStack offhandStack = getOffhandStack();
 
         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-        @NotNull String currentStackId = (currentStack.isEmpty()) ? null : Item.REGISTRY.getNameForObject(
+        @Nullable String currentStackId = (currentStack.isEmpty()) ? null : Item.REGISTRY.getNameForObject(
                 currentStack.getItem()).toString();
 
         int currentStackDamage = (currentStack.isEmpty()) ? 0 : currentStack.getItemDamage();
@@ -648,7 +648,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(storedFocusedSlot != focusedSlot) { // Filter selection change
             storedFocusedSlot = focusedSlot;
         } else if(!ItemStack.areItemsEqual(currentStack, storedStack) && storedStackId != null) {
-            if (!ItemStack.areItemStacksEqual(offhandStack, storedStack)) { // Checks not switched to offhand
+            if (ItemStack.areItemStacksEqual(offhandStack, storedStack)) { // Checks not switched to offhand
                 if (currentStack.isEmpty() || (currentStack.getItem() == Items.BOWL && Objects.equals(storedStackId, "minecraft:mushroom_stew"))
                     // Handle eaten mushroom soup
                         && (getCurrentScreen() == null || // Filter open inventory or other window
