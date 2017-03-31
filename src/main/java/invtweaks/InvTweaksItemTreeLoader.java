@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParser;
@@ -74,8 +75,10 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             treeVersion = null;
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             SAXParser parser = parserFactory.newSAXParser();
-            parser.parse(file, new InvTweaksItemTreeLoader());
-            return InvTweaksConst.TREE_VERSION.equals(treeVersion);
+
+            VersionLoader loader = new VersionLoader();
+            parser.parse(file, loader);
+            return InvTweaksConst.TREE_VERSION.equals(loader.version);
         } else {
             return false;
         }
@@ -162,4 +165,31 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         }
     }
 
+    @Override
+    public void warning(SAXParseException e) throws SAXException {
+        InvTweaks.log.warn("Tree XML Warning: ", e);
+    }
+
+    @Override
+    public void error(SAXParseException e) throws SAXException {
+        InvTweaks.log.error("Tree XML Error: ", e);
+    }
+
+    @Override
+    public void fatalError(SAXParseException e) throws SAXException {
+        InvTweaks.log.fatal("Tree XML Fatal Error: ", e);
+    }
+
+    private static class VersionLoader extends DefaultHandler {
+        @Nullable
+        String version;
+
+        @Override
+        public synchronized void startElement(String uri, String localName, String name, @NotNull Attributes attributes)
+                throws SAXException {
+            if(version == null) {
+                version = attributes.getValue(ATTR_TREE_VERSION);
+            }
+        }
+    }
 }
