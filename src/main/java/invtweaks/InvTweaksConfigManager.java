@@ -45,7 +45,9 @@ public class InvTweaksConfigManager {
 
     private static void backupFile(@NotNull File file) {
         @NotNull File newFile = new File(file.getParentFile(), file.getName() + ".bak");
+        log.warn("Backing up file: %1$s to %2$s", file.getAbsolutePath(), newFile.getAbsolutePath());
         if(newFile.exists()) {
+            log.warn("New file %1$s already exists, deleting old.", newFile.getAbsolutePath());
             newFile.delete();
         }
         file.renameTo(newFile);
