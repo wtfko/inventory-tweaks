@@ -682,7 +682,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
 
         // Copy some info about current selected stack for auto-refill
-        storedStack = currentStack;
+        storedStack = currentStack.copy();
         storedStackId = currentStackId;
         storedStackDamage = currentStackDamage;
 
