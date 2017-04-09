@@ -96,16 +96,29 @@ if(!build_number) {
     ext.build_number = System.getenv('TRAVIS_BUILD_NUMBER')
 }
 
-if(build_number) {
-    version = mod_version + "-" + build_number
+ext.git_separator = '+'
+if(mod_version.contains('-')) {
+    if(build_number) {
+        version = mod_version + '.' + build_number
+    } else {
+        version = mod_version
+    }
+
+    ext.internal_version = version
 } else {
     version = mod_version
+
+    ext.internal_version = version
+    if(build_number) {
+        ext.internal_version += "+build." + build_number
+        ext.git_separator = '.'
+    }
 }
 
 if(git_version) {
-    ext.internal_version = version + '-' + git_version
+    ext.internal_version += git_separator + git_version
     if(git_dirty) {
-        ext.internal_version += '-dirty'
+        ext.internal_version += '.dirty'
     }
 } else {
     ext.internal_version = version
@@ -145,12 +158,13 @@ compileJava {
 
 task apiJar(type: Jar) {
     onlyIf { project.hasProperty('api_filter') }
-    dependsOn processResources
+    dependsOn classes
 
     from sourceSets.main.allJava
+    from sourceSets.main.output
     include api_filter
 
-    appendix = 'api'
+    classifier 'api'
 }
 
 task deobfJar(type: Jar) {
@@ -164,7 +178,7 @@ task deobfJar(type: Jar) {
         }
     }
 
-    appendix = 'deobf'
+    classifier 'deobf'
 }
 
 artifacts {
@@ -199,7 +213,7 @@ if(curseKey && hasProperty('curse_id')) {
             id = curse_id
             changelog = getGitChangelog()
             releaseType = curseType
-            addGameVersion mc_version
+            addGameVersion minecraft.version
 
             if(hasProperty('curseExtraVersions')) {
                 for(version in curseExtraVersions) {
@@ -225,13 +239,13 @@ if(curseKey && hasProperty('curse_id')) {
 
 processResources {
     inputs.property 'version', internal_version
-    inputs.property 'mcversion', mc_version
+    inputs.property 'mcversion', minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.png'
         exclude '**/*_at.cfg'
 
-        expand version: internal_version, mcversion: mc_version
+        expand version: internal_version, mcversion: minecraft.version
     }
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.png'
