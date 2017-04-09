@@ -16,6 +16,18 @@ public class ModGuiFactory implements IModGuiFactory {
 
     }
 
+    @Override
+    public boolean hasConfigGui() {
+        return true;
+    }
+
+    @NotNull
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        // TODO: Find out if we can just cache this?
+        return new InvTweaksGuiSettings(parentScreen);
+    }
+
     @NotNull
     @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() {
