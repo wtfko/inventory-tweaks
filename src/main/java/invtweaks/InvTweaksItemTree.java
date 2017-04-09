@@ -315,7 +315,7 @@ public class InvTweaksItemTree implements IItemTree {
             if(i != null) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                 addItem(category,
-                        new InvTweaksItemTreeItem(name, Item.REGISTRY.getNameForObject(i.getItem()).toString(), i.getItemDamage(), null, order));
+                        new InvTweaksItemTreeItem(name, i.getItem().getRegistryName().toString(), i.getItemDamage(), null, order));
             } else {
                 log.warn(String.format("An OreDictionary entry for %s is null", oreName));
             }
@@ -330,7 +330,7 @@ public class InvTweaksItemTree implements IItemTree {
             @NotNull ItemStack evOre = ev.getOre();
             if(!evOre.isEmpty()) {
                 // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.REGISTRY.getNameForObject(evOre.getItem()).toString(),
+                addItem(ore.category, new InvTweaksItemTreeItem(ore.name, evOre.getItem().getRegistryName().toString(),
                         evOre.getItemDamage(), null, ore.order));
             } else {
                 log.warn(String.format("An OreDictionary entry for %s is null", ev.getName()));

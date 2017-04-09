@@ -102,7 +102,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     if(!candidateStack.isEmpty()) {
                         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
                         @NotNull List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.REGISTRY.getNameForObject(candidateStack.getItem()).toString(), candidateStack.getItemDamage());
+                                .getItems(candidateStack.getItem().getRegistryName().toString(), candidateStack.getItemDamage());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(candidateStack.getMaxStackSize() == 1) {
@@ -132,7 +132,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 candidateStack = container.getItemStack(i);
                 // TODO: ResourceLocation
                 if(!candidateStack.isEmpty() &&
-                        Objects.equals(Item.REGISTRY.getNameForObject(candidateStack.getItem()).toString(), wantedId) &&
+                        Objects.equals(candidateStack.getItem().getRegistryName().toString(), wantedId) &&
                         candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;
@@ -167,7 +167,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     if(i_ != -1) {
                         i = i_;
                         // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                        expectedItemId = Item.REGISTRY.getNameForObject(containerMgr.getItemStack(i).getItem()).toString();
+                        expectedItemId = containerMgr.getItemStack(i).getItem().getRegistryName().toString();
                     } else {
                         i = containerMgr.getFirstEmptyIndex();
                         expectedItemId = null;
@@ -186,7 +186,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     @NotNull ItemStack stack = containerMgr.getItemStack(i);
 
                     // TODO: It looks like Mojang changed the internal name type to ResourceLocation. Evaluate how much of a pain that will be.
-                    if(!stack.isEmpty() && StringUtils.equals(Item.REGISTRY.getNameForObject(stack.getItem()).toString(),
+                    if(!stack.isEmpty() && StringUtils.equals(stack.getItem().getRegistryName().toString(),
                             expectedItemId) || this.refillBeforeBreak) {
                         if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                             if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
