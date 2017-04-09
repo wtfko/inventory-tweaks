@@ -96,8 +96,8 @@ if(!build_number) {
     ext.build_number = System.getenv('TRAVIS_BUILD_NUMBER')
 }
 
-ext.git_separator = '+'
-if(mod_version.contains('-')) {
+ext.git_separator = '.'
+if(mod_version.contains('+')) {
     if(build_number) {
         version = mod_version + '.' + build_number
     } else {
@@ -110,8 +110,9 @@ if(mod_version.contains('-')) {
 
     ext.internal_version = version
     if(build_number) {
-        ext.internal_version += "+build." + build_number
-        ext.git_separator = '.'
+        ext.internal_version += "+release." + build_number
+    } else {
+        ext.git_separator = '+'
     }
 }
 
@@ -187,10 +188,10 @@ artifacts {
 }
 
 ext.curseKey = System.getenv("CURSE_API_KEY")
-if(mod_version.endsWith("-dev")) {
+if(mod_version.endsWith("dev")) {
     ext.curseType = 'alpha'
     ext.curseVersion = version
-} else if(mod_version.endsWith("-beta")) {
+} else if(mod_version.endsWith("beta")) {
     ext.curseType = 'beta'
     ext.curseVersion = version
 } else {
