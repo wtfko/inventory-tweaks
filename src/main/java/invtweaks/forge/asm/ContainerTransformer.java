@@ -1,10 +1,10 @@
 package invtweaks.forge.asm;
 
+import com.google.common.collect.Lists;
 import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
 import invtweaks.forge.asm.compatibility.ContainerInfo;
 import invtweaks.forge.asm.compatibility.MethodInfo;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,34 +15,52 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
 
 public class ContainerTransformer implements IClassTransformer {
-    public static final String VALID_INVENTORY_METHOD = "invtweaks$validInventory";
-    public static final String VALID_CHEST_METHOD = "invtweaks$validChest";
-    public static final String LARGE_CHEST_METHOD = "invtweaks$largeChest";
-    public static final String SHOW_BUTTONS_METHOD = "invtweaks$showButtons";
-    public static final String ROW_SIZE_METHOD = "invtweaks$rowSize";
-    public static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
-    public static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
-    public static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/container/VanillaSlotMaps";
-    public static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
-    public static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
-    public static final String ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK = "Linvtweaks/api/container/ChestContainer$IsLargeCallback;";
-    public static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
-    public static final String ANNOTATION_IGNORE_CONTAINER = "Linvtweaks/api/container/IgnoreContainer;";
-    public static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
+    private static final String VALID_INVENTORY_METHOD = "invtweaks$validInventory";
+    private static final String VALID_CHEST_METHOD = "invtweaks$validChest";
+    private static final String LARGE_CHEST_METHOD = "invtweaks$largeChest";
+    private static final String SHOW_BUTTONS_METHOD = "invtweaks$showButtons";
+    private static final String ROW_SIZE_METHOD = "invtweaks$rowSize";
+    private static final String SLOT_MAP_METHOD = "invtweaks$slotMap";
+    private static final String CONTAINER_CLASS_INTERNAL = "net/minecraft/inventory/Container";
+    private static final String SLOT_MAPS_VANILLA_CLASS = "invtweaks/container/VanillaSlotMaps";
+    private static final String ANNOTATION_CHEST_CONTAINER = "Linvtweaks/api/container/ChestContainer;";
+    private static final String ANNOTATION_CHEST_CONTAINER_ROW_CALLBACK = "Linvtweaks/api/container/ChestContainer$RowSizeCallback;";
+    private static final String ANNOTATION_CHEST_CONTAINER_LARGE_CALLBACK = "Linvtweaks/api/container/ChestContainer$IsLargeCallback;";
+    private static final String ANNOTATION_INVENTORY_CONTAINER = "Linvtweaks/api/container/InventoryContainer;";
+    private static final String ANNOTATION_IGNORE_CONTAINER = "Linvtweaks/api/container/IgnoreContainer;";
+    private static final String ANNOTATION_CONTAINER_SECTION_CALLBACK = "Linvtweaks/api/container/ContainerSectionCallback;";
+
+    private static List<String> uninterestingPackages = Lists.newArrayList(
+            "net.minecraft.",
+            "net.minecraftforge.",
+            "joptsimple.",
+            "com.mojang.",
+            "com.google.gson.",
+            "io.netty.",
+            "oshi.",
+            "com.sun.jna.",
+            "com.ibm.icu.",
+            "org.slf4j.",
+            "javassist.",
+            "gnu.trove.",
+            "paulscode.sound.",
+            "com.jcraft.jogg.",
+            "com.jcraft.jorbis.",
+            "it.unimi.dsi.fastutil."
+    );
 
     @NotNull
     private static Map<String, ContainerInfo> standardClasses = new HashMap<>();
     @NotNull
     private static Map<String, ContainerInfo> configClasses = new HashMap<>();
-    private static String containerClassName;
 
     public ContainerTransformer() {
+        lateInit();
     }
 
     /**
@@ -51,7 +69,7 @@ public class ContainerTransformer implements IClassTransformer {
      * @param clazz Class to alter
      * @param info  Information used to alter class
      */
-    public static void transformContainer(@NotNull ClassNode clazz, @NotNull ContainerInfo info) {
+    private static void transformContainer(@NotNull ClassNode clazz, @NotNull ContainerInfo info) {
         ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, info.showButtons);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, info.validInventory);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, info.validChest);
@@ -100,7 +118,7 @@ public class ContainerTransformer implements IClassTransformer {
      *
      * @param clazz Class to alter
      */
-    public static void transformBaseContainer(@NotNull ClassNode clazz) {
+    private static void transformBaseContainer(@NotNull ClassNode clazz) {
         ASMHelper.generateBooleanMethodConst(clazz, SHOW_BUTTONS_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_INVENTORY_METHOD, false);
         ASMHelper.generateBooleanMethodConst(clazz, VALID_CHEST_METHOD, false);
@@ -112,7 +130,7 @@ public class ContainerTransformer implements IClassTransformer {
                 Type.getObjectType(CONTAINER_CLASS_INTERNAL));
     }
 
-    public static void transformCreativeContainer(@NotNull ClassNode clazz) {
+    private static void transformCreativeContainer(@NotNull ClassNode clazz) {
         ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerCreativeIsInventory",
                 Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerCreativeIsInventory",
@@ -125,7 +143,7 @@ public class ContainerTransformer implements IClassTransformer {
                 Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
-    public static void transformHorseInventoryContainer(@NotNull ClassNode clazz) {
+    private static void transformHorseInventoryContainer(@NotNull ClassNode clazz) {
         ASMHelper.generateForwardingToStaticMethod(clazz, SHOW_BUTTONS_METHOD, "containerHorseIsInventory",
                 Type.BOOLEAN_TYPE, Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
         ASMHelper.generateForwardingToStaticMethod(clazz, VALID_INVENTORY_METHOD, "containerHorseIsInventory",
@@ -138,12 +156,28 @@ public class ContainerTransformer implements IClassTransformer {
                 Type.getObjectType(SLOT_MAPS_VANILLA_CLASS));
     }
 
+    private static void transformInvTweaksObfuscation(@NotNull ClassNode clazz) {
+        @NotNull Type containertype = Type.getObjectType(CONTAINER_CLASS_INTERNAL);
+        for(@NotNull MethodNode method : clazz.methods) {
+            if("isValidChest".equals(method.name)) {
+                ASMHelper.replaceSelfForwardingMethod(method, VALID_CHEST_METHOD, containertype);
+            } else if("isValidInventory".equals(method.name)) {
+                ASMHelper.replaceSelfForwardingMethod(method, VALID_INVENTORY_METHOD, containertype);
+            } else if("showButtons".equals(method.name)) {
+                ASMHelper.replaceSelfForwardingMethod(method, SHOW_BUTTONS_METHOD, containertype);
+            } else if("getSpecialChestRowSize".equals(method.name)) {
+                ASMHelper.replaceSelfForwardingMethod(method, ROW_SIZE_METHOD, containertype);
+            } else if("getContainerSlotMap".equals(method.name)) {
+                ASMHelper.replaceSelfForwardingMethod(method, SLOT_MAP_METHOD, containertype);
+            } else if("isLargeChest".equals(method.name)) {
+                ASMHelper.replaceSelfForwardingMethod(method, LARGE_CHEST_METHOD, containertype);
+            }
+        }
+    }
+
     private static void transformTextField(@NotNull ClassNode clazz) {
         for(@NotNull MethodNode method : clazz.methods) {
-            String unmappedName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(clazz.name, method.name, method.desc);
-            String unmappedDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(method.desc);
-
-            if(("func_146195_b".equals(unmappedName) || "setFocused".equals(unmappedName))&& "(Z)V".equals(unmappedDesc)) {
+            if(("func_146195_b".equals(method.name) || "setFocused".equals(method.name))&& "(Z)V".equals(method.desc)) {
                 InsnList code = method.instructions;
                 @Nullable AbstractInsnNode returnNode = null;
                 for(ListIterator<AbstractInsnNode> iterator = code.iterator(); iterator.hasNext(); ) {
@@ -176,9 +210,9 @@ public class ContainerTransformer implements IClassTransformer {
     }
 
     @NotNull
-    public static MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
+    private static MethodInfo getSlotMapInfo(Type mClass, String name, boolean isStatic) {
         return new MethodInfo(
-                Type.getMethodType(Type.getObjectType("java/util/Map"), Type.getObjectType(containerClassName)), mClass,
+                Type.getMethodType(Type.getObjectType("java/util/Map"), Type.getObjectType(CONTAINER_CLASS_INTERNAL)), mClass,
                 name, isStatic);
     }
 
@@ -235,21 +269,65 @@ public class ContainerTransformer implements IClassTransformer {
         return null;
     }
 
+    private static byte[] doTransform(byte[] bytes, Consumer<ClassNode> transform) {
+        @NotNull ClassReader cr = new ClassReader(bytes);
+        @NotNull ClassNode cn = new ClassNode(Opcodes.ASM4);
+        @NotNull ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+
+        cr.accept(cn, 0);
+
+        transform.accept(cn);
+
+        cn.accept(cw);
+        return cw.toByteArray();
+    }
+
     @Nullable
     @Override
     public byte[] transform(String name, String transformedName, @Nullable byte[] bytes) {
-        if(containerClassName == null) {
-            if(FMLPlugin.runtimeDeobfEnabled) {
-                containerClassName = FMLDeobfuscatingRemapper.INSTANCE.unmap(CONTAINER_CLASS_INTERNAL);
-            } else {
-                containerClassName = CONTAINER_CLASS_INTERNAL;
-            }
-            lateInit();
-        }
-
         // Sanity checking so it doesn't look like this mod caused crashes when things were missing.
         if(bytes == null || bytes.length == 0) {
             return bytes;
+        }
+
+
+        if("net.minecraft.client.gui.GuiTextField".equals(transformedName)) {
+            return doTransform(bytes, ContainerTransformer::transformTextField);
+        }
+
+        if("net.minecraft.inventory.Container".equals(transformedName)) {
+            return doTransform(bytes, ContainerTransformer::transformBaseContainer);
+        }
+
+        // TODO: Creative mode handling is really buggy for some reason.
+        if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
+            return doTransform(bytes, ContainerTransformer::transformCreativeContainer);
+        }
+
+        if("net.minecraft.inventory.ContainerHorseInventory".equals(transformedName)) {
+            return doTransform(bytes, ContainerTransformer::transformHorseInventoryContainer);
+        }
+
+        if("invtweaks.InvTweaksObfuscation".equals(transformedName)) {
+            return doTransform(bytes, ContainerTransformer::transformInvTweaksObfuscation);
+        }
+
+        // Transform classes with explicitly specified information
+        final ContainerInfo standardInfo = standardClasses.get(transformedName);
+        if(standardInfo != null) {
+            return doTransform(bytes, cn -> transformContainer(cn, standardInfo));
+        }
+
+        final ContainerInfo configInfo = configClasses.get(transformedName);
+        if(configInfo != null) {
+            return doTransform(bytes, cn -> transformContainer(cn, configInfo));
+        }
+
+        // Skip any classes in 'uninteresting' (i.e., known non-Mod) packages
+        for(String uninterestingPackage : uninterestingPackages) {
+            if(transformedName.startsWith(uninterestingPackage)) {
+                return bytes;
+            }
         }
 
         @NotNull ClassReader cr = new ClassReader(bytes);
@@ -257,68 +335,6 @@ public class ContainerTransformer implements IClassTransformer {
         @NotNull ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
         cr.accept(cn, 0);
-
-        if("net.minecraft.inventory.Container".equals(transformedName)) {
-            transformBaseContainer(cn);
-
-            cn.accept(cw);
-            return cw.toByteArray();
-        }
-
-        // TODO: Creative mode handling is really buggy for some reason.
-        if("net.minecraft.client.gui.inventory.GuiContainerCreative$ContainerCreative".equals(transformedName)) {
-            transformCreativeContainer(cn);
-
-            cn.accept(cw);
-            return cw.toByteArray();
-        }
-
-        if("net.minecraft.inventory.ContainerHorseInventory".equals(transformedName)) {
-            transformHorseInventoryContainer(cn);
-
-            cn.accept(cw);
-            return cw.toByteArray();
-        }
-
-        // Transform classes with explicitly specified information
-        ContainerInfo info = standardClasses.get(transformedName);
-        if(info != null) {
-            transformContainer(cn, info);
-
-            cn.accept(cw);
-            return cw.toByteArray();
-        }
-
-        if("invtweaks.InvTweaksObfuscation".equals(transformedName)) {
-            @NotNull Type containertype = Type.getObjectType(containerClassName);
-            for(@NotNull MethodNode method : cn.methods) {
-                if("isValidChest".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, VALID_CHEST_METHOD, containertype);
-                } else if("isValidInventory".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, VALID_INVENTORY_METHOD, containertype);
-                } else if("showButtons".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, SHOW_BUTTONS_METHOD, containertype);
-                } else if("getSpecialChestRowSize".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, ROW_SIZE_METHOD, containertype);
-                } else if("getContainerSlotMap".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, SLOT_MAP_METHOD, containertype);
-                } else if("isLargeChest".equals(method.name)) {
-                    ASMHelper.replaceSelfForwardingMethod(method, LARGE_CHEST_METHOD, containertype);
-                }
-            }
-
-            cn.accept(cw);
-            return cw.toByteArray();
-        }
-
-
-        info = configClasses.get(transformedName);
-        if(info != null) {
-            transformContainer(cn, info);
-
-            cn.accept(cw);
-            return cw.toByteArray();
-        }
 
         if(cn.visibleAnnotations != null) {
             for(@Nullable AnnotationNode annotation : cn.visibleAnnotations) {
@@ -404,13 +420,6 @@ public class ContainerTransformer implements IClassTransformer {
                     }
                 }
             }
-        }
-
-        if("net.minecraft.client.gui.GuiTextField".equals(transformedName)) {
-            transformTextField(cn);
-
-            cn.accept(cw);
-            return cw.toByteArray();
         }
 
         return bytes;
