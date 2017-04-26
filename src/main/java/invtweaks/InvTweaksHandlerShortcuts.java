@@ -114,7 +114,6 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                 // at [0, 0] because of the mouse reset).
                 Mouse.setCursorPosition(ex, ey);
             }
-
         } catch(Exception e) {
             InvTweaks.logInGameErrorStatic("invtweaks.shortcut.error", e);
         }

@@ -487,8 +487,8 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     public void logInGameError(@NotNull String message, @NotNull Exception e) {
-        e.printStackTrace();
         @NotNull String formattedMsg = buildLogString(Level.SEVERE, I18n.translateToLocal(message), e);
+        log.error(formattedMsg, e);
 
         if(mc.ingameGUI == null) {
             queuedMessages.add(formattedMsg);
