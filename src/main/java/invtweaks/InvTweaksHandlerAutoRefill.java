@@ -73,7 +73,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
             // Find rules that match the slot
             for(@NotNull IItemTreeItem item : items) {
-                if(!hasSubtypes || ((item.getDamage() == wantedDamage) || (item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD))) {
+                if(item.getDamage() == wantedDamage || (!hasSubtypes && item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD)) {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
                     matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 26), item.getName(),
