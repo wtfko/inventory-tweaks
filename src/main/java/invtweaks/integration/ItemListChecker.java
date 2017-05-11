@@ -36,7 +36,7 @@ public class ItemListChecker {
 	}
 
 	private static Method getNeiHidden() {
-		if (Loader.isModLoaded("NotEnoughItems")) {
+		if (Loader.isModLoaded("nei")) {
 			try {
 				Class<?> clientConfig = Class.forName("codechicken.nei.NEIClientConfig");
 				if (clientConfig != null) {
@@ -50,7 +50,7 @@ public class ItemListChecker {
 	}
 
 	private static Method getJeiShown() {
-		if (Loader.isModLoaded("JEI")) {
+		if (Loader.isModLoaded("jei")) {
 			try {
 				Class<?> clientConfig = Class.forName("mezz.jei.config.Config");
 				if (clientConfig != null) {
