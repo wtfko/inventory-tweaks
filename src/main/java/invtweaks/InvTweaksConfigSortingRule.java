@@ -56,7 +56,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
             boolean vertical = false;
             @NotNull Matcher verticalMatcher = constraintVertical.matcher(constraint);
-            if(verticalMatcher.matches()) {
+            if(verticalMatcher.find()) {
                 vertical = true;
                 constraint = verticalMatcher.reset().replaceAll("");
             }
@@ -95,7 +95,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
                         y += (point1.y < point2.y) ? 1 : -1;
                     }
 
-                    if(constraintReverse.matcher(constraint).matches()) {
+                    if(constraintReverse.matcher(constraint).find()) {
                         reverseArray(result);
                     }
 
@@ -153,7 +153,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
 
         @NotNull InvTweaksConfigSortingRuleType result = InvTweaksConfigSortingRuleType.SLOT;
 
-        if(constraint.length() == 1 || (constraint.length() == 2 && constraintReverse.matcher(constraint).matches())) {
+        if(constraint.length() == 1 || (constraint.length() == 2 && constraintReverse.matcher(constraint).find())) {
             constraint = constraintReverse.matcher(constraint).replaceAll("");
             // Column rule
             int digitValue = Character.digit(constraint.charAt(0), 10);
