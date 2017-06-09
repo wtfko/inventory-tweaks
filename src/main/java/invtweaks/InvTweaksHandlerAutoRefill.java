@@ -81,6 +81,20 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                             InvTweaksConst.INVENTORY_ROW_SIZE));
                 }
             }
+
+            // Fallback to wildcard entry for items with subtypes only if no other entries are found
+            if(matchingRules.isEmpty()) {
+                for(@NotNull IItemTreeItem item : items) {
+                    if(item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD) {
+                        // Since we search a matching item using rules,
+                        // create a fake one that matches the exact item first
+                        matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 26), item.getName(),
+                                InvTweaksConst.INVENTORY_SIZE,
+                                InvTweaksConst.INVENTORY_ROW_SIZE));
+                    }
+                }
+            }
+
             for(@NotNull InvTweaksConfigSortingRule rule : rules) {
                 if(rule.getType() == InvTweaksConfigSortingRuleType.SLOT || rule
                         .getType() == InvTweaksConfigSortingRuleType.COLUMN) {
