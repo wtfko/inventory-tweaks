@@ -28,21 +28,9 @@ public class ModGuiFactory implements IModGuiFactory {
         return new InvTweaksGuiSettings(parentScreen);
     }
 
-    @NotNull
-    @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return InvTweaksGuiSettings.class;
-    }
-
     @Nullable
     @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;
     }
 }

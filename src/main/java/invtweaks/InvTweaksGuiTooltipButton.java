@@ -48,19 +48,19 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
+    public void drawButton(@NotNull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if(this.drawBackground) {
-            super.drawButton(minecraft, i, j);
+            super.drawButton(mc, mouseX, mouseY, partialTicks);
         } else {
-            this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition,
-                    this.yPosition + (this.height - 8) / 2, 0x999999);
+            this.drawString(mc.fontRenderer, this.displayString, this.x,
+                    this.y + (this.height - 8) / 2, 0x999999);
         }
 
-        @NotNull InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
+        @NotNull InvTweaksObfuscation obf = new InvTweaksObfuscation(mc);
 
         if(tooltipLines != null) {
             // Compute hover time
-            if(isMouseOverButton(i, j)) {
+            if(isMouseOverButton(mouseX, mouseY)) {
                 long systemTime = System.currentTimeMillis();
                 if(prevSystemTime != 0) {
                     hoverTime += systemTime - prevSystemTime;
@@ -77,7 +77,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
                 FontRenderer fontRenderer = obf.getFontRenderer();
 
                 // Compute tooltip params
-                int x = i + 12, y = j - LINE_HEIGHT * tooltipLines.length;
+                int x = mouseX + 12, y = mouseY - LINE_HEIGHT * tooltipLines.length;
                 if(tooltipWidth == -1) {
                     for(String line : tooltipLines) {
                         tooltipWidth = Math.max(fontRenderer.getStringWidth(line), tooltipWidth);
@@ -104,7 +104,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
     }
 
     protected boolean isMouseOverButton(int i, int j) {
-        return i >= xPosition && j >= yPosition && i < (xPosition + width) && j < (yPosition + height);
+        return i >= x && j >= y && i < (x + width) && j < (y + height);
     }
 
     protected int getTextColor(int i, int j) {

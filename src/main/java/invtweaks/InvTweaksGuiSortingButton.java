@@ -26,30 +26,30 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
     }
 
     @Override
-    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    public void drawButton(@NotNull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
 
         // Display symbol
-        int textColor = getTextColor(i, j);
+        int textColor = getTextColor(mouseX, mouseY);
         switch(displayString) {
             case "h":
-                drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
+                drawRect(x + 3, y + 3, x + width - 3, y + 4,
                         textColor);
-                drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
+                drawRect(x + 3, y + 6, x + width - 3, y + 7,
                         textColor);
                 break;
             case "v":
-                drawRect(xPosition + 3, yPosition + 3, xPosition + 4, yPosition + height - 3,
+                drawRect(x + 3, y + 3, x + 4, y + height - 3,
                         textColor);
-                drawRect(xPosition + 6, yPosition + 3, xPosition + 7, yPosition + height - 3,
+                drawRect(x + 6, y + 3, x + 7, y + height - 3,
                         textColor);
                 break;
             default:
-                drawRect(xPosition + 3, yPosition + 3, xPosition + width - 3, yPosition + 4,
+                drawRect(x + 3, y + 3, x + width - 3, y + 4,
                         textColor);
-                drawRect(xPosition + 5, yPosition + 4, xPosition + 6, yPosition + 5, textColor);
-                drawRect(xPosition + 4, yPosition + 5, xPosition + 5, yPosition + 6, textColor);
-                drawRect(xPosition + 3, yPosition + 6, xPosition + width - 3, yPosition + 7,
+                drawRect(x + 5, y + 4, x + 6, y + 5, textColor);
+                drawRect(x + 4, y + 5, x + 5, y + 6, textColor);
+                drawRect(x + 3, y + 6, x + width - 3, y + 7,
                         textColor);
                 break;
         }

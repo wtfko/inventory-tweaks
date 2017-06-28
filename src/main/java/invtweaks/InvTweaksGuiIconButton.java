@@ -28,25 +28,25 @@ public class InvTweaksGuiIconButton extends InvTweaksGuiTooltipButton {
     }
 
     @Override
-    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    public void drawButton(@NotNull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
 
         // Draw background (use the 4 corners of the texture to fit best its small size)
-        int k = getHoverState(isMouseOverButton(i, j));
+        int k = getHoverState(isMouseOverButton(mouseX, mouseY));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if(useCustomTexture) {
-            minecraft.getTextureManager().bindTexture(resourceButtonCustom);
-            drawTexturedModalRect(xPosition, yPosition, (k - 1) * 10, 0, width, height);
+            mc.getTextureManager().bindTexture(resourceButtonCustom);
+            drawTexturedModalRect(x, y, (k - 1) * 10, 0, width, height);
         } else {
-            minecraft.getTextureManager().bindTexture(resourceButtonDefault);
-            drawTexturedModalRect(xPosition, yPosition, 1, 46 + k * 20 + 1, width / 2,
+            mc.getTextureManager().bindTexture(resourceButtonDefault);
+            drawTexturedModalRect(x, y, 1, 46 + k * 20 + 1, width / 2,
                     height / 2);
-            drawTexturedModalRect(xPosition, yPosition + height / 2, 1,
+            drawTexturedModalRect(x, y + height / 2, 1,
                     46 + k * 20 + 20 - height / 2 - 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2 - 1,
+            drawTexturedModalRect(x + width / 2, y, 200 - width / 2 - 1,
                     46 + k * 20 + 1, width / 2, height / 2);
-            drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2,
+            drawTexturedModalRect(x + width / 2, y + height / 2,
                     200 - width / 2 - 1, 46 + k * 20 + 19 - height / 2,
                     width / 2, height / 2);
         }

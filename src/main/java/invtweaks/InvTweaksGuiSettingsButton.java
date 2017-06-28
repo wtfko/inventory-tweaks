@@ -24,13 +24,13 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
     }
 
     @Override
-    public void drawButton(@NotNull Minecraft minecraft, int i, int j) {
-        super.drawButton(minecraft, i, j);
+    public void drawButton(@NotNull Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
 
         // Display string
-        @NotNull InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
-        drawCenteredString(obf.getFontRenderer(), displayString, xPosition + 5, yPosition - 1,
-                getTextColor(i, j));
+        @NotNull InvTweaksObfuscation obf = new InvTweaksObfuscation(mc);
+        drawCenteredString(obf.getFontRenderer(), displayString, x + 5, y - 1,
+                getTextColor(mouseX, mouseY));
     }
 
     /**
