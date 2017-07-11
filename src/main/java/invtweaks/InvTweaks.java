@@ -14,6 +14,8 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiCrafting;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Items;
@@ -79,6 +81,9 @@ public class InvTweaks extends InvTweaksObfuscation {
     private boolean hadFocus = true, mouseWasDown = false;
 
     private boolean wasInGUI = false;
+
+    private boolean previousRecipeBookVisibility = false;
+
     /**
      * Allows to trigger some logic only every Const.POLLING_DELAY.
      */
@@ -782,8 +787,30 @@ public class InvTweaks extends InvTweaksObfuscation {
         }
     }
 
-    private void handleGUILayout(@NotNull GuiContainer guiContainer) {
 
+    // NOTE: This *will* only work for vanilla GUIs. Blame Mojang for making it next to impossible to find out generically.
+    private boolean hasRecipeButton(@NotNull GuiContainer guiContainer) {
+        if(guiContainer instanceof GuiInventory) {
+            return true;
+        } else if(guiContainer instanceof GuiCrafting) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // See note above
+    private boolean isRecipeBookVisible(@NotNull GuiContainer guiContainer) {
+        if(guiContainer instanceof GuiInventory) {
+            return ((GuiInventory)guiContainer).recipeBookGui.isVisible();
+        } else if(guiContainer instanceof GuiCrafting) {
+            return ((GuiCrafting)guiContainer).recipeBookGui.isVisible();
+        } else {
+            return false;
+        }
+    }
+
+    private void handleGUILayout(@NotNull GuiContainer guiContainer) {
         @Nullable InvTweaksConfig config = cfgManager.getConfig();
 
         Container container = guiContainer.inventorySlots;
@@ -796,7 +823,10 @@ public class InvTweaks extends InvTweaksObfuscation {
             // Re-layout when NEI/JEI changes states.
             final boolean isItemListVisible = itemListChecker.isVisible();
             final boolean wasItemListVisible = itemListChecker.wasVisible();
-            final boolean relayout = isItemListVisible != wasItemListVisible;
+            final boolean isRecipeBookVisible = isRecipeBookVisible(guiContainer);
+            final boolean wasRecipeBookVisible = previousRecipeBookVisibility;
+            final boolean relayout = (isItemListVisible != wasItemListVisible) || (isRecipeBookVisible != wasRecipeBookVisible);
+            previousRecipeBookVisibility = isRecipeBookVisible;
 
             // Look for the mods buttons
             boolean customButtonsAdded = false;
@@ -822,11 +852,16 @@ public class InvTweaks extends InvTweaksObfuscation {
                 boolean customTextureAvailable = hasTexture(
                         new ResourceLocation("inventorytweaks", "textures/gui/button10px.png"));
 
+                int id = InvTweaksConst.JIMEOWAN_ID,
+                        x = guiContainer.guiLeft + guiContainer.xSize - 16,
+                        y = guiContainer.guiTop + 5;
                 // Inventory button
                 if(!isValidChest) {
-                    controlList.add(new InvTweaksGuiSettingsButton(cfgManager, InvTweaksConst.JIMEOWAN_ID,
-                            guiContainer.guiLeft + guiContainer.xSize - 15,
-                            guiContainer.guiTop + 5, w, h, "...",
+                    /*if(hasRecipeButton(guiContainer)) {
+                        x -= 20;
+                    }*/
+                    controlList.add(new InvTweaksGuiSettingsButton(cfgManager, id,
+                            x, y, w, h, "...",
                             I18n.format(
                                     "invtweaks.button.settings.tooltip"),
                             customTextureAvailable));
@@ -837,16 +872,15 @@ public class InvTweaks extends InvTweaksObfuscation {
                     // Reset sorting algorithm selector
                     chestAlgorithmClickTimestamp = 0;
 
-                    int id = InvTweaksConst.JIMEOWAN_ID,
-                            x = guiContainer.guiLeft + guiContainer.xSize - 16,
-                            y = guiContainer.guiTop + 5;
                     boolean isChestWayTooBig = isLargeChest(guiContainer.inventorySlots);
 
                     // NotEnoughItems/JustEnoughItems compatibility
                     if(isChestWayTooBig && isItemListVisible) {
-                        x = guiContainer.guiLeft + guiContainer.xSize - 35;
+                        x -= 20;
                         y += 50;
-                    }
+                    }/* else if(hasRecipeButton(guiContainer)) {
+                        x -= 20;
+                    }*/
 
                     // Settings button
                     controlList
