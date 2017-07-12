@@ -27,3 +27,6 @@ launcher/
 # Misc
 *.rej
 classes/
+
+# Encrypted files
+invtweaks.keystore

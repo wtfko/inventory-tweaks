@@ -157,6 +157,23 @@ compileJava {
     options.debugOptions.debugLevel = 'source,lines,vars'
 }
 
+ext.keystore = System.getenv("KEYSTORE")
+ext.keystorePass = System.getenv("KEYSTORE_PASSWORD")
+ext.keyPass = System.getenv("KEY_PASSWORD")
+ext.keyAlias = System.getenv("KEY_ALIAS")
+
+task signJar(type: Exec, dependsOn: reobfJar) {
+    onlyIf {
+        project.keystore && project.keystorePass && project.keyPass && project.keyAlias
+    }
+
+    commandLine "jarsigner", "-keystore", keystore, "-storepass", keystorePass, "-keypass", keyPass,
+            "-tsa", "http://tsa.startssl.com/rfc3161",
+            "-sigalg", "SHA512withECDSA", "-digestalg", "SHA-512", jar.archivePath, keyAlias
+}
+
+build.dependsOn signJar
+
 task apiJar(type: Jar) {
     onlyIf { project.hasProperty('api_filter') }
     dependsOn classes

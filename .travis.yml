@@ -1,10 +1,12 @@
 language: java
 jdk:
-  - oraclejdk8
-install: ./gradlew setupCI
-script: ./gradlew build curseforge
+- oraclejdk8
+install: "./gradlew setupCI"
+script: "./gradlew build curseforge"
 sudo: false
 branches:
   only:
-    - develop
-    - release
+  - develop
+before_install:
+- openssl aes-256-cbc -K $encrypted_0d5e72d46a46_key -iv $encrypted_0d5e72d46a46_iv
+  -in invtweaks.keystore.enc -out .\\invtweaks.keystore -d
