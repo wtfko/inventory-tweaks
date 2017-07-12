@@ -217,7 +217,7 @@ if(mod_version.endsWith("dev")) {
 }
 
 tasks.curseforge.onlyIf { curseKey }
-tasks.curseforge.dependsOn jar, apiJar, deobfJar
+tasks.curseforge.dependsOn signJar, apiJar, deobfJar
 
 if(hasProperty('curse_extra_versions')) {
     ext.curseExtraVersions = curse_extra_versions.tokenize(',')
