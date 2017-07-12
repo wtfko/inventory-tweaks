@@ -22,7 +22,8 @@ import org.jetbrains.annotations.NotNull;
         dependencies = "required-after:forge@[13.19.1,)",
         acceptableRemoteVersions = "*",
         acceptedMinecraftVersions = "",
-        guiFactory = "invtweaks.forge.ModGuiFactory")
+        guiFactory = "invtweaks.forge.ModGuiFactory",
+        certificateFingerprint = "55d2cd4f5f0961410bf7b91ef6c6bf00a766dcbe")
 public class InvTweaksMod implements InvTweaksAPI {
     @Mod.Instance
     public static InvTweaksMod instance;
