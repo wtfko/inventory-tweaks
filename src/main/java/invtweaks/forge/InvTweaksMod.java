@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  *         Source code: <a href="https://github.com/kobata/inventory-tweaks">GitHub</a> License: MIT
  */
 @Mod(modid = "inventorytweaks",
-        dependencies = "required-after:forge@[13.19.1,)",
+        dependencies = "required-after:forge@[14.21.0,)",
         acceptableRemoteVersions = "*",
         acceptedMinecraftVersions = "",
         guiFactory = "invtweaks.forge.ModGuiFactory",
