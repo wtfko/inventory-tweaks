@@ -221,6 +221,11 @@ public class InvTweaks extends InvTweaksObfuscation {
      * To be called on each tick when a menu is open. Handles the GUI additions and the middle clicking.
      */
     public void onTickInGUI(GuiScreen guiScreen) {
+        if(mc.playerController.isSpectator()) {
+            onTick();
+            return;
+        }
+
         synchronized(this) {
             handleMiddleClick(guiScreen); // Called before the rest to be able to trigger config reload
             if(!onTick()) {
@@ -506,6 +511,10 @@ public class InvTweaks extends InvTweaksObfuscation {
         printQueuedMessages();
 
         tickNumber++;
+
+        if(mc.playerController.isSpectator()) {
+            return false;
+        }
 
         // Not calling "cfgManager.makeSureConfigurationIsLoaded()" for performance reasons
         @Nullable InvTweaksConfig config = cfgManager.getConfig();
@@ -941,7 +950,6 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private void handleShortcuts(@NotNull GuiContainer guiScreen) {
-
         // Check open GUI
         if(!(isValidChest(guiScreen.inventorySlots) || isValidInventory(guiScreen.inventorySlots))) {
             return;

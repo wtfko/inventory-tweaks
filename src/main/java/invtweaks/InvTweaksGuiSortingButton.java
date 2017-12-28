@@ -60,6 +60,10 @@ public class InvTweaksGuiSortingButton extends InvTweaksGuiIconButton {
      */
     @Override
     public boolean mousePressed(Minecraft minecraft, int i, int j) {
+        if(minecraft.playerController.isSpectator()) {
+            return false;
+        }
+
         if(super.mousePressed(minecraft, i, j)) {
             try {
                 new InvTweaksHandlerSorting(minecraft, cfgManager.getConfig(), section, algorithm, rowSize).sort();

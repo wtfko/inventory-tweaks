@@ -42,6 +42,10 @@ public class InvTweaksGuiSettingsButton extends InvTweaksGuiIconButton {
         @NotNull InvTweaksObfuscation obf = new InvTweaksObfuscation(minecraft);
         @Nullable InvTweaksConfig config = cfgManager.getConfig();
 
+        if(minecraft.playerController.isSpectator()) {
+            return false;
+        }
+
         if(super.mousePressed(minecraft, i, j)) {
             // Put hold item down if necessary
             ContainerSectionManager containerMgr;

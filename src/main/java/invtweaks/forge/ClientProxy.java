@@ -136,6 +136,7 @@ public class ClientProxy extends CommonProxy {
     public void sort(ContainerSection section, SortingMethod method) {
         // TODO: This seems like something useful enough to be a util method somewhere.
         Minecraft mc = FMLClientHandler.instance().getClient();
+
         Container currentContainer = mc.player.inventoryContainer;
         if(InvTweaksObfuscation.isGuiContainer(mc.currentScreen)) {
             currentContainer = ((GuiContainer) mc.currentScreen).inventorySlots;

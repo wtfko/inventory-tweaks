@@ -46,7 +46,7 @@ public class ITPacketClick implements ITPacket {
             @NotNull NetHandlerPlayServer serverHandler = (NetHandlerPlayServer) handler;
             EntityPlayerMP player = serverHandler.player;
 
-            if(player.openContainer.windowId == window) {
+            if(!player.isSpectator() && player.openContainer.windowId == window) {
                 player.openContainer.slotClick(slot, data, action, player);
             }
             // TODO: Might want to set a flag to ignore all packets until next sortcomplete even if client window changes.
