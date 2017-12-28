@@ -168,7 +168,7 @@ task signJar(type: Exec, dependsOn: reobfJar) {
     }
 
     commandLine "jarsigner", "-keystore", keystore, "-storepass", keystorePass, "-keypass", keyPass,
-            "-tsa", "http://tsa.startssl.com/rfc3161",
+            "-tsa", "http://timestamp.comodoca.com", "-tsadigestalg", "SHA-512",
             "-sigalg", "SHA512withECDSA", "-digestalg", "SHA-512", jar.archivePath, keyAlias
 }
 
