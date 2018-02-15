@@ -24,7 +24,7 @@ public class InvTweaksConfig {
     public static final String PROP_VERSION = "version";
     // Sorting settings
     public static final String PROP_ENABLE_MIDDLE_CLICK = "enableMiddleClick";
-    public static final String PROP_SHOW_CHEST_BUTTONS = "showChestButtons";
+    public static final String PROP_SHOW_CHEST_BUTTONS = "false";
     public static final String PROP_ENABLE_SORTING_ON_PICKUP = "enableSortingOnPickup";
     public static final String PROP_ENABLE_AUTO_EQUIP_ARMOR = "enableAutoEquipArmor";
     public static final String PROP_ENABLE_AUTO_REFILL = "enableAutoRefill";
@@ -345,7 +345,7 @@ public class InvTweaksConfig {
         properties = new InvTweaksConfigProperties();
 
         properties.put(PROP_ENABLE_MIDDLE_CLICK, VALUE_TRUE);
-        properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_TRUE);
+        properties.put(PROP_SHOW_CHEST_BUTTONS, VALUE_FALSE);
         properties.put(PROP_ENABLE_SORTING_ON_PICKUP, VALUE_FALSE);
         properties.put(PROP_ENABLE_AUTO_REFILL, VALUE_TRUE);
         properties.put(PROP_AUTO_REFILL_BEFORE_BREAK, VALUE_FALSE);
