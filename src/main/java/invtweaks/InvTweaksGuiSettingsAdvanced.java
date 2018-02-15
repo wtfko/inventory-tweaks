@@ -145,11 +145,6 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
                 toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds);
                 break;
 
-            // Toggle chest buttons
-            case ID_CHESTS_BUTTONS:
-                toggleBooleanButton(guibutton, InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons);
-                break;
-
             // Toggle server assistance
             case ID_SERVER_ASSIST:
                 toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist);
